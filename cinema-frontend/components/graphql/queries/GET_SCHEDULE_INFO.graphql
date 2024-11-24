@@ -1,0 +1,9 @@
+import { gql } from '@apollo/client/core';
+export const GET_SCHEDULE_INFO =gql`
+query GetScheduleInfo($schedule_id:Int!) {
+  movie_schedules(where: {schedule_id: {_eq:$schedule_id}}) {
+    ticket_price
+  }
+}
+
+`

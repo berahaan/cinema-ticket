@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const UPDATE_RATES =gql`
+mutation ($ratingId:Int!,$rate:Int!){
+  update_rate_movie_by_pk(pk_columns: {rating_id:$ratingId}, _set: { rating: $rate}) {
+    movie_id
+  }
+}
+`

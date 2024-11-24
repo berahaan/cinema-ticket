@@ -1,0 +1,272 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import { GET_GENRE_ID } from "../components/graphql/queries/GET_GENRE_ID.graphql";
+import { ADD_GENRE } from "../components/graphql/mutations/ADD_GENRE.graphql";
+import { DELETE_GENRE } from "../components/graphql/mutations/DELETE_GENRE.graphql";
+import { UPDATE_GENRE } from "../components/graphql/mutations/UPDATE_GENRE.graphql";
+import { GET_GENRES } from "../components/graphql/queries/GET_GENRES.graphql";
+import { Form, Field, ErrorMessage } from "vee-validate";
+import { useToast } from "vue-toastification";
+import { useNuxtApp } from "#app";
+import Loading from "./Loading.vue";
+const { selectClass } = useThemeColor();
+const { refreshPage } = useRefresh();
+const isLoading = ref(false);
+const toast = useToast();
+const { $apollo } = useNuxtApp();
+const genres = ref([]);
+const formData = ref({ name: "", genre_id: null });
+const loading = ref(false);
+const isEditing = ref(false);
+const notification = ref({ message: "", type: "" });
+
+const fetchGenres = async () => {
+  isLoading.value = true;
+  try {
+    const response = await $apollo.query({
+      query: GET_GENRES,
+      fetchPolicy: "network-only",
+    });
+    genres.value = response.data.genres;
+  } catch (error) {
+    console.error("Error fetching genres:", error);
+    showNotification("Failed to fetch genres.", "error");
+  } finally {
+    isLoading.value = false; // Stop loading after data is fetched
+  }
+};
+
+const onSubmit = async () => {
+  console.log("Here called ");
+  loading.value = true;
+  isLoading.value = true;
+  try {
+    if (isEditing.value) {
+      const responseUpdate = await $apollo.mutate({
+        mutation: UPDATE_GENRE,
+        variables: { id: formData.value.genre_id, name: formData.value.name },
+        refetchQueries: [{ query: GET_GENRES }],
+      });
+      if (responseUpdate && responseUpdate.data) {
+        toast.success("updated successfully ", {
+          position: "top-right",
+          timeout: 3000,
+        });
+      }
+    } else {
+      if (formData.value.name) {
+        // check if it exist already in databse
+        const { data } = await $apollo.query({ query: GET_GENRES });
+        const nameExists = data.genres.some(
+          (genre) =>
+            genre.name.trim().toLowerCase() ===
+            formData.value.name.trim().toLowerCase()
+        );
+        if (nameExists) {
+          // Check if any stars were found
+          toast.error("genre name already exists. Please try another name.", {
+            position: "top-right",
+            timeout: 3000, // Toast stays visible for 5 seconds
+          });
+          return;
+        } else {
+          console.log("Addding to database .....");
+          const repsonseGenre = await $apollo.mutate({
+            mutation: ADD_GENRE,
+            variables: { name: formData.value.name },
+            refetchQueries: [{ query: GET_GENRES }],
+          });
+          if (repsonseGenre && repsonseGenre.data) {
+            toast.success("Successfully added ", {
+              position: "top-center",
+              timeout: 3000,
+            });
+          }
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error saving genre:", error);
+    showNotification("Failed to save genre.", "error");
+  } finally {
+    setTimeout(() => {
+      loading.value = false;
+      isLoading.value = false;
+    }, 200);
+  }
+};
+
+// Edit genre
+const editGenre = (genre) => {
+  formData.value = { name: genre.name, genre_id: genre.genre_id };
+  isEditing.value = true;
+};
+
+const deleteGenre = async (id) => {
+  try {
+    console.log("To be deleted Id of genres ", id);
+    const { data } = await $apollo.query({
+      query: GET_GENRE_ID,
+      variables: { genre_id: id },
+      fetchPolicy: "network-only",
+    });
+    console.log(data);
+    if (data.genres.length > 0) {
+      console.log(
+        "Id to be deleted for this genres in data.stars.length > 0 ",
+        id
+      );
+      const response = await $apollo.mutate({
+        mutation: DELETE_GENRE,
+        variables: { genre_id: id },
+        refetchQueries: [
+          {
+            query: GET_GENRES,
+          },
+        ],
+      });
+
+      if (response && response.data) {
+        toast.success("Genres deleted successfully.", {
+          position: "top-center",
+          timeout: 3000,
+        });
+      }
+    } else {
+      toast.error("genre is already deleted ", {
+        position: "top-center",
+        timeout: 3000,
+      });
+    }
+  } catch (error) {
+    console.error("Error deleting star:", error);
+  }
+};
+// Show notification
+const showNotification = (message, type) => {
+  notification.value = { message, type };
+  setTimeout(() => {
+    notification.value = { message: "", type: "" };
+  }, 3000);
+};
+const validateName = () => {
+  // Check if name is empty
+  if (!formData.value.name) {
+    return "Name is required";
+  }
+
+  // Check if name length is less than 5
+  if (formData.value.name.length < 5) {
+    return "The name should be at least 5 letters";
+  }
+  return true;
+};
+
+onMounted(fetchGenres);
+</script>
+
+<template>
+  <div class="max-w-4xl mx-auto mt-10">
+    <h2 class="text-xl font-semibold mb-4">
+      {{ isEditing ? "Update Genre" : "Add Genre" }}
+    </h2>
+    <div v-if="isLoading" class="flex justify-center mt-4 bg-white">
+      <Loading />
+    </div>
+    <Form @submit="onSubmit" class="space-y-4">
+      <div class="flex flex-col">
+        <div class="flex justify-between mb-2">
+          <label for="name" class="font-semibold" :class="selectClass"
+            >Genre Name:</label
+          >
+          <button @click="refreshPage(fetchGenres)" class="ml-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
+              />
+            </svg>
+          </button>
+        </div>
+        <Field
+          name="name"
+          :rules="validateName"
+          type="text"
+          placeholder="Enter genre name"
+          v-model="formData.name"
+          class="border border-gray-300 rounded-md p-2"
+          :class="selectClass"
+        />
+        <ErrorMessage name="name" class="text-red-600" />
+      </div>
+
+      <button
+        type="submit"
+        class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-200 ease-in-out"
+      >
+        <span v-if="loading">{{
+          isEditing ? "Updating..." : "Adding..."
+        }}</span>
+        <span v-else>{{ isEditing ? "Update Genre" : "Add Genre" }}</span>
+      </button>
+    </Form>
+
+    <!-- Genre List -->
+    <h2 class="text-xl font-semibold mt-10 mb-4">Genres List</h2>
+    <table class="min-w-full border border-gray-300" :class="selectClass">
+      <thead>
+        <tr>
+          <th
+            class="px-4 py-2 text-left font-semibold border-b"
+            :class="selectClass"
+          >
+            index
+          </th>
+          <th
+            class="px-4 py-2 text-left font-semibold border-b"
+            :class="selectClass"
+          >
+            Genre Name
+          </th>
+          <th
+            class="px-6 py-2 font-semibold border-b text-right"
+            :class="selectClass"
+          >
+            <!-- Align text to the right -->
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(genre, index) in genres"
+          :key="genre.genre_id"
+          class="border-b transition duration-200 ease-in-out"
+          :class="selectClass"
+        >
+          <td class="px-4 py-2">{{ index + 1 }}</td>
+          <td class="px-4 py-2">{{ genre.name }}</td>
+          <td class="px-4 py-2 text-right">
+            <!-- Align cell content to the right -->
+            <button
+              @click="editGenre(genre)"
+              class="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition duration-200 ease-in-out mr-2"
+            >
+              ✏️ Edit
+            </button>
+            <button
+              @click="deleteGenre(genre.genre_id)"
+              class="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition duration-200 ease-in-out"
+            >
+              ❌Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>

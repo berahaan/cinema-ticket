@@ -1,0 +1,10 @@
+import { gql } from '@apollo/client/core';
+export const DELETE_OTHER_IMAGES = gql`
+  mutation UPDATE_MOVIE(
+    $movie_id: Int!
+  ) {
+    delete_movie_images(where: { movie_id: { _eq: $movie_id } }) {
+      affected_rows
+    }
+  }
+`;

@@ -1,0 +1,9 @@
+import { gql } from '@apollo/client/core';
+export const ADD_STAR = gql`
+  mutation AddStar($name: String!) {
+    insert_stars_one(object: { name: $name }) {
+      star_id
+      name
+    }
+  }
+`;

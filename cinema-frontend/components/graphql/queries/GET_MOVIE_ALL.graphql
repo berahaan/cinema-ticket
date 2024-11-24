@@ -1,0 +1,42 @@
+import { gql } from '@apollo/client/core';
+export const GET_MOVIE_ALL = gql`
+  query GetMovies {
+  movies(
+    order_by: { movie_id: desc }
+  ) {
+    average_rating {
+      average_rating
+      movie_id
+    }
+    movie_id
+    title
+    description
+    duration
+    featured_images
+    movie_images {
+      other_images
+    }
+    movie_genres {
+      genre {
+        name
+      }
+    }
+    movie_stars {
+      star {
+        name
+      }
+    }
+    director {
+      name
+    }
+    movie_schedules {
+      start_time
+      end_time
+      schedule_date
+      cinema_hall
+      ticket_price
+    }
+    
+  }
+}
+`;

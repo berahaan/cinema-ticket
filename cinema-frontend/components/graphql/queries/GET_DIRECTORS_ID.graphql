@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const GET_DIRECTORS_ID =gql`
+query GetGenreById($directors_id: Int!) {
+  directors(where: {director_id: {_eq:$directors_id}}) {
+    name
+  }
+}
+`

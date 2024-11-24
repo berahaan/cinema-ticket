@@ -1,0 +1,9 @@
+import { gql } from '@apollo/client/core';
+export const ADD_GENRE = gql`
+  mutation AddGenre($name: String!) {
+    insert_genres_one(object: { name: $name }) {
+      genre_id
+      name
+    }
+  }
+`;

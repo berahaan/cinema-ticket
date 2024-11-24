@@ -1,0 +1,41 @@
+import { gql } from '@apollo/client/core';
+
+export const GET_MOVIE_DETAILS = gql`
+  query GET_MOVIE_DETAILS($movie_id: Int!) {
+    movies(where: { movie_id: { _eq: $movie_id } }) {
+      title
+      description
+      duration
+      featured_images
+      director_id
+      movie_genres {
+        genre {
+          genre_id
+          name
+        }
+      }
+      movie_stars {
+        star {
+          star_id
+          name
+        }
+      }
+      movie_images {
+        image_id
+        other_images
+      }
+    }
+    genres {
+      genre_id
+      name
+    }
+    stars {
+      star_id
+      name
+    }
+    directors {
+      director_id
+      name
+    }
+  }
+`;

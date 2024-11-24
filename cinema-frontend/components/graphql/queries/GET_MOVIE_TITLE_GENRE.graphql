@@ -1,0 +1,68 @@
+import { gql } from '@apollo/client/core';
+export const GET_MOVIE_TITLE_GENRE = gql`
+  query GetMovies(
+  $limit: Int!
+  $offset: Int!
+  $genres: String
+  $title: String
+) {
+  movies(
+    order_by: { movie_id: desc }
+    limit: $limit
+    offset: $offset
+    where: {
+      _and: [
+        { movie_genres: { genre: { name: { _eq: $genres } } } },
+        { title: { _ilike: $title } }
+      ]
+    }
+  ) {
+    average_rating {
+      average_rating
+      movie_id
+    }
+    movie_id
+    title
+    description
+    duration
+    featured_images
+    movie_images {
+      other_images
+    }
+    movie_genres {
+      genre {
+        name
+      }
+    }
+    movie_stars {
+      star {
+        name
+      }
+    }
+    director {
+      name
+    }
+    movie_schedules {
+      start_time
+      end_time
+      schedule_date
+      cinema_hall
+      ticket_price
+    }
+  }
+  movies_aggregate(
+    where: {
+      _and: [
+        { movie_genres: { genre: { name: { _eq: $genres } } } },
+        { title: { _ilike: $title } }
+      ]
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+
+
+`;

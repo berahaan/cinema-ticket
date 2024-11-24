@@ -1,0 +1,24 @@
+import { gql } from '@apollo/client/core';
+export const UPDATE_SCHEDULE = gql`
+  mutation UpdateMovieSchedule(
+    $schedule_id: Int!
+    $start_time: timestamp!
+    $end_time: timestamp!
+    $schedule_date: date!
+    $ticket_price: float8!
+    $cinema_hall: String!
+  ) {
+    update_movie_schedules(
+      where: { schedule_id: { _eq: $schedule_id } }
+      _set: {
+        start_time: $start_time
+        end_time: $end_time
+        schedule_date: $schedule_date
+        ticket_price: $ticket_price
+        cinema_hall: $cinema_hall
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;

@@ -1,0 +1,13 @@
+import { gql } from '@apollo/client/core';
+export const GET_USERINFO =gql`
+query GET_USERINFO($userId:Int!){
+  users(where: {id: {_eq:$userId}}) {
+    firstname
+    lastname
+    profile_picture
+    id
+    role
+    email
+  }
+}
+`

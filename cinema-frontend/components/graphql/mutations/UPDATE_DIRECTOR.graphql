@@ -1,0 +1,12 @@
+import { gql } from '@apollo/client/core';
+export const UPDATE_DIRECTOR = gql`
+  mutation UpdateDirector($id: Int!, $name: String!) {
+    update_directors_by_pk(
+      pk_columns: { director_id: $id }
+      _set: { name: $name }
+    ) {
+      director_id
+      name
+    }
+  }
+`;

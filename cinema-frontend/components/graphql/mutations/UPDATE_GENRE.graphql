@@ -1,0 +1,9 @@
+import { gql } from '@apollo/client/core';
+export const UPDATE_GENRE = gql`
+  mutation UpdateGenre($id: Int!, $name: String!) {
+    update_genres_by_pk(pk_columns: { genre_id: $id }, _set: { name: $name }) {
+      genre_id
+      name
+    }
+  }
+`;

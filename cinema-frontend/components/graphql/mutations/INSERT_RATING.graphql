@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const INSERT_RATING =gql`
+mutation InsertRating($movieId:Int!,$userId:Int!,$rating:Int!){
+  insert_rate_movie_one(object: {movie_id:$movieId, user_id:$userId, rating:$rating}) {
+    rating
+  }
+}
+`

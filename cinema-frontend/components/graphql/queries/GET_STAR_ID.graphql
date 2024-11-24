@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const GET_STAR_ID =gql`
+query GetStarById($star_id: Int!) {
+  stars(where: {star_id: {_eq:$star_id}}) {
+    name
+  }
+}
+`

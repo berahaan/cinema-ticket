@@ -1,0 +1,41 @@
+import { gql } from '@apollo/client/core';
+export const UPDATE_MOVIE_NO_OTHER = gql`
+  mutation UPDATE_MOVIE(
+    $movie_id: Int!
+    $title: String!
+    $description: String!
+    $duration: Int!
+    $director_id: Int!
+    $featured_images: String!
+    $genres: [movie_genres_insert_input!]!
+    $stars: [movie_stars_insert_input!]!
+  ) {
+    update_movies_by_pk(
+      pk_columns: { movie_id: $movie_id }
+      _set: {
+        title: $title
+        description: $description
+        director_id: $director_id
+        duration: $duration
+        featured_images: $featured_images
+      }
+    ) {
+      movie_id
+    }
+
+    delete_movie_genres(where: { movie_id: { _eq: $movie_id } }) {
+      affected_rows
+    }
+
+    insert_movie_genres(objects: $genres) {
+      affected_rows
+    }
+
+    delete_movie_stars(where: { movie_id: { _eq: $movie_id } }) {
+      affected_rows
+    }
+    insert_movie_stars(objects: $stars) {
+      affected_rows
+    }
+  }
+`;

@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const SEND_PROFILE_PHOTO =gql`
+mutation SendProfilePhoto($profilePhoto:String!){
+ profileUpload(profileImages:$profilePhoto){
+        profileurl
+}
+}
+`

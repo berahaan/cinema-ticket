@@ -1,0 +1,29 @@
+import { gql } from '@apollo/client/core';
+export const ADD_MOVIES = gql`
+  mutation InsertMovieWithImages(
+    $title: String!
+    $director_id: Int!
+    $duration: Int!
+    $description: String!
+    $featured_image: String!
+    $movie_star: [movie_stars_insert_input!]!
+    $movie_images: [movie_images_insert_input!]!
+    $movie_genres: [movie_genres_insert_input!]!
+  ) {
+    insert_movies_one(
+      object: {
+        title: $title
+        description: $description
+        duration: $duration
+        featured_images: $featured_image
+        director_id: $director_id
+        movie_images: { data: $movie_images }
+        movie_stars: { data: $movie_star }
+        movie_genres: { data: $movie_genres }
+      }
+    ) {
+      movie_id
+      title
+    }
+  }
+`;

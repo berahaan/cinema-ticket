@@ -1,0 +1,30 @@
+import { gql } from '@apollo/client/core';
+export const GET_TICKET_INFO =gql`
+query GetTicketInfo($tx_ref:String!){
+  ticket(where: {tx_ref: {_eq:$tx_ref}}) {
+    amount
+    currency
+    email
+    firstname
+    lastname
+    payment_method
+    payment_status
+    ticket_quantity
+    tx_ref
+    payment_reference
+    movie {
+      title
+      director {
+        name
+      }
+    }
+     movie_schedule {
+        cinema_hall
+        end_time
+        schedule_date
+        start_time
+      }
+    
+  }
+}
+`

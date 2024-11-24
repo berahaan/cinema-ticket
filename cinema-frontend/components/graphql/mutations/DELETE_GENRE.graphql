@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const DELETE_GENRE = gql`
+  mutation DeleteGenre($genre_id: Int!) {
+    delete_genres_by_pk(genre_id: $genre_id) {
+      genre_id
+    }
+  }
+`;

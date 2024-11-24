@@ -1,0 +1,9 @@
+import { gql } from '@apollo/client/core';
+export const GET_DIRECTORS = gql`
+  query GetDirectors {
+    directors {
+      director_id
+      name
+    }
+  }
+`;

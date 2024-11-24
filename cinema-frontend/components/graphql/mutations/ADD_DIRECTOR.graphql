@@ -1,0 +1,9 @@
+import { gql } from '@apollo/client/core';
+export const ADD_DIRECTOR = gql`
+  mutation AddDirector($name: String!) {
+    insert_directors_one(object: { name: $name }) {
+      director_id
+      name
+    }
+  }
+`;

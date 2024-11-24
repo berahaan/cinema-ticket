@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const DELETE_SCHEDULE = gql`
+  mutation removeSchedules($schedule_id: Int!) {
+  delete_movie_schedules_by_pk(schedule_id: $schedule_id) {
+    updated_at
+  }
+}
+`;

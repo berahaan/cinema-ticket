@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const GET_GENRE_ID =gql`
+query GetGenreById($genre_id: Int!) {
+  genres(where: {genre_id: {_eq:$genre_id}}) {
+    name
+  }
+}
+`

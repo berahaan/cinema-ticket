@@ -1,0 +1,9 @@
+import { gql } from '@apollo/client/core';
+export const UPDATE_STAR = gql`
+  mutation UpdateStar($id: Int!, $name: String!) {
+    update_stars_by_pk(pk_columns: { star_id: $id }, _set: { name: $name }) {
+      star_id
+      name
+    }
+  }
+`;

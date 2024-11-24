@@ -1,0 +1,30 @@
+import { gql } from '@apollo/client/core';
+export const SEND_TICKET = gql`
+  mutation (
+    $movieId:Int!
+    $scheduleId:Int!
+    $currency: String!
+    $email: String
+    $first_name: String!
+    $last_name: String!
+    $phone_number: String!
+    $amount: Int!
+    $TicketQuantity:Int!
+  ) {
+    initiatePayment(
+      ticket_quantity:$TicketQuantity
+      movie_id:$movieId
+      schedule_id:$scheduleId
+      currency: $currency
+      email: $email
+      first_name: $first_name
+      last_name: $last_name
+      amount: $amount
+      phone_number: $phone_number
+      
+    ) {
+    
+      access_url
+    }
+  }
+`;

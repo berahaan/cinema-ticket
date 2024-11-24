@@ -1,0 +1,37 @@
+import { gql } from '@apollo/client/core';
+export const GET_BOOKMARKS=gql`
+query GetBookark($userId:Int!){
+  bookmarks(where: {user_id: {_eq:$userId}}) {
+    movie_id
+    movie {
+      featured_images
+      duration
+      description
+      director {
+        name
+      }
+      movie_genres {
+        genre {
+          name
+        }
+      }
+      movie_images {
+        other_images
+      }
+      movie_schedules {
+       start_time
+      end_time
+      schedule_date
+      cinema_hall
+      ticket_price
+      }
+      movie_stars {
+        star {
+          name
+        }
+      }
+      title
+    }
+  }
+}
+`

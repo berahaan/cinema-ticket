@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const GET_BOOKMARK_U_INFO =gql`
+query GetBookmark($movieId:Int!,$userId:Int!){
+  bookmarks(where: {movie_id: {_eq:$movieId}, user_id: {_eq:$userId}}) {
+    movie_id
+  }
+}
+`

@@ -1,0 +1,29 @@
+import { gql } from '@apollo/client/core';
+const GET_INFO = gql`
+  query getMovie($movieId: Int!) {
+    movies(where: { movie_id: { _eq: $movieId } }) {
+      title
+      duration
+      description
+      featured_images
+      movie_genres {
+        genre {
+          name
+        }
+      }
+      movie_schedules {
+        cinema_hall
+        end_time
+        start_time
+        ticket_price
+        schedule_date
+        schedule_id
+      }
+      movie_stars {
+        star {
+          name
+        }
+      }
+    }
+  }
+`;

@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const UPDATE_USERINFO =gql`
+mutation UpdateUserProfile($id: Int!, $firstname: String!, $lastname: String!, $email: String!,$profilePictures:String!) {
+  update_users(where: {id: {_eq: $id}}, _set: {firstname: $firstname, lastname: $lastname, email: $email,profile_picture:$profilePictures}) {
+    affected_rows
+  }
+}
+`

@@ -1,0 +1,29 @@
+# Go specific
+bin/
+pkg/
+vendor/
+hasura/
+# Build artifacts
+*.exe
+*.out
+*.test
+
+# IDE/Editor specific
+.vscode/
+.idea/
+
+# Operating System specific
+.DS_Store
+Thumbs.db
+
+# Logs and sensitive information
+*.log
+*.env
+
+# Golang test cache
+testdata/
+
+# Docker files (optional if not using)
+docker-compose.override.yml
+*.env
+*.swp

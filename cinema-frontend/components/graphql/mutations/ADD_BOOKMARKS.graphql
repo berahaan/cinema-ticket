@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const ADD_BOOKMARKS =gql`
+mutation InsertBookmark($UserId: Int!, $movieId: Int!) {
+  insert_bookmarks_one(object: { user_id: $UserId, movie_id: $movieId }) {
+    bookmark_id
+  }
+}
+`

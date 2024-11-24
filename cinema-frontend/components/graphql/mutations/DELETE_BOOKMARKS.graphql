@@ -1,0 +1,10 @@
+import { gql } from '@apollo/client/core';
+export const DELETE_BOOKMARKS = gql`
+  mutation DeleteBookmark($userId: Int!, $movieId: Int!) {
+    delete_bookmarks(
+      where: { user_id: { _eq: $userId }, movie_id: { _eq: $movieId } }
+    ) {
+      affected_rows
+    }
+  }
+`;

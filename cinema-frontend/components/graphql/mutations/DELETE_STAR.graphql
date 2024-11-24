@@ -1,0 +1,8 @@
+import { gql } from '@apollo/client/core';
+export const DELETE_STAR = gql`
+  mutation DeleteStar($id: Int!) {
+    delete_stars_by_pk(star_id: $id) {
+      star_id
+    }
+  }
+`;

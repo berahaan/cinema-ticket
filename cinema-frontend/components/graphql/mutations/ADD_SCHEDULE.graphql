@@ -1,0 +1,24 @@
+import { gql } from '@apollo/client/core';
+export const ADD_SCHEDULE = gql`
+  mutation AddSchedule(
+    $movie_id: Int!
+    $start_time: timestamp!
+    $end_time: timestamp!
+    $schedule_date: date!
+    $cinema_hall: String!
+    $ticket_price: float8!
+  ) {
+    insert_movie_schedules_one(
+      object: {
+        movie_id: $movie_id
+        start_time: $start_time
+        end_time: $end_time
+        schedule_date: $schedule_date
+        cinema_hall: $cinema_hall
+        ticket_price: $ticket_price
+      }
+    ) {
+      schedule_id
+    }
+  }
+`;

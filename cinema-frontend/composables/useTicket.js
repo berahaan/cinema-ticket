@@ -1,0 +1,139 @@
+import { ref, computed } from "vue";
+import { jwtDecode } from "jwt-decode";
+import { useNuxtApp } from "#app";
+import { useRoute } from "vue-router";
+import { SEND_TICKET } from "../components/graphql/mutations/SEND_TICKET.graphql";
+import { GET_SPECIFIC_MOVIE } from "../components/graphql/queries/GET_SPECIFIC_MOVIE.graphql";
+import { GET_USER } from "../components/graphql/queries/GET_USER.graphql";
+import { useToast } from "vue-toastification";
+export const useTicket = () => {
+  const route = useRoute();
+  const router = useRouter();
+  const toast = useToast();
+  const movieId = parseInt(route.params.id, 10);
+  const scheduleId = ref(null);
+  const movie = ref({});
+  const selectedSchedule = ref(null);
+  const ticketQuantity = ref(1);
+  const islengthGreater = ref(false);
+  const { $apollo } = useNuxtApp();
+  const form = ref({
+    first_name: "",
+    last_name: "",
+    phone_number: "",
+    email: "",
+    currency: "ETB",
+  });
+  const totalPrice = computed(() => {
+    console.log("Entire schdules here is ", selectedSchedule.value);
+    scheduleId.value = selectedSchedule.value?.schedule_id;
+    console.log("Schedule ID:", scheduleId.value);
+    return selectedSchedule.value
+      ? selectedSchedule.value.ticket_price * ticketQuantity.value
+      : 0;
+  });
+  watch(scheduleId, (newId) => {
+    console.log("Selected Schedule ID:", newId); // Access the value
+  });
+
+  const fetchInfo = async () => {
+    try {
+      const response = await $apollo.query({
+        query: GET_SPECIFIC_MOVIE,
+        variables: { movieId: movieId },
+      });
+      movie.value = response.data.movies[0];
+      islengthGreater.value = movie.value.movie_schedules.length > 0;
+    } catch (error) {
+      console.log("Error fetching movie data: ", error);
+    }
+  };
+  const fetchUserName = async () => {
+    const token = jwtDecode(localStorage.getItem("accessToken"));
+    const userId = token["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
+    try {
+      const { data } = await $apollo.query({
+        query: GET_USER,
+        variables: { userid: userId },
+      });
+      console.log("Firstname ", data.users[0].firstname);
+      form.value.first_name = data.users[0].firstname;
+      form.value.last_name = data.users[0].lastname;
+      form.value.email = token.email;
+    } catch (error) {
+      console.log("Errors ", error);
+    }
+  };
+  const buyTicket = (id) => {
+    const token = jwtDecode(localStorage.getItem("accessToken"));
+    const defaultRole =
+      token["https://hasura.io/jwt/claims"]["x-hasura-default-role"];
+    console.log("ID for selected movies is in usemovies ", id);
+    if (defaultRole === "admin") {
+      console.log("Routing to admin pages");
+      router.push(`/admin/ticket/${id}`);
+    } else {
+      console.log("Routing to user pages ....");
+      router.push(`/user/ticket/${id}`);
+    }
+  };
+  const purchaseTickets = async (form) => {
+    console.log("Sending ticket info now ....", form.value);
+    console.log(
+      "Movie id to be sent ",
+      movieId,
+      "And schedule id to be sent here ",
+      scheduleId.value
+    );
+    const Input = {
+      TicketQuantity: ticketQuantity.value,
+      movieId: movieId,
+      scheduleId: scheduleId.value,
+      amount: totalPrice.value,
+      first_name: form.value.first_name,
+      last_name: form.value.last_name,
+      phone_number: form.value.phone_number,
+      email: form.value.email,
+      currency: form.value.currency,
+    };
+    console.log("Form to be sent ", Input);
+    try {
+      const { data } = await $apollo.mutate({
+        mutation: SEND_TICKET,
+        variables: Input,
+      });
+
+      const accessUrl = data.initiatePayment.access_url;
+      window.location.href = accessUrl;
+    } catch (error) {
+      console.error("Error initiating payment: ", error);
+      if (!navigator.onLine) {
+        alert(
+          "It seems you're offline. Please check your internet connection and try again."
+        );
+      } else {
+        toast.warning(
+          "U look life offline please connect to internet and try again",
+          {
+            position: "top-right",
+            duration: 2000,
+          }
+        );
+      }
+    }
+  };
+
+  return {
+    movie,
+    totalPrice,
+    fetchInfo,
+    selectedSchedule,
+    islengthGreater,
+    form,
+    buyTicket,
+    movieId,
+    fetchUserName,
+    purchaseTickets,
+    ticketQuantity,
+  };
+};
