@@ -29,7 +29,7 @@ onMounted(async () => {
         type="text"
         v-model="searchQuery"
         placeholder="Search by title..."
-        class="border p-2 rounded w-full md:w-1/3 text-gray-600 outline-none focus:ring-2 focus:ring-blue-500 transition mb-4 mt-12"
+        class="border p-2 rounded w-full md:w-1/3 text-gray-600 outline-none focus:ring-2 focus:ring-blue-500 transition mb-4 mt-20"
         :class="selectClass"
       />
 
@@ -57,7 +57,6 @@ onMounted(async () => {
       <div v-if="errorMessage" class="text-red-600 text-center mb-6">
         {{ errorMessage }}
       </div>
-
       <div
         v-if="movie.movies.length > 0"
         class="grid grid-cols-1 md:grid-cols-2 gap-8"
@@ -80,39 +79,6 @@ onMounted(async () => {
                 alt="Featured Image"
                 class="w-full object-cover mb-4 max-h-72 rounded-lg shadow-md cursor-pointer"
               />
-            </div>
-            <div class="text-gray-600">
-              <h4
-                class="flex items-center font-semibold text-blue-800 text-lg mb-2"
-                :class="selectClass"
-              >
-                Genres:
-              </h4>
-              <ul class="flex">
-                <li
-                  v-for="genre in movie.movie_genres"
-                  :key="genre.genre.name"
-                  class="rounded-lg p-3 shadow-md"
-                  :class="selectClass"
-                >
-                  {{ genre.genre.name }}
-                </li>
-              </ul>
-              <span
-                class="flex items-center font-semibold text-blue-800 text-lg mb-2 mt-2"
-                :class="selectClass"
-                >Stars:</span
-              >
-              <ul class="flex gap-2 mt-1">
-                <li
-                  v-for="star in movie.movie_stars"
-                  :key="star.star.name"
-                  class="rounded-lg p-3 shadow-md"
-                  :class="selectClass"
-                >
-                  {{ star.star.name }}
-                </li>
-              </ul>
             </div>
 
             <div
@@ -143,14 +109,14 @@ onMounted(async () => {
                           schedule.end_time
                         )
                       }}
-                      <span class="text-sm text-gray-500">
+                      <span class="text-sm">
                         | Price(birr):
                         <span class="font-semibold text-green-600">{{
                           schedule.ticket_price
                         }}</span>
                       </span>
-                      <span class="text-sm text-gray-500">
-                        Hall:
+                      <span class="text-sm">
+                        Cinema Hall:
                         <span class="font-semibold">{{
                           schedule.cinema_hall
                         }}</span>
@@ -162,9 +128,8 @@ onMounted(async () => {
             </div>
             <button
               @click="UpdateMovie(movie.movie_id)"
-               class="px-4 mt-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
+              class="px-4 mt-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
             >
-            
               Update Schedule
             </button>
           </div>
@@ -180,34 +145,34 @@ onMounted(async () => {
         </p>
       </div>
     </template>
- 
-       <div
-          class="pagination-controls  py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
-          v-if="movie.totalPages"
-        >
-          <button
-            @click="goToPreviousPage"
-            :disabled="currentPage === 1"
-            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="selectClass"
-          >
-            Previous
-          </button>
-          <span class="font-semibold">
-            {{
-              noMoviesFound
-                ? "Page 1 of total 1"
-                : `page ${currentPage} of ${movie.totalPages}`
-            }}
-          </span>
-          <button
-            @click="goToNextPage"
-            :disabled="currentPage === movie.totalPages || noMoviesFound"
-            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="selectClass"
-          >
-            Next
-          </button>
-        </div>
+
+    <div
+      class="pagination-controls py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
+      v-if="movie.totalPages"
+    >
+      <button
+        @click="goToPreviousPage"
+        :disabled="currentPage === 1"
+        class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        :class="selectClass"
+      >
+        Previous
+      </button>
+      <span class="font-semibold">
+        {{
+          noMoviesFound
+            ? "Page 1 of total 1"
+            : `page ${currentPage} of ${movie.totalPages}`
+        }}
+      </span>
+      <button
+        @click="goToNextPage"
+        :disabled="currentPage === movie.totalPages || noMoviesFound"
+        class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+        :class="selectClass"
+      >
+        Next
+      </button>
+    </div>
   </div>
 </template>

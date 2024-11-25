@@ -8,7 +8,7 @@ const { fetchDirectors, directors } = useFetchDirector();
 const { fetchGenres, genres } = useFetchGenres();
 const { fetchStars, stars } = useFetchStars();
 const { fetchMovies } = useFetchMovies();
-const { previewOtherImages} = useFile();
+const { previewOtherImages } = useFile();
 const {
   validateDescription,
   validateDirector,
@@ -66,8 +66,7 @@ const handleAddMovies = async () => {
 onMounted(async () => {
   await fetchDirectors();
   await fetchGenres();
-  await fetchStars(); 
-
+  await fetchStars();
 });
 
 watch(stars, (newStars) => {
@@ -85,7 +84,7 @@ watch(stars, (newStars) => {
     <Loading />
   </div>
 
-  <div class="max-w-3xl mx-auto mt-10 mb-10"  v-else>
+  <div class="max-w-3xl mx-auto mt-16 mb-10" v-else>
     <Form
       @submit="handleAddMovies"
       class="space-y-4 grid grid-cols-1 sm:grid-cols-1"
@@ -302,7 +301,7 @@ watch(stars, (newStars) => {
           />
         </div>
       </div>
-    
+
       <div class="flex flex-col">
         <h3 class="text-sm font-semibold text-indigo-400">
           Upload New Other Images (Max 5):

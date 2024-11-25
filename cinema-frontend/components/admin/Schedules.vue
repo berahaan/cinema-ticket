@@ -182,7 +182,7 @@ onMounted(async () => {
             </ul>
           </div>
           <button
-            class="mt-4 bg-gradient-to-r from-blue-500 to-blue-700 text-white px-6 py-3 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 mx-6"
+            class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
             @click="openScheduleModal(movie)"
           >
             Add Schedule
@@ -286,33 +286,33 @@ onMounted(async () => {
       </div>
     </div>
   </div>
- 
-        <div
-          class="pagination-controls bg-teal-600 py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
-          v-if="movie.totalPages"
-        >
-          <button
-            @click="goToPreviousPage"
-            :disabled="currentPage === 1"
-            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="selectClass"
-          >
-            Previous
-          </button>
-          <span class="font-semibold">
-            {{
-              noMoviesFound
-                ? "Page 1 of total 1"
-                : `page ${currentPage} of ${movie.totalPages}`
-            }}
-          </span>
-          <button
-            @click="goToNextPage"
-            :disabled="currentPage === movie.totalPages || noMoviesFound"
-            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="selectClass"
-          >
-            Next
-          </button>
-        </div>
+
+  <div
+    class="pagination-controls bg-teal-600 py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
+    v-if="movie.totalPages"
+  >
+    <button
+      @click="goToPreviousPage"
+      :disabled="currentPage === 1"
+      class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+      :class="selectClass"
+    >
+      Previous
+    </button>
+    <span class="font-semibold">
+      {{
+        noMoviesFound
+          ? "Page 1 of total 1"
+          : `page ${currentPage} of ${movie.totalPages}`
+      }}
+    </span>
+    <button
+      @click="goToNextPage"
+      :disabled="currentPage === movie.totalPages || noMoviesFound"
+      class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+      :class="selectClass"
+    >
+      Next
+    </button>
+  </div>
 </template>

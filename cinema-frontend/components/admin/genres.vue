@@ -163,7 +163,7 @@ onMounted(fetchGenres);
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto mt-10">
+  <div class="max-w-4xl mx-auto mt-16">
     <h2 class="text-xl font-semibold mb-4">
       {{ isEditing ? "Update Genre" : "Add Genre" }}
     </h2>
@@ -171,25 +171,22 @@ onMounted(fetchGenres);
       <Loading />
     </div>
     <div class="flex justify-between mb-2">
-          <label for="name" class="font-semibold" :class="selectClass"
-            >Genre Name:</label
-          >
-          <button @click="refreshPage(fetchGenres)" class="ml-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-              />
-            </svg>
-          </button>
-        </div>
+      <label for="name">Genre Name:</label>
+      <button @click="refreshPage(fetchGenres)" class="ml-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
+          />
+        </svg>
+      </button>
+    </div>
     <Form @submit="onSubmit" class="space-y-4">
       <div class="flex flex-col">
-        
         <Field
           name="name"
           :rules="validateName"
@@ -215,7 +212,7 @@ onMounted(fetchGenres);
 
     <!-- Genre List -->
     <h2 class="text-xl font-semibold mt-10 mb-4">Genres List</h2>
-    <table class="min-w-full border border-gray-300" :class="selectClass">
+    <table class="min-w-full border border-gray-300">
       <thead>
         <tr>
           <th

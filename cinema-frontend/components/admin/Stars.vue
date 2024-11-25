@@ -10,7 +10,7 @@ import { useToast } from "vue-toastification";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import Loading from "./Loading.vue";
-const {validationSchema}=useValidate()
+const { validationSchema } = useValidate();
 const { refreshPage } = useRefresh();
 const { selectClass } = useThemeColor();
 const { $apollo } = useNuxtApp();
@@ -92,7 +92,7 @@ const onSubmit = async () => {
                 position: "top-right",
                 timeout: 3000,
               });
-              formData.value.name=""
+              formData.value.name = "";
             }
           }
         } catch (error) {
@@ -151,21 +151,21 @@ const deleteStar = async (id) => {
     }
   } catch (error) {
     console.error("Error deleting star:", error);
-    toast.error("Failed to delete star ",{
-      position:"top-right",
-      timeout:2000
-    })
+    toast.error("Failed to delete star ", {
+      position: "top-right",
+      timeout: 2000,
+    });
   }
 };
 // const validationSchema = yup.object({
 //     name: yup.string().required("name is required from yup"),
-    
+
 //   });
 onMounted(fetchStars);
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto mt-10" :class="selectClassn">
+  <div class="max-w-4xl mx-auto mt-16" :class="selectClassn">
     <!-- Add or Update Star Form -->
     <h2 class="text-xl mb-4">
       {{ isEditing ? "Update Star" : "Add Star" }}
@@ -174,23 +174,26 @@ onMounted(fetchStars);
       <Loading />
     </div>
     <div class="flex justify-between mb-2">
-          <label for="name" class="" :class="selectClass"> Star Name: </label>
-          <button @click="refreshPage(fetchStars)" class="ml-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-              />
-            </svg>
-          </button>
-        </div>
-    <Form @submit="onSubmit" :validation-schema="validationSchema"   class="space-y-4 px-2">
+      <label for="name"> Star Name: </label>
+      <button @click="refreshPage(fetchStars)" class="ml-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
+          />
+        </svg>
+      </button>
+    </div>
+    <Form
+      @submit="onSubmit"
+      :validation-schema="validationSchema"
+      class="space-y-4 px-2"
+    >
       <div class="flex flex-col">
-       
         <Field
           v-model="formData.name"
           type="text"

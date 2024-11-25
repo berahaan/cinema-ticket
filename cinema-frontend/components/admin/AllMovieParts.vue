@@ -79,7 +79,7 @@ onMounted(async () => {
 <template>
   <div class="w-full mx-auto mt-10">
     <div
-      class="flex justify-center fixed top-28 right-2 left-2 mb-60 space-x-2 flex-wrap"
+      class="flex justify-center fixed top-32 right-2 left-2 mb-60 space-x-2 flex-wrap"
     >
       <div class="relative">
         <input
@@ -435,26 +435,26 @@ onMounted(async () => {
                       </p>
                     </li>
                   </ul>
-                 <div class="mt-4">
-                  <button
-                    @click="buyTicket(movie.movie_id)"
-                     class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
-                  >
-                    Buy Ticket
-                  </button>
-                  <button
-                    @click="confirmDelete(movie.movie_id)"
-                     class="px-4 py-2 bg-red-600 dark:bg-red-800 text-white rounded-lg mx-6"
-                  >
-                    Delete Movie
-                  </button>
-                  <button
-                    @click="UpdateMovie(movie.movie_id)"
-                     class="px-4 py-2 bg-blue-600 dark:bg-teal-800 text-white rounded-lg mx-6"
-                  >
-                    Update Movie
-                  </button>
-                 </div>
+                  <div class="mt-4">
+                    <button
+                      @click="buyTicket(movie.movie_id)"
+                      class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
+                    >
+                      Buy Ticket
+                    </button>
+                    <button
+                      @click="confirmDelete(movie.movie_id)"
+                      class="px-4 py-2 bg-red-600 dark:bg-red-800 text-white rounded-lg mx-6"
+                    >
+                      Delete Movie
+                    </button>
+                    <button
+                      @click="UpdateMovie(movie.movie_id)"
+                      class="px-4 py-2 bg-blue-600 dark:bg-teal-800 text-white rounded-lg mx-6"
+                    >
+                      Update Movie
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -552,7 +552,7 @@ onMounted(async () => {
             </button>
           </div>
         </div>
-        
+
         <div
           class="pagination-controls bg-teal-600 py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
           v-if="movie.totalPages"

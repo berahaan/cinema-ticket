@@ -1,4 +1,3 @@
-
 <script setup>
 import { GET_ADMIN_STATS } from "./components/graphql/queries/GET_ADMIN_STATS.graphql";
 import { GET_USER } from "../graphql/queries/GET_USER.graphql";
@@ -13,8 +12,8 @@ const totalMovies = ref(0);
 const router = useRouter();
 const totalSchedules = ref(0);
 const totalUsers = ref(0);
-const upcomingEvents = ref(3); 
-const firstName = ref(""); 
+const upcomingEvents = ref(3);
+const firstName = ref("");
 const isloading = ref(true);
 const getUserName = async () => {
   const accessToken = localStorage.getItem("accessToken");
@@ -35,7 +34,6 @@ const getUserName = async () => {
 
     if (data.users.length > 0) {
       firstName.value = data.users[0].firstname; // Access the first user's firstname
-     
     } else {
       console.error("No user found with the given userid.");
     }
@@ -73,14 +71,13 @@ onMounted(async () => {
 </style>
 
 <template>
-  <div class="min-h-screen p-6 mt-14 " >
+  <div class="min-h-screen p-6 mt-20">
     <div class="mb-6">
       <h1 class="text-3xl">Welcome, {{ firstName }}!</h1>
       <p>Here’s a quick summary of what’s happening in the system today.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-      
       <div class="p-6 rounded-lg shadow-md border">
         <h2 class="text-xl">Total Movies</h2>
         <p class="text-3xl">

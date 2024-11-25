@@ -112,134 +112,97 @@ body.text-black {
     </div>
 
     <nav class="hidden md:flex items-center space-x-8 relative">
-      <!-- Movie Management -->
-      <div class="relative">
-        <button
-          @click="toggleMenu('movies')"
-          class="flex items-center justify-between transition-colors hover:text-teal-300 group"
-        >
-          🎬 Movie
-          <ChevronDownIcon
-            class="w-6 h-6 transition-transform duration-200 group-hover:rotate-180"
-          />
-        </button>
+      <div class="group relative cursor-pointer py-2">
+        <div class="flex items-center justify-between">
+          <a
+            class="menu-hover my-2 py-2 text-base font-medium lg:mx-4"
+            onClick=""
+          >
+            Movies
+          </a>
+          <span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="h-6 w-6"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+              />
+            </svg>
+          </span>
+        </div>
         <div
-          v-if="isMoviesOpen"
-          class="absolute left-0 mt-2 w-40 shadow-lg border border-gray-300 rounded-lg py-2 z-50"
           :class="selectClass"
+          class="invisible absolute flex flex-col py-1 px-4 shadow-xl group-hover:visible w-40 min-w-[160px]"
         >
           <nuxt-link
             to="/admin/addMovie"
-            class="px-4 py-2 rounded-lg flex items-center space-x-2 relative group hover:text-blue-500"
+            :class="selectClass"
+            class="my-2 block border-b border-gray-100 py-1 font-semibold md:mx-2 hover:text-teal-400"
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 4v16m8-8H4"
-              />
-            </svg>
-            <span>Add Movie</span>
-
-            <span
-              class="absolute bottom-0 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-            ></span>
+            Add Movies
           </nuxt-link>
-
           <nuxt-link
             to="/admin/Movielist"
-            class="px-4 py-2 rounded-lg flex items-center space-x-2 relative group"
             :class="selectClass"
+            class="my-2 block border-b border-gray-100 py-1 font-semibold md:mx-2 hover:text-teal-400"
           >
-            <!-- Film Icon -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-            <span>Movielist</span>
-            <!-- Underline effect -->
-            <span
-              class="absolute bottom-0 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-            ></span>
+            MovieList
           </nuxt-link>
         </div>
       </div>
+      <!-- to="/admin/MovieSchedule" -->
+      <!-- to="/admin/Schedules" -->
+      <!-- 📅 Schedule -->
 
-      <!-- Schedule Management -->
-      <div class="relative">
-        <button
-          @click="toggleMenu('schedule')"
-          class="flex items-center justify-between transition-colors hover:text-teal-300 group"
-        >
-          📅 Schedule
-          <ChevronDownIcon
-            class="w-6 h-6 transition-transform duration-200 group-hover:rotate-180"
-          />
-        </button>
-
-        <div
-          v-if="isScheduleOpen"
-          class="absolute left-0 mt-2 w-48 shadow-lg border border-gray-300 rounded-lg py-2 z-50"
-          :class="selectClass"
-        >
-          <nuxt-link
-            to="/admin/Schedules"
-            class="px-4 py-2 rounded-lg flex items-center space-x-2 relative group"
-            :class="selectClass"
+      <div class="group relative cursor-pointer py-2">
+        <div class="flex items-center justify-between">
+          <a
+            class="menu-hover my-2 py-2 text-base font-medium lg:mx-4"
+            onClick=""
           >
-            <!-- Calendar Plus Icon for Add Schedules -->
+            📅 Schedule
+          </a>
+          <span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 text-green-600"
               fill="none"
-              stroke="currentColor"
               viewBox="0 0 24 24"
-              stroke-width="2"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="h-6 w-6"
             >
               <path
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                d="M12 4v16m8-8H4"
+                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
               />
             </svg>
-
-            <span>Add Schedules</span>
-            <!-- Underline effect -->
-            <span
-              class="absolute bottom-0 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-            ></span>
-          </nuxt-link>
-
-          <!-- Update Schedules Link -->
+          </span>
+        </div>
+        <div
+          :class="selectClass"
+          class="invisible absolute flex flex-col py-1 px-4 shadow-xl group-hover:visible w-40 min-w-[180px]"
+        >
           <nuxt-link
             to="/admin/MovieSchedule"
-            class="px-4 py-2 rounded-lg flex items-center space-x-2 relative group"
             :class="selectClass"
+            class="my-2 block border-b border-gray-100 py-1 font-semibold md:mx-2 hover:text-teal-400"
           >
-            <!-- Calendar Edit Icon for Update Schedules -->
-            <PencilIcon class="h-4 w-4 text-blue-600" />
-            <span>Update Schedules</span>
-            <!-- Underline effect -->
-            <span
-              class="absolute bottom-0 left-0 w-full h-[2px] bg-blue-500 scale-x-0 group-hover:scale-x-100 transition-transform duration-300"
-            ></span>
+            Update Schedule
+          </nuxt-link>
+          <nuxt-link
+            to="/admin/Schedules"
+            :class="selectClass"
+            class="my-2 block border-b border-gray-100 py-1 font-semibold md:mx-2 hover:text-teal-400"
+          >
+            Add schedule
           </nuxt-link>
         </div>
       </div>

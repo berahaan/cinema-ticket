@@ -134,8 +134,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="container mx-auto p-4">
-    <h2 class="text-2xl font-bold mb-6 text-center">Update Movie Schedule</h2>
+  <div class="container mx-auto p-4 mt-20">
     <button
       @click="goBack"
       class="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium py-2 px-4 rounded-md transition duration-200"
@@ -239,7 +238,7 @@ onMounted(async () => {
 
         <button
           @click="updateSchedule(schedule, index)"
-          class="mt-4 bg-gradient-to-r from-green-500 to-green-700 text-white px-6 py-3 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 mx-2"
+          class="px-4 mt-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
         >
           <span v-if="loadingStates[index]">
             <svg
@@ -269,7 +268,7 @@ onMounted(async () => {
         </button>
         <button
           @click="removeSchedule(schedule.schedule_id)"
-          class="mt-4 ml-2 bg-gradient-to-r from-red-500 to-red-700 text-white px-6 py-3 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:from-red-600 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600"
+          class="px-4 mt-4 py-2 bg-red-600 dark:bg-red-800 text-white rounded-lg mx-6"
         >
           Remove Schedule
         </button>
@@ -284,7 +283,7 @@ onMounted(async () => {
       <p>This movie is not yet scheduled. Schedule it here:</p>
       <button
         @click="goToAddSchedulePage"
-        class="mt-4 w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200"
+        class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
       >
         Add Schedule
       </button>

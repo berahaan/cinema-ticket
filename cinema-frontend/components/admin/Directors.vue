@@ -44,7 +44,6 @@ const validateName = (value) => {
 
 // Add or update a director
 const onSubmit = async () => {
-
   loading.value = true;
   try {
     if (isEditing.value) {
@@ -75,10 +74,13 @@ const onSubmit = async () => {
             formData.value.name.trim().toLowerCase()
         );
         if (nameExists) {
-          toast.error("Director name already exists. Please try another name.", {
-            position: "top-right",
-            timeout: 3000, // Toast stays visible for 3 seconds
-          });
+          toast.error(
+            "Director name already exists. Please try another name.",
+            {
+              position: "top-right",
+              timeout: 3000, // Toast stays visible for 3 seconds
+            }
+          );
           // formData.value.name = ""; // Clear name if already exists
           return;
         } else {
@@ -155,31 +157,28 @@ onMounted(fetchDirectors);
 </script>
 
 <template>
-  <div class="max-w-4xl mx-auto mt-10">
+  <div class="max-w-4xl mx-auto mt-16">
     <!-- Add or Update Director Form -->
     <h2 class="text-xl font-semibold mb-4">
       {{ isEditing ? "Update Director" : "Add Director" }}
     </h2>
     <div class="flex justify-between mb-2">
-          <label for="name" class="font-semibold" :class="selectClass"
-            >Director Name:</label
-          >
-          <button @click="refreshPage(fetchDirectors)" class="ml-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-              />
-            </svg>
-          </button>
-        </div>
+      <label for="name">Director Name:</label>
+      <button @click="refreshPage(fetchDirectors)" class="ml-4">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
+          viewBox="0 0 24 24"
+          fill="currentColor"
+        >
+          <path
+            d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
+          />
+        </svg>
+      </button>
+    </div>
     <Form @submit="onSubmit" class="space-y-4">
       <div class="flex flex-col">
-        
         <Field
           v-model="formData.name"
           type="text"
@@ -209,7 +208,7 @@ onMounted(fetchDirectors);
     <!-- Director List -->
     <h2 class="text-xl font-semibold mt-10 mb-4">Directors List</h2>
 
-    <table class="min-w-full border border-gray-300" :class="selectClass">
+    <table class="min-w-full border border-gray-300">
       <thead>
         <tr>
           <th
