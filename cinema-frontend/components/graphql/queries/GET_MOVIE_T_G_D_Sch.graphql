@@ -1,0 +1,73 @@
+import { gql } from '@apollo/client/core';
+export const GET_MOVIE_TGDS = gql`
+  query GetMovies(
+  $limit: Int!
+  $offset: Int!
+  $genres: String
+  $title: String
+  $director: String
+  $scheduleStart: date
+  $scheduleEnd: date
+) {
+  movies(
+    order_by: { movie_id: desc }
+    limit: $limit
+    offset: $offset
+    where: {
+      _and: [
+        { director: { name: { _eq: $director } } }
+        { movie_genres: { genre: { name: { _eq: $genres } } } },
+        { title: { _ilike: $title } }
+    { movie_schedules: { schedule_date: { _gte: $scheduleStart, _lte: $scheduleEnd } } }
+      ]
+    }
+  ) {
+    average_rating {
+      average_rating
+      movie_id
+    }
+    movie_id
+    title
+    description
+    duration
+    featured_images
+    movie_images {
+      other_images
+    }
+    movie_genres {
+      genre {
+        name
+      }
+    }
+    movie_stars {
+      star {
+        name
+      }
+    }
+    director {
+      name
+    }
+    movie_schedules {
+      start_time
+      end_time
+      schedule_date
+      cinema_hall
+      ticket_price
+    }
+  }
+  movies_aggregate(
+    where: {
+      _and: [
+         { director: { name: { _eq: $director } } }
+        { movie_genres: { genre: { name: { _eq: $genres } } } },
+        { title: { _ilike: $title } }
+        { movie_schedules: { schedule_date: { _gte: $scheduleStart, _lte: $scheduleEnd } } }
+      ]
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+`;

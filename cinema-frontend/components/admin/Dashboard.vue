@@ -1,13 +1,86 @@
+
+<script setup>
+import { GET_ADMIN_STATS } from "./components/graphql/queries/GET_ADMIN_STATS.graphql";
+import { GET_USER } from "../graphql/queries/GET_USER.graphql";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { useNuxtApp } from "#app";
+import { onMounted } from "vue";
+import { jwtDecode } from "jwt-decode";
+import Loading from "../admin/Loading.vue";
+const { $apollo } = useNuxtApp();
+const totalMovies = ref(0);
+const router = useRouter();
+const totalSchedules = ref(0);
+const totalUsers = ref(0);
+const upcomingEvents = ref(3); 
+const firstName = ref(""); 
+const isloading = ref(true);
+const getUserName = async () => {
+  const accessToken = localStorage.getItem("accessToken");
+  if (!accessToken) {
+    console.error("No access token found.");
+    router.push("/login");
+    return;
+  }
+  const decodedToken = jwtDecode(accessToken);
+  const userid =
+    decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
+  console.log("Here is a user id in dashboard ", userid);
+  try {
+    const { data } = await $apollo.query({
+      query: GET_USER,
+      variables: { userid }, // Pass the userid as a variable
+    });
+
+    if (data.users.length > 0) {
+      firstName.value = data.users[0].firstname; // Access the first user's firstname
+     
+    } else {
+      console.error("No user found with the given userid.");
+    }
+  } catch (error) {
+    console.log("Error fetching user name:", error);
+  }
+};
+const fetchAdminStatus = async () => {
+  try {
+    const { data } = await $apollo.query({
+      query: GET_ADMIN_STATS,
+      fetchPolicy: "network-only",
+    });
+    totalMovies.value = data.total_movies[0]?.total_count || 0;
+    totalSchedules.value = data.total_schedules[0]?.total_count || 0;
+    totalUsers.value = data.total_users[0]?.total_count || 0;
+    isloading.value = false;
+  } catch (error) {
+    console.error("Error fetching admin stats:", error);
+  } finally {
+    isloading.value = false;
+  }
+};
+onMounted(async () => {
+  isloading.value = true;
+  await getUserName();
+  await fetchAdminStatus();
+});
+</script>
+
+<style scoped>
+.rotate-180 {
+  transform: rotate(180deg);
+}
+</style>
+
 <template>
-  <div class="min-h-screen p-6 mt-14 " :class="selectClass">
+  <div class="min-h-screen p-6 mt-14 " >
     <div class="mb-6">
       <h1 class="text-3xl">Welcome, {{ firstName }}!</h1>
       <p>Here’s a quick summary of what’s happening in the system today.</p>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-      <!-- Total Movies -->
-      <!-- -->
+      
       <div class="p-6 rounded-lg shadow-md border">
         <h2 class="text-xl">Total Movies</h2>
         <p class="text-3xl">
@@ -88,82 +161,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { GET_ADMIN_STATS } from "./components/graphql/queries/GET_ADMIN_STATS.graphql";
-import { GET_USER } from "../graphql/queries/GET_USER.graphql";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { useNuxtApp } from "#app";
-import { onMounted } from "vue";
-import { jwtDecode } from "jwt-decode";
-import Loading from "../admin/Loading.vue";
-const { $apollo } = useNuxtApp();
-const {selectClass} =useThemeColor()
-const totalMovies = ref(0);
-const router = useRouter();
-const totalSchedules = ref(0);
-const totalUsers = ref(0);
-const upcomingEvents = ref(3); // Static for now
-const firstName = ref(""); // Store the admin's first name
-const isloading = ref(true);
-const getUserName = async () => {
-  const accessToken = localStorage.getItem("accessToken"); // Ensure you get the access token
-  if (!accessToken) {
-    console.error("No access token found.");
-    router.push("/login");
-    return;
-  }
-
-  const decodedToken = jwtDecode(accessToken);
-  const userid =
-    decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-  console.log("Here is a user id in dashboard ", userid);
-  try {
-    const { data } = await $apollo.query({
-      query: GET_USER,
-      variables: { userid }, // Pass the userid as a variable
-    });
-
-    // Ensure data.users is an array and access the first item
-    if (data.users.length > 0) {
-      firstName.value = data.users[0].firstname; // Access the first user's firstname
-      console.log(
-        "Here is the first name from the backend for this user:",
-        firstName.value
-      );
-    } else {
-      console.error("No user found with the given userid.");
-    }
-  } catch (error) {
-    console.log("Error fetching user name:", error);
-  }
-};
-const fetchAdminStatus = async () => {
-  try {
-    const { data } = await $apollo.query({
-      query: GET_ADMIN_STATS,
-      fetchPolicy: "network-only",
-    });
-    totalMovies.value = data.total_movies[0]?.total_count || 0;
-    totalSchedules.value = data.total_schedules[0]?.total_count || 0;
-    totalUsers.value = data.total_users[0]?.total_count || 0;
-    isloading.value = false;
-  } catch (error) {
-    console.error("Error fetching admin stats:", error);
-  } finally {
-    isloading.value = false;
-  }
-};
-onMounted(async () => {
-  isloading.value = true;
-  await getUserName();
-  await fetchAdminStatus();
-});
-</script>
-
-<style scoped>
-.rotate-180 {
-  transform: rotate(180deg);
-}
-</style>

@@ -9,6 +9,7 @@ import { GET_MOVIE_TITLE_DIRECTOR } from "../components/graphql/queries/GET_MOVI
 import { GET_MOV_TIT_DIR_GEN } from "../components/graphql/queries/GET_MOV_TIT_DIR_GEN.graphql";
 import { GET_MOVIEBY_SCHEDULE } from "../components/graphql/queries/GET_MOVIEBY_SCHEDULE.graphql";
 import { GET_ALLMOVIEPARTS } from "../components/graphql/queries/GET_ALLMOVIEPARTS.graphql";
+import { GET_MOVIE_TGDS } from "../components/graphql/queries/GET_MOVIE_T_G_D_Sch.graphql";
 export const useFetchMovies = () => {
   const movieStore = useMoviesStore();
   const noMoviesFound = ref(false);
@@ -102,7 +103,22 @@ export const useFetchMovies = () => {
       }
 
       let query;
+      if (
+        searchQuery.value &&
+        genreQuery.value &&
+        directorQuery.value &&
+        scheduleQuery.value
+      ) {
+        console.log(
+          "Fetching movies with title, genre, director, and schedule"
+        );
+        query = GET_MOVIE_TGDS;
+      }
       // Check for different combinations of filters
+      if (conditions.length == 4 && scheduleStart) {
+        console.log("Fetching movies with title, genre, and schedule");
+        query = GET_MOVIE_TGDS;
+      }
       if (conditions.length === 3 && scheduleStart) {
         console.log("Fetching movies with title, genre, and schedule");
         query = GET_ALLMOVIEPARTS;
@@ -112,20 +128,20 @@ export const useFetchMovies = () => {
       } else if (conditions.length === 2) {
         console.log("Fetching movies with two active filters:", conditions);
         if (variables.title && variables.genres) {
-          query = GET_MOVIE_TITLE_GENRE; // Adjust query for title + genre
+          query = GET_MOVIE_TITLE_GENRE;
         } else if (variables.title && variables.director) {
-          query = GET_MOVIE_TITLE_DIRECTOR; // Adjust query for title + director
+          query = GET_MOVIE_TITLE_DIRECTOR;
         } else if (variables.genres && variables.director) {
-          query = GET_MOVIE_DIR_GENRE; // Adjust query for genre + director
+          query = GET_MOVIE_DIR_GENRE;
         }
       } else if (conditions.length === 1) {
         console.log("Fetching movies with one active filter:", conditions);
         if (variables.title) {
-          query = GET_TITLE; // Adjust query for title only
+          query = GET_TITLE;
         } else if (variables.genres) {
-          query = GET_MOVIE_GENRES; // Adjust query for genre only
+          query = GET_MOVIE_GENRES;
         } else if (variables.director) {
-          query = GET_MOVIE_BYDIRECTOR; // Adjust query for director only
+          query = GET_MOVIE_BYDIRECTOR;
         } else if (variables.scheduleStart && variables.scheduleEnd) {
           console.log("Fetching movies with selected schedule only");
           console.log(
@@ -141,7 +157,6 @@ export const useFetchMovies = () => {
         query = GET_MOVIES; // Default query to fetch all movies
       }
 
-      // Execute the query with the selected variables
       const { data } = await $apollo.query({
         query,
         variables,

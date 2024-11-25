@@ -6,12 +6,11 @@ const movie = useMoviesStore();
 const {
   fetchMovies,
   searchQuery,
-  totalPages,
+
   goToNextPage,
   isloading,
   goToPreviousPage,
   currentPage,
-  noMoviesFound,
 } = useFetchMovies();
 
 const { selectClass } = useThemeColor();
@@ -30,7 +29,7 @@ onMounted(async () => {
         type="text"
         v-model="searchQuery"
         placeholder="Search by title..."
-        class="border p-2 rounded w-full md:w-1/2 text-gray-600 outline-none focus:ring-2 focus:ring-blue-500 transition mb-4 mt-12"
+        class="border p-2 rounded w-full md:w-1/3 text-gray-600 outline-none focus:ring-2 focus:ring-blue-500 transition mb-4 mt-12"
         :class="selectClass"
       />
 
@@ -163,8 +162,9 @@ onMounted(async () => {
             </div>
             <button
               @click="UpdateMovie(movie.movie_id)"
-              class="mt-4 bg-gradient-to-r from-green-500 to-green-700 text-white px-6 py-3 rounded-full shadow-lg transform transition-all duration-300 hover:scale-105 hover:shadow-xl hover:from-green-600 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600 mx-2"
+               class="px-4 mt-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
             >
+            
               Update Schedule
             </button>
           </div>
@@ -180,28 +180,34 @@ onMounted(async () => {
         </p>
       </div>
     </template>
-
-    <div
-      class="pagination-controls bg-teal-600 py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
-      v-if="totalPages > 1"
-    >
-      <button
-        @click="goToPreviousPage"
-        :disabled="currentPage === 1"
-        class="bg-white text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-all"
-      >
-        Previous
-      </button>
-      <span class="text-white font-semibold">
-        Page {{ currentPage }} of {{ totalPages }}
-      </span>
-      <button
-        @click="goToNextPage"
-        :disabled="currentPage === totalPages"
-        class="bg-white text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-100 transition-all"
-      >
-        Next
-      </button>
-    </div>
+ 
+       <div
+          class="pagination-controls  py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
+          v-if="movie.totalPages"
+        >
+          <button
+            @click="goToPreviousPage"
+            :disabled="currentPage === 1"
+            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            :class="selectClass"
+          >
+            Previous
+          </button>
+          <span class="font-semibold">
+            {{
+              noMoviesFound
+                ? "Page 1 of total 1"
+                : `page ${currentPage} of ${movie.totalPages}`
+            }}
+          </span>
+          <button
+            @click="goToNextPage"
+            :disabled="currentPage === movie.totalPages || noMoviesFound"
+            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            :class="selectClass"
+          >
+            Next
+          </button>
+        </div>
   </div>
 </template>

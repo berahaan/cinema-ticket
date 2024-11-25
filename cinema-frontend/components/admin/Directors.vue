@@ -44,12 +44,6 @@ const validateName = (value) => {
 
 // Add or update a director
 const onSubmit = async () => {
-  // Basic form validation using validateName
-  const nameValidation = validateName(formData.value.name);
-  if (nameValidation !== true) {
-    errors.value.name = nameValidation; // Display error if validation fails
-    return; // Prevent form submission if validation fails
-  }
 
   loading.value = true;
   try {
@@ -68,7 +62,7 @@ const onSubmit = async () => {
           position: "top-center",
           durations: 3000,
         });
-        formData.value.name = ""; // Clear the form
+        // formData.value.name = ""; // Clear the form
       }
     } else {
       // Add director
@@ -85,7 +79,7 @@ const onSubmit = async () => {
             position: "top-right",
             timeout: 3000, // Toast stays visible for 3 seconds
           });
-          formData.value.name = ""; // Clear name if already exists
+          // formData.value.name = ""; // Clear name if already exists
           return;
         } else {
           console.log("Adding director to database...");
@@ -99,7 +93,7 @@ const onSubmit = async () => {
               position: "top-center",
               timeout: 3000,
             });
-            formData.value.name = ""; // Clear the form
+            // formData.value.name = ""; // Clear the form
           }
         }
       }
@@ -166,9 +160,7 @@ onMounted(fetchDirectors);
     <h2 class="text-xl font-semibold mb-4">
       {{ isEditing ? "Update Director" : "Add Director" }}
     </h2>
-    <Form @submit="onSubmit" class="space-y-4">
-      <div class="flex flex-col">
-        <div class="flex justify-between mb-2">
+    <div class="flex justify-between mb-2">
           <label for="name" class="font-semibold" :class="selectClass"
             >Director Name:</label
           >
@@ -185,6 +177,9 @@ onMounted(fetchDirectors);
             </svg>
           </button>
         </div>
+    <Form @submit="onSubmit" class="space-y-4">
+      <div class="flex flex-col">
+        
         <Field
           v-model="formData.name"
           type="text"

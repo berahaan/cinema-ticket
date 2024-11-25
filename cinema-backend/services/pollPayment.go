@@ -6,11 +6,10 @@ import (
 )
 
 func PollPaymentVerifications(transactionID string) (bool, error) {
-	fmt.Println("Poll payment is called now it need to wait for a 5 minutes now")
-	maxRetries := 5
-	retryInterval := 10 * time.Second
+	fmt.Println("Poll payment is called now it need to wait for a 15 minutes now")
+	maxRetries := 10
+	retryInterval := 15 * time.Minute
 	attempts := 0
-
 	for attempts < maxRetries {
 		fmt.Println("firstly called or polled now for verifications")
 		time.Sleep(retryInterval)

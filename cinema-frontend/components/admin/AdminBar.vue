@@ -4,9 +4,11 @@ import {
   MenuIcon,
   SunIcon,
   MoonIcon,
+  PencilIcon,
   ChevronDownIcon,
 } from "@heroicons/vue/solid";
 import { computed, onMounted, watch } from "vue";
+// PencilSquareIcon
 import cinemaImage from "../image/cinema.jpg";
 const colorStore = useColorModeStore();
 const { selectClass } = useThemeColor();
@@ -114,12 +116,11 @@ body.text-black {
       <div class="relative">
         <button
           @click="toggleMenu('movies')"
-          class="flex items-center justify-between transition-colors"
+          class="flex items-center justify-between transition-colors hover:text-teal-300 group"
         >
           🎬 Movie
           <ChevronDownIcon
-            class="w-6 h-6 transition-transform duration-200"
-            :class="{ 'rotate-180': isMoviesOpen }"
+            class="w-6 h-6 transition-transform duration-200 group-hover:rotate-180"
           />
         </button>
         <div
@@ -185,12 +186,11 @@ body.text-black {
       <div class="relative">
         <button
           @click="toggleMenu('schedule')"
-          class="flex items-center justify-between transition-colors hover:text-teal-300"
+          class="flex items-center justify-between transition-colors hover:text-teal-300 group"
         >
           📅 Schedule
           <ChevronDownIcon
-            class="w-6 h-6 transition-transform duration-200"
-            :class="{ 'rotate-180': isScheduleOpen }"
+            class="w-6 h-6 transition-transform duration-200 group-hover:rotate-180"
           />
         </button>
 
@@ -234,20 +234,7 @@ body.text-black {
             :class="selectClass"
           >
             <!-- Calendar Edit Icon for Update Schedules -->
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              stroke-width="2"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="M12 4v16m8-8H4m14-6l4 4m-4-4l-4 4"
-              />
-            </svg>
+            <PencilIcon class="h-4 w-4 text-blue-600" />
             <span>Update Schedules</span>
             <!-- Underline effect -->
             <span

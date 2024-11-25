@@ -1,3 +1,4 @@
+import * as yup from "yup";
 export const useValidate = () => {
   const validateTitle = (values) => {
     if (!values) return "Title is required";
@@ -48,9 +49,6 @@ export const useValidate = () => {
     if (value.length > 1) {
       return "Please choose only one image";
     }
-
-    // Validate the file type if needed (optional)
-
     return true;
   };
 
@@ -83,6 +81,30 @@ export const useValidate = () => {
     }
     return true;
   };
+  const validationSchema = yup.object({
+    name: yup.string().required("name is required").min(3,"Star name should be atleaset 3 characters"),
+    first_name: yup.string().required("First Name is required"),
+    last_name: yup.string().required("Last Name is required"),
+    phone_number: yup
+      .string()
+      .matches(/^(09|07)\d{8}$/, "Phone number is not valid")
+      .required("Phone Number is required"),
+    email: yup
+      .string()
+      .email("Email must be valid")
+      .matches(
+        /^[a-zA-Z0-9._%+-]+@(gmail|yahoo)\.com$/,
+        "Email must be a valid Gmail or Yahoo address "
+      )
+      .required("Email is required"),
+    selectedSchedule: yup.object().required("Please select a schedule"),
+    ticketQuantity: yup
+      .number()
+      .typeError("Ticket number is required ")
+      .required("At least one ticket is required")
+      .integer("Ticket quantity must be a whole number")
+      .min(1, "Ticket quantity must be at least 1"),
+  });
   return {
     validateDescription,
     validateDirector,
@@ -90,6 +112,7 @@ export const useValidate = () => {
     validateDuration,
     validateOtherImages,
     validateGenre,
+    validationSchema,
     validateTitle,
     validateStar,
   };

@@ -286,29 +286,33 @@ onMounted(async () => {
       </div>
     </div>
   </div>
-
-  <div
-    class="pagination-controls bg-teal-600 py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
-    v-if="totalPages > 1"
-  >
-    <button
-      @click="goToPreviousPage"
-      :disabled="currentPage === 1"
-      class="bg-white text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-      :class="selectClass"
-    >
-      Previous
-    </button>
-    <span class="text-white font-semibold">
-      Page {{ currentPage }} of {{ totalPages }}
-    </span>
-    <button
-      @click="goToNextPage"
-      :disabled="currentPage === totalPages"
-      class="bg-white text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-      :class="selectClass"
-    >
-      Next
-    </button>
-  </div>
+ 
+        <div
+          class="pagination-controls bg-teal-600 py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
+          v-if="movie.totalPages"
+        >
+          <button
+            @click="goToPreviousPage"
+            :disabled="currentPage === 1"
+            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            :class="selectClass"
+          >
+            Previous
+          </button>
+          <span class="font-semibold">
+            {{
+              noMoviesFound
+                ? "Page 1 of total 1"
+                : `page ${currentPage} of ${movie.totalPages}`
+            }}
+          </span>
+          <button
+            @click="goToNextPage"
+            :disabled="currentPage === movie.totalPages || noMoviesFound"
+            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            :class="selectClass"
+          >
+            Next
+          </button>
+        </div>
 </template>

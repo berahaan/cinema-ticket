@@ -8,8 +8,7 @@ const { fetchDirectors, directors } = useFetchDirector();
 const { fetchGenres, genres } = useFetchGenres();
 const { fetchStars, stars } = useFetchStars();
 const { fetchMovies } = useFetchMovies();
-const { previewFeaturedImage, previewOtherImages, currentFeatureImage } =
-  useFile();
+const { previewOtherImages} = useFile();
 const {
   validateDescription,
   validateDirector,
@@ -64,15 +63,13 @@ const handleAddMovies = async () => {
   }
 };
 
-// Fetch directors, genres, and stars on component mount
 onMounted(async () => {
   await fetchDirectors();
   await fetchGenres();
-  await fetchStars(); // Ensure stars are fetched before any other actions
-  console.log("Stars after fetching:", stars.value);
+  await fetchStars(); 
+
 });
 
-// Watch for changes in stars, if needed
 watch(stars, (newStars) => {
   if (newStars.length > 0) {
     console.log("Stars have been updated:", newStars);
@@ -88,7 +85,7 @@ watch(stars, (newStars) => {
     <Loading />
   </div>
 
-  <div class="max-w-3xl mx-auto mt-10 mb-10" :class="selectClass" v-else>
+  <div class="max-w-3xl mx-auto mt-10 mb-10"  v-else>
     <Form
       @submit="handleAddMovies"
       class="space-y-4 grid grid-cols-1 sm:grid-cols-1"
@@ -261,13 +258,13 @@ watch(stars, (newStars) => {
             <div class="flex items-center justify-center w-full">
               <label
                 for="dropzone-featured"
-                class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+                class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
               >
                 <div
                   class="flex flex-col items-center justify-center pt-5 pb-6"
                 >
                   <svg
-                    class="w-8 h-8 mb-4"
+                    class="w-8 h-6 mb-4"
                     aria-hidden="true"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -313,7 +310,7 @@ watch(stars, (newStars) => {
         <div class="flex items-center justify-center w-full">
           <label
             for="dropzone-other"
-            class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+            class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
           >
             <div class="flex flex-col items-center justify-center pt-5 pb-6">
               <svg

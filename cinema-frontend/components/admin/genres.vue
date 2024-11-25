@@ -37,7 +37,6 @@ const fetchGenres = async () => {
 };
 
 const onSubmit = async () => {
-  console.log("Here called ");
   loading.value = true;
   isLoading.value = true;
   try {
@@ -154,8 +153,6 @@ const validateName = () => {
   if (!formData.value.name) {
     return "Name is required";
   }
-
-  // Check if name length is less than 5
   if (formData.value.name.length < 5) {
     return "The name should be at least 5 letters";
   }
@@ -173,9 +170,7 @@ onMounted(fetchGenres);
     <div v-if="isLoading" class="flex justify-center mt-4 bg-white">
       <Loading />
     </div>
-    <Form @submit="onSubmit" class="space-y-4">
-      <div class="flex flex-col">
-        <div class="flex justify-between mb-2">
+    <div class="flex justify-between mb-2">
           <label for="name" class="font-semibold" :class="selectClass"
             >Genre Name:</label
           >
@@ -192,6 +187,9 @@ onMounted(fetchGenres);
             </svg>
           </button>
         </div>
+    <Form @submit="onSubmit" class="space-y-4">
+      <div class="flex flex-col">
+        
         <Field
           name="name"
           :rules="validateName"

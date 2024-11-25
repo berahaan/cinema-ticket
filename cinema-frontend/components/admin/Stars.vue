@@ -8,7 +8,9 @@ import { UPDATE_STAR } from "../components/graphql/mutations/UPDATE_STAR.graphql
 import { DELETE_STAR } from "../components/graphql/mutations/DELETE_STAR.graphql";
 import { useToast } from "vue-toastification";
 import { Form, Field, ErrorMessage } from "vee-validate";
+import * as yup from "yup";
 import Loading from "./Loading.vue";
+const {validationSchema}=useValidate()
 const { refreshPage } = useRefresh();
 const { selectClass } = useThemeColor();
 const { $apollo } = useNuxtApp();
@@ -17,7 +19,6 @@ const formData = ref({ name: "", star_id: null });
 const loading = ref(false);
 const success = ref(false);
 const isEditing = ref(false);
-const errors = ref({});
 const toast = useToast();
 const colorStore = useColorModeStore();
 const selectClassn = computed(() =>
@@ -42,10 +43,6 @@ const fetchStars = async () => {
 };
 const onSubmit = async () => {
   success.value = true;
-  if (!formData.value.name || formData.value.name.length < 3) {
-    errors.value.name = "Name must be at least 3 characters long";
-    return;
-  }
   loading.value = true;
   try {
     if (isEditing.value) {
@@ -65,7 +62,6 @@ const onSubmit = async () => {
       success.value = true;
       if (formData.value.name) {
         console.log("Checking database for existing star name...");
-
         try {
           const { data } = await $apollo.query({ query: GET_STARS });
           const nameExists = data.stars.some(
@@ -79,7 +75,7 @@ const onSubmit = async () => {
               position: "top-right",
               timeout: 3000, // Toast stays visible for 5 seconds
             });
-            formData.value.name = "";
+            // formData.value.name = "";
             return;
           } else {
             success.value = true;
@@ -96,6 +92,7 @@ const onSubmit = async () => {
                 position: "top-right",
                 timeout: 3000,
               });
+              formData.value.name=""
             }
           }
         } catch (error) {
@@ -104,7 +101,7 @@ const onSubmit = async () => {
       }
     }
 
-    formData.value = { name: "", star_id: null };
+    // formData.value = { name: "", star_id: null };
     isEditing.value = false;
   } catch (error) {
     console.error("Error saving star:", error);
@@ -130,10 +127,6 @@ const deleteStar = async (id) => {
       fetchPolicy: "network-only",
     });
     if (data.stars.length > 0) {
-      console.log(
-        "Id to be deleted for this star in data.stars.length > 0 ",
-        id
-      );
       const response = await $apollo.mutate({
         mutation: DELETE_STAR,
         variables: { id },
@@ -158,20 +151,16 @@ const deleteStar = async (id) => {
     }
   } catch (error) {
     console.error("Error deleting star:", error);
-    // alert("Failed to delete star");
+    toast.error("Failed to delete star ",{
+      position:"top-right",
+      timeout:2000
+    })
   }
 };
-const validateName = (value) => {
-  if (!value) {
-    return "Name is required";
-  }
-  if (formData.value.name.length < 4) {
-    return "The name should be at least 4 letters";
-  }
-  return true;
-};
-
-// Fetch stars when component is mounted
+// const validationSchema = yup.object({
+//     name: yup.string().required("name is required from yup"),
+    
+//   });
 onMounted(fetchStars);
 </script>
 
@@ -181,15 +170,10 @@ onMounted(fetchStars);
     <h2 class="text-xl mb-4">
       {{ isEditing ? "Update Star" : "Add Star" }}
     </h2>
-
-    <!-- Add spinner before form submission if loading -->
     <div v-if="loading" class="flex justify-center mb-4 bg-white">
       <Loading />
     </div>
-
-    <Form @submit="onSubmit" class="space-y-4 px-2">
-      <div class="flex flex-col">
-        <div class="flex justify-between mb-2">
+    <div class="flex justify-between mb-2">
           <label for="name" class="" :class="selectClass"> Star Name: </label>
           <button @click="refreshPage(fetchStars)" class="ml-4">
             <svg
@@ -204,11 +188,13 @@ onMounted(fetchStars);
             </svg>
           </button>
         </div>
+    <Form @submit="onSubmit" :validation-schema="validationSchema"   class="space-y-4 px-2">
+      <div class="flex flex-col">
+       
         <Field
           v-model="formData.name"
           type="text"
           name="name"
-          :rules="validateName"
           placeholder="Enter star's name"
           class="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           :class="selectClass"
