@@ -14,6 +14,7 @@ const {
   totalPrice,
   ticketQuantity,
   selectedSchedule,
+  isloading,
 } = useTicket();
 const { formatScheduleDateTime } = useFormatSchedule();
 const { selectClass } = useThemeColor();
@@ -251,32 +252,33 @@ onMounted(async () => {
           <div v-if="islengthGreater">
             <button
               type="submit"
-              class="flex items-center gap-2 px-10 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              class="flex items-cente px-10 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             >
-              <!-- Ticket Icon -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M4.44 2.44A1.5 1.5 0 013.5 4a1.5 1.5 0 101.06 1.06A1.5 1.5 0 015.5 7a1.5 1.5 0 001.06-1.06A1.5 1.5 0 108 4a1.5 1.5 0 00-1.06-1.06A1.5 1.5 0 005.5 2a1.5 1.5 0 00-1.06.44zM4 11a1 1 0 011-1h10a1 1 0 011 1v3.44a1 1 0 00-.29.71 1 1 0 01-2 0 1 1 0 00-2 0 1 1 0 01-2 0 1 1 0 00-2 0 1 1 0 01-2 0 1 1 0 00-2 0v-.44z"
-                />
-              </svg>
-              <!-- Button Text -->
-              <span>Pay</span>
-              <!-- Shopping Cart Icon -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-5 w-5"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  d="M16 11V6a2 2 0 00-2-2H6a2 2 0 00-2 2v5H3a1 1 0 000 2h1v3a2 2 0 002 2h8a2 2 0 002-2v-3h1a1 1 0 100-2h-1zm-2-5v5H6V6h8z"
-                />
-              </svg>
+              <span v-if="isloading" class="flex items-center justify-center">
+                <svg
+                  class="animate-spin h-5 w-5 mr-2 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                  ></circle>
+                  <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  ></path>
+                </svg>
+                please wait...
+              </span>
+              <span v-else>Pay</span>
             </button>
           </div>
         </Form>

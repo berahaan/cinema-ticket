@@ -20,7 +20,7 @@ export const useFetchMovies = () => {
   const genreQuery = ref("");
   const scheduleQuery = ref("");
   const currentPage = ref(1);
-  const limit = 3;
+  const limit = 4;
   const totalPages = ref(1);
   const offset = computed(() => (currentPage.value - 1) * limit);
   const goToNextPage = () => {

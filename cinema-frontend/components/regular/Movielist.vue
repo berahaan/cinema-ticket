@@ -12,12 +12,13 @@ const {
   genreQuery,
   directorQuery,
   goToNextPage,
+  isloading,
   scheduleQuery,
   goToPreviousPage,
   currentPage,
   noMoviesFound,
 } = useFetchMovies();
-const { isloading, scheduleOptions } = useMovies();
+const { scheduleOptions } = useMovies();
 const { formatScheduleDateTime } = useFormatSchedule();
 const { fetchGenres, genres } = useFetchGenres();
 const { fetchDirectors, directors } = useFetchDirector();
@@ -253,10 +254,7 @@ onMounted(async () => {
               </div>
 
               <div class="md:w-1/2">
-                <div
-                  class="mt-4 p-4 bg-gray-100 rounded-lg shadow-sm"
-                  :class="selectClass"
-                >
+                <div class="mt-4 p-4 rounded-lg shadow-sm" :class="selectClass">
                   <h4
                     class="flex items-center font-semibold text-blue-800 text-lg mb-2"
                     :class="selectClass"
@@ -278,7 +276,7 @@ onMounted(async () => {
                       </span>
                     </li>
                   </ul>
-                  <div class="mt-3">
+                  <div>
                     <!-- Only show the current user's rating -->
                     <ul v-if="getCurrentUserRating(movie)">
                       <li
@@ -298,7 +296,7 @@ onMounted(async () => {
                   </div>
                 </div>
 
-                <div class="mt-4">
+                <div>
                   <h4
                     class="flex items-center font-semibold text-blue-800 text-lg mb-2 mx-3"
                     :class="selectClass"
@@ -316,12 +314,6 @@ onMounted(async () => {
                     </li>
                   </ul>
                 </div>
-                <button
-                  @click="openRatingModal(movie.movie_id)"
-                  class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
-                >
-                  Rate
-                </button>
 
                 <div
                   v-if="isModal && currentMovieId === movie.movie_id"
@@ -407,8 +399,14 @@ onMounted(async () => {
                     </li>
                   </ul>
                   <button
+                    @click="openRatingModal(movie.movie_id)"
+                    class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
+                  >
+                    Rate
+                  </button>
+                  <button
                     @click="buyTicket(movie.movie_id)"
-                   class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
+                    class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
                   >
                     Buy Ticket
                   </button>
@@ -469,42 +467,38 @@ onMounted(async () => {
           </div>
         </div>
         <div
-  class="pagination-controls py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
-  v-if="movie.totalPages"
->
-  <!-- Previous Button -->
-  <button
-    @click="goToPreviousPage"
-    :disabled="currentPage === 1"
-    class="flex items-center px-4 py-2 rounded-md shadow-md transition-all 
-      bg-teal-500 text-white font-medium hover:bg-teal-600 
-      disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-  >
-    <ArrowLeftIcon class="h-5 w-5 mr-2" />
-    Previous
-  </button>
+          class="pagination-controls py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
+          v-if="movie.totalPages"
+        >
+          <!-- Previous Button -->
+          <button
+            @click="goToPreviousPage"
+            :disabled="currentPage === 1"
+            class="flex items-center px-4 py-2 rounded-md shadow-md transition-all bg-teal-500 text-white font-medium hover:bg-teal-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+          >
+            <ArrowLeftIcon class="h-5 w-5 mr-2" />
+            Previous
+          </button>
 
-  <!-- Pagination Info -->
-  <span class="font-semibold ":class="selectClass">
-    {{
-      noMoviesFound
-        ? "Page 1 of total 1"
-        : `Page ${currentPage} of ${movie.totalPages}`
-    }}
-  </span>
+          <!-- Pagination Info -->
+          <span class="font-semibold" :class="selectClass">
+            {{
+              noMoviesFound
+                ? "Page 1 of total 1"
+                : `Page ${currentPage} of ${movie.totalPages}`
+            }}
+          </span>
 
-  <!-- Next Button -->
-  <button
-    @click="goToNextPage"
-    :disabled="currentPage === movie.totalPages || noMoviesFound"
-    class="flex items-center px-4 py-2 rounded-md shadow-md transition-all 
-      bg-teal-500 text-white font-medium hover:bg-teal-600 
-      disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
-  >
-    Next
-    <ArrowRightIcon class="h-5 w-5 ml-2" />
-  </button>
-</div>
+          <!-- Next Button -->
+          <button
+            @click="goToNextPage"
+            :disabled="currentPage === movie.totalPages || noMoviesFound"
+            class="flex items-center px-4 py-2 rounded-md shadow-md transition-all bg-teal-500 text-white font-medium hover:bg-teal-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
+          >
+            Next
+            <ArrowRightIcon class="h-5 w-5 ml-2" />
+          </button>
+        </div>
       </template>
     </div>
   </div>

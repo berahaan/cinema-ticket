@@ -92,7 +92,7 @@ body.text-black {
 
 <template>
   <header
-    class="w-full flex fixed top-0 right-2 left-0 z-10 items-center justify-between p-4"
+    class="w-full flex fixed top-0 right-2 left-0 z-10 items-center justify-between p-2 border-b"
     :class="colorModeClasses"
   >
     <button @click="toggleMobileMenu" class="md:hidden mr-2">
@@ -111,7 +111,7 @@ body.text-black {
       </nuxt-link>
     </div>
 
-    <nav class="hidden md:flex items-center space-x-8 relative">
+    <nav class="hidden md:flex items-center relative font-medium space-x-2">
       <div class="group relative cursor-pointer py-2">
         <div class="flex items-center justify-between">
           <a
@@ -157,9 +157,6 @@ body.text-black {
           </nuxt-link>
         </div>
       </div>
-      <!-- to="/admin/MovieSchedule" -->
-      <!-- to="/admin/Schedules" -->
-      <!-- 📅 Schedule -->
 
       <div class="group relative cursor-pointer py-2">
         <div class="flex items-center justify-between">

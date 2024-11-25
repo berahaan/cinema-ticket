@@ -33,7 +33,7 @@ onMounted(async () => {
         :class="selectClass"
       />
 
-      <button @click="refreshPage(fetchMovies)" class="ml-4 mb-8 mt-16">
+      <button @click="refreshPage(fetchMovies)" class="ml-4 mb-8 mt-20">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
@@ -69,7 +69,7 @@ onMounted(async () => {
         >
           <!--  -->
           <div class="p-6">
-            <h3 class="text-xl mb-4 font-bold" :class="selectClass">
+            <h3 class="text-xl mb-4">
               {{ movie.title }}
             </h3>
             <div class="flex">

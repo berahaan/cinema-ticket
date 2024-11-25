@@ -115,13 +115,6 @@ onMounted(() => {
 
 <template>
   <div class="text-gray-200 py-10 mt-6">
-    <button
-      @click="goBack"
-      class="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium py-2 px-4 rounded-md transition duration-200 mx-10 fixed left-2 top-30"
-    >
-      <ArrowLeftIcon class="h-5 w-5" />
-      <span>Go Back</span>
-    </button>
     <div class="mt-6"></div>
     <div
       class="max-w-4xl mx-auto p-8 rounded-lg shadow-lg border border-gray-600"
@@ -130,18 +123,27 @@ onMounted(() => {
         <h1 class="text-3xl font-bold mb-8 text-indigo-400">
           Edit Movie Details
         </h1>
-        <button @click="refreshPage(fetchMovies)" class="ml-4 mb-8">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-            viewBox="0 0 24 24"
-            fill="currentColor"
+        <div class="flex">
+          <button @click="refreshPage(fetchMovies)" class="ml-4 mb-8 mx-10">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path
+                d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
+              />
+            </svg>
+          </button>
+          <button
+            @click="goBack"
+            class="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium py-2 px-4 rounded-md transition duration-200 mb-10"
           >
-            <path
-              d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-            />
-          </svg>
-        </button>
+            <ArrowLeftIcon class="h-5 w-5" />
+            <span>Go Back</span>
+          </button>
+        </div>
       </div>
       <div v-if="loading" class="flex justify-center items-center">
         <svg

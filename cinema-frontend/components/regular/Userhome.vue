@@ -67,20 +67,28 @@ watch(
         </h1>
       </div>
 
-      <!-- Desktop Navigation -->
       <nav class="hidden md:flex space-x-8 text-sm font-medium">
         <ul class="flex items-center space-x-6">
-          <li class="flex items-center space-x-2 hover:text-blue-500 transition">
-            
+          <li
+            class="flex items-center space-x-2 hover:text-blue-500 transition"
+          >
             <nuxt-link to="/user" class="hover:underline">Home</nuxt-link>
           </li>
-          <li class="flex items-center space-x-2 hover:text-blue-500 transition">
+          <li
+            class="flex items-center space-x-2 hover:text-blue-500 transition"
+          >
             <FilmIcon class="w-5 h-5" />
-            <nuxt-link to="/user/Movielist" class="hover:underline">Movielist</nuxt-link>
+            <nuxt-link to="/user/Movielist" class="hover:underline"
+              >Movielist</nuxt-link
+            >
           </li>
-          <li class="flex items-center space-x-2 hover:text-blue-500 transition">
+          <li
+            class="flex items-center space-x-2 hover:text-blue-500 transition"
+          >
             <BookmarkIcon class="w-5 h-5" />
-            <nuxt-link to="/user/Bookmark" class="hover:underline">Bookmark</nuxt-link>
+            <nuxt-link to="/user/Bookmark" class="hover:underline"
+              >Bookmark</nuxt-link
+            >
           </li>
           <li>
             <button
@@ -117,23 +125,22 @@ watch(
       <transition name="fade">
         <div
           v-if="isMobileMenuOpen"
-           :class="colorModeClasses"
-          class="absolute top-16 left-0 w-full   md:hidden z-30 shadow-lg"
+          :class="colorModeClasses"
+          class="absolute top-16 left-0 w-full md:hidden z-30 shadow-lg"
         >
           <ul class="flex flex-col items-center space-y-6 py-6">
             <li>
-              <nuxt-link to="/user/Movielist" class="hover:text-blue-400">Movielist</nuxt-link>
-            </li>
-            <li>
-              <nuxt-link to="/user/Bookmark" class="hover:text-blue-400">Bookmark</nuxt-link>
-            </li>
-            <li>
-              <button
-                @click="Logout"
-                class="hover:text-red-400"
+              <nuxt-link to="/user/Movielist" class="hover:text-blue-400"
+                >Movielist</nuxt-link
               >
-                Logout
-              </button>
+            </li>
+            <li>
+              <nuxt-link to="/user/Bookmark" class="hover:text-blue-400"
+                >Bookmark</nuxt-link
+              >
+            </li>
+            <li>
+              <button @click="Logout" class="hover:text-red-400">Logout</button>
             </li>
           </ul>
         </div>

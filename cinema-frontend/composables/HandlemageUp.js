@@ -22,9 +22,9 @@ export function HandleImageUpload() {
             otherImages,
           },
         });
+
         if (response && response.data) {
-          console.log("updated successfully:", response.data);
-          toast.success("both images uploaded successfully", {
+          toast.success(response.data.fileUpload.message, {
             position: "top-center",
             duration: 2000,
           });
@@ -66,8 +66,6 @@ export function HandleImageUpload() {
         );
       }
     } else if (featuredImage == null && otherImages != null) {
-      alert("Here other images is only is going to be uploaded.....");
-      console.log("Other images to be sent to golang ", otherImages);
       const responseOther = await $apollo.mutate({
         mutation: INSERT_IMAGE,
         variables: {

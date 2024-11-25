@@ -53,7 +53,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="mt-6">
+  <div class="mt-16">
     <h2 class="text-2xl font-bold mb-6 text-center">Movies List</h2>
 
     <div

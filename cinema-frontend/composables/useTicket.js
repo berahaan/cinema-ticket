@@ -13,6 +13,7 @@ export const useTicket = () => {
   const movieId = parseInt(route.params.id, 10);
   const scheduleId = ref(null);
   const movie = ref({});
+  const isloading = ref(false);
   const selectedSchedule = ref(null);
   const ticketQuantity = ref(1);
   const islengthGreater = ref(false);
@@ -78,13 +79,8 @@ export const useTicket = () => {
     }
   };
   const purchaseTickets = async (form) => {
-    console.log("Sending ticket info now ....", form.value);
-    console.log(
-      "Movie id to be sent ",
-      movieId,
-      "And schedule id to be sent here ",
-      scheduleId.value
-    );
+    isloading.value = true;
+
     const Input = {
       TicketQuantity: ticketQuantity.value,
       movieId: movieId,
@@ -102,7 +98,6 @@ export const useTicket = () => {
         mutation: SEND_TICKET,
         variables: Input,
       });
-
       const accessUrl = data.initiatePayment.access_url;
       window.location.href = accessUrl;
     } catch (error) {
@@ -120,6 +115,8 @@ export const useTicket = () => {
           }
         );
       }
+    } finally {
+      isloading.value = false;
     }
   };
 
@@ -131,6 +128,7 @@ export const useTicket = () => {
     islengthGreater,
     form,
     buyTicket,
+    isloading,
     movieId,
     fetchUserName,
     purchaseTickets,

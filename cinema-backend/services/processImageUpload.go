@@ -57,7 +57,7 @@ func HandleOtherImagesUpload(otherImagesBase64 []string) ([]string, error) {
 func BuildUploadResponse(featuredImageURL string, otherImageURLs []string) map[string]interface{} {
 	var message string
 	if featuredImageURL != "" && len(otherImageURLs) > 0 {
-		message = "Featured and other images uploaded successfully"
+		message = "Feature and other images uploaded successfully"
 	} else if featuredImageURL != "" {
 		message = "Featured image uploaded successfully"
 	} else {
