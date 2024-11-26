@@ -1,10 +1,11 @@
 <template>
-  <Movielist />
+  <Thankyou />
 </template>
+
 <script setup>
 definePageMeta({
   middleware: "auth",
   layout: "user",
 });
-import Movielist from "~/components/user/Movielist.vue";
+import Thankyou from "~/components/Paymentdetail.vue";
 </script>

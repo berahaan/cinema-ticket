@@ -45,7 +45,10 @@ export const GET_MOVIE_BYDIRECTOR = gql`
       ticket_price
     }
   }
-  movies_aggregate {
+  movies_aggregate (
+    where: {_and: {director: {name: {_eq: $director}}}}
+  )
+  {
     aggregate {
       count
     }

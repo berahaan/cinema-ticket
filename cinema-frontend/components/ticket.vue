@@ -2,7 +2,7 @@
 import { onMounted } from "vue";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
-import { ArrowLeftIcon } from "@heroicons/vue/solid";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/vue/solid";
 const { goBack } = useGobackArrow();
 const {
   movie,
@@ -248,11 +248,10 @@ onMounted(async () => {
           <div class="ticket-price text-lg font-semibold" :class="selectClass">
             Total Price: <span :class="selectClass">{{ totalPrice }}</span> birr
           </div>
-
           <div v-if="islengthGreater">
             <button
               type="submit"
-              class="flex items-cente px-10 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              class="flex items-center px-10 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
             >
               <span v-if="isloading" class="flex items-center justify-center">
                 <svg
@@ -278,7 +277,11 @@ onMounted(async () => {
                 </svg>
                 please wait...
               </span>
-              <span v-else>Pay</span>
+              <span
+                v-else
+                class="flex items-center rounded-md shadow-md transition-all text-white font-medium hover:bg-teal-600"
+                >Pay <ArrowRightIcon class="h-5 w-5 ml-2"
+              /></span>
             </button>
           </div>
         </Form>

@@ -57,10 +57,10 @@ watch(
     :class="colorModeClasses"
   >
     <div class="container mx-auto flex justify-between items-center px-4">
-      <!-- Brand Section -->
       <div class="flex items-center space-x-3">
         <nuxt-link to="/profile" class="flex items-center">
           <UserIcon class="w-7 h-7 text-blue-500" />
+          Profile
         </nuxt-link>
         <h1 class="text-xl md:text-2xl font-bold tracking-wide">
           Cinema Ticket

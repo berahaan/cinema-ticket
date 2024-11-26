@@ -3,5 +3,5 @@
 definePageMeta({
   middleware: "auth",
 });
-import Userhome from "~/components/regular/Userhome.vue";
+import Userhome from "~/components/user/Userhome.vue";
 </script>

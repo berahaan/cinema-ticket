@@ -1,7 +1,11 @@
 <script setup>
 import { onMounted } from "vue";
 import { jwtDecode } from "jwt-decode";
-import { StarIcon as StarSolid } from "@heroicons/vue/solid";
+import {
+  StarIcon as StarSolid,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+} from "@heroicons/vue/solid";
 import { StarIcon as StarOutline } from "@heroicons/vue/outline";
 import Loading from "../admin/Loading.vue";
 let userId = null;
@@ -49,7 +53,6 @@ if (import.meta.client) {
   if (token) {
     const decodedToken = jwtDecode(token);
     userId = decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-    console.log("User ID:", userId);
   }
 }
 // Function to get the current user's rating for a specific movie
@@ -71,13 +74,28 @@ onMounted(async () => {
 <template>
   <div class="w-full mx-auto mt-10">
     <div class="flex justify-center fixed top-28 right-2 left-2 mb-60">
-      <input
-        type="text"
-        v-model="searchQuery"
-        placeholder="Search by title..."
-        class="border p-3 rounded w-full md:w-1/2 text-gray-600 outline-none focus:ring-2 focus:ring-blue-500 transition mb-4"
-        :class="selectClass"
-      />
+      <div class="relative">
+        <input
+          type="text"
+          v-model="searchQuery"
+          placeholder="Search by title..."
+          class="border p-2 pl-8 pr-2 rounded w-full text-gray-600 outline-none focus:ring-2 focus:ring-blue-500 transition mb-4"
+          :class="selectClass"
+        />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="w-5 h-5 absolute left-2 top-1/3 transform -translate-y-1/2 text-gray-600"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      </div>
       <select
         v-model="genreQuery"
         id="genre"
@@ -123,7 +141,7 @@ onMounted(async () => {
           {{ option }}
         </option>
       </select>
-      <button @click="refreshPage(fetchMovies)" class="ml-4 mb-8">
+      <button @click="refreshPage(fetchMovies)" class="ml-4 mb-8 mt-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
@@ -400,13 +418,13 @@ onMounted(async () => {
                   </ul>
                   <button
                     @click="openRatingModal(movie.movie_id)"
-                    class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
+                    class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6 mt-2"
                   >
                     Rate
                   </button>
                   <button
                     @click="buyTicket(movie.movie_id)"
-                    class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
+                    class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6 mt-2"
                   >
                     Buy Ticket
                   </button>
@@ -470,16 +488,13 @@ onMounted(async () => {
           class="pagination-controls py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
           v-if="movie.totalPages"
         >
-          <!-- Previous Button -->
           <button
             @click="goToPreviousPage"
             :disabled="currentPage === 1"
             class="flex items-center px-4 py-2 rounded-md shadow-md transition-all bg-teal-500 text-white font-medium hover:bg-teal-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
             <ArrowLeftIcon class="h-5 w-5 mr-2" />
-            Previous
           </button>
-
           <!-- Pagination Info -->
           <span class="font-semibold" :class="selectClass">
             {{
@@ -495,7 +510,6 @@ onMounted(async () => {
             :disabled="currentPage === movie.totalPages || noMoviesFound"
             class="flex items-center px-4 py-2 rounded-md shadow-md transition-all bg-teal-500 text-white font-medium hover:bg-teal-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
-            Next
             <ArrowRightIcon class="h-5 w-5 ml-2" />
           </button>
         </div>

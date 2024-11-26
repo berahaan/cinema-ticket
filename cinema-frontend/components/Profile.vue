@@ -7,7 +7,7 @@ import { ArrowLeftIcon } from "@heroicons/vue/solid";
 import { GET_USERINFO } from "./graphql/queries/GET_USERINFO.graphql";
 import { GET_EMAIL } from "./graphql/queries/GET_EMAIL.graphql";
 import { UPDATE_USERINFO } from "./graphql/mutations/UPDATE_USERINFO.graphql";
-const currentEmail =ref("")
+const currentEmail = ref("");
 const { goBack } = useGobackArrow();
 const { selectClass } = useThemeColor();
 const { removeBookmarks, getBookmarks, getBookmarkDetail, bookmarks } =
@@ -48,7 +48,7 @@ const CheckEmailExist = async (email) => {
     return data.users.length > 0; // Return true if email exists, false otherwise
   } catch (error) {
     console.error("Error checking email existence:", error);
-    return false; // Handle gracefully by assuming email does not exist
+    return false;
   }
 };
 
@@ -56,11 +56,11 @@ const saveProfile = async () => {
   const decodedToken = jwtDecode(localStorage.getItem("accessToken"));
   const userId =
     decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-  
+
   // If email has changed, validate it
   if (formData.value.email && formData.value.email !== currentEmail.value) {
     console.log("Email has changed, checking availability...");
-    
+
     const emailExists = await CheckEmailExist(formData.value.email);
 
     if (emailExists) {
@@ -84,8 +84,6 @@ const saveProfile = async () => {
     // Upload profile image if required
     await uploadProfile(profileImage64);
     const { featuredImageURL } = useImageStore();
-
-    // Update user information in the database
     const UpdateResponse = await $apollo.mutate({
       mutation: UPDATE_USERINFO,
       variables: {
@@ -97,19 +95,19 @@ const saveProfile = async () => {
       },
       refetchQueries: [{ query: GET_USERINFO }],
     });
-   
+
     console.log("Profile updated successfully:", UpdateResponse.data);
     toast.success("Profile updated successfully!", {
       position: "top-center",
       duration: 2000,
     });
 
-    formData.value={
-      firstname:"",
-      lastname:"",
-      email:"",
-      profilePicture:""
-    }
+    formData.value = {
+      firstname: "",
+      lastname: "",
+      email: "",
+      profilePicture: "",
+    };
   } catch (error) {
     console.error("Error updating profile:", error);
     toast.error("Failed to update profile. Please try again.", {
@@ -118,7 +116,6 @@ const saveProfile = async () => {
     });
   }
 };
-
 
 const fetchUserInfo = async () => {
   const decodedToken = jwtDecode(localStorage.getItem("accessToken"));
@@ -129,18 +126,17 @@ const fetchUserInfo = async () => {
     const response = await $apollo.query({
       query: GET_USERINFO,
       variables: { userId: userId },
-      fetchpolicy:"network-only"
-
+      fetchpolicy: "network-only",
     });
     userinfo.value = response.data.users[0];
     formData.value = {
       firstname: userinfo.value.firstname || "",
       lastname: userinfo.value.lastname || "",
-      email:userinfo.value.email,
+      email: userinfo.value.email,
       role: userinfo.value.role || "",
       profilePicture: userinfo.value.profile_picture,
     };
-    currentEmail.value =userinfo.value.email
+    currentEmail.value = userinfo.value.email;
     currentProfile.value = userinfo.value.profile_picture;
   } catch (error) {
     console.error("Error fetching user info:", error);

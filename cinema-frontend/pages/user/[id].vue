@@ -1,3 +1,76 @@
+<script setup>
+definePageMeta({
+  layout: "user",
+});
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import { useNuxtApp } from "#app";
+import gql from "graphql-tag";
+// Apollo instance
+const { $apollo } = useNuxtApp();
+const GET_MOVIE_DETAILS = gql`
+  query GetMovieDetails($movieId: Int!) {
+    movies(where: { movie_id: { _eq: $movieId } }) {
+      movie_id
+      title
+      description
+      duration
+      featured_images
+      average_rating {
+        average_rating
+      }
+      movie_genres {
+        genre {
+          name
+        }
+      }
+      movie_stars {
+        star {
+          name
+        }
+      }
+      director {
+        name
+      }
+      movie_schedules {
+        start_time
+        end_time
+        schedule_date
+        cinema_hall
+        ticket_price
+      }
+    }
+  }
+`;
+
+const route = useRoute();
+const movieId = parseInt(route.params.id, 10);
+const movie = ref({});
+const loading = ref(false);
+const error = ref(null);
+
+// Fetch movie details
+async function fetchMovieDetails(movieId) {
+  loading.value = true;
+  try {
+    const { data } = await $apollo.query({
+      query: GET_MOVIE_DETAILS,
+      variables: { movieId },
+    });
+    movie.value = data.movies[0];
+  } catch (err) {
+    error.value = err;
+  } finally {
+    loading.value = false;
+  }
+}
+
+// Fetch details when component is mounted
+onMounted(() => {
+  fetchMovieDetails(movieId);
+});
+</script>
+
 <template>
   <div class="min-h-screen w-full mt-16">
     <div v-if="loading" class="text-center py-10">Loading movie details...</div>
@@ -92,79 +165,3 @@
     </div>
   </div>
 </template>
-
-<script setup>
-definePageMeta({
-  layout: "user",
-});
-import { ref, onMounted } from "vue";
-import { useRoute } from "vue-router";
-import { useNuxtApp } from "#app";
-import gql from "graphql-tag";
-
-// Apollo instance
-const { $apollo } = useNuxtApp();
-
-// Query to fetch movie details
-const GET_MOVIE_DETAILS = gql`
-  query GetMovieDetails($movieId: Int!) {
-    movies(where: { movie_id: { _eq: $movieId } }) {
-      movie_id
-      title
-      description
-      duration
-      featured_images
-      average_rating {
-        average_rating
-      }
-      movie_genres {
-        genre {
-          name
-        }
-      }
-      movie_stars {
-        star {
-          name
-        }
-      }
-      director {
-        name
-      }
-      movie_schedules {
-        start_time
-        end_time
-        schedule_date
-        cinema_hall
-        ticket_price
-      }
-    }
-  }
-`;
-
-const route = useRoute();
-const movieId = parseInt(route.params.id, 10);
-const movie = ref({});
-const loading = ref(false);
-const error = ref(null);
-
-// Fetch movie details
-async function fetchMovieDetails(movieId) {
-  loading.value = true;
-  try {
-    const { data } = await $apollo.query({
-      query: GET_MOVIE_DETAILS,
-      variables: { movieId },
-    });
-    movie.value = data.movies[0];
-  } catch (err) {
-    error.value = err;
-  } finally {
-    loading.value = false;
-  }
-}
-
-// Fetch details when component is mounted
-onMounted(() => {
-  fetchMovieDetails(movieId);
-});
-</script>

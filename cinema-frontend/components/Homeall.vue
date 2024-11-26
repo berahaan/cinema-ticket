@@ -46,7 +46,7 @@ const moveToMovielist =()=>{
         }
       }
       else{
-        router.push("/login")
+        router.push("/auth/login")
       }
   
 }

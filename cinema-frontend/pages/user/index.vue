@@ -1,12 +1,12 @@
 <template>
   <!-- <Movielist /> -->
-   <Home/>
+  <Home />
 </template>
 <script setup>
 definePageMeta({
-  middleware:'auth',
+  middleware: "auth",
   layout: "user",
 });
 // import Movielist from "~/components/regular/Movielist.vue";
-import Home from '~/components/regular/Home.vue';
+import Home from "~/components/user/Home.vue";
 </script>

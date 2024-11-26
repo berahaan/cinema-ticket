@@ -18,7 +18,6 @@ const password = ref("");
 const confirmPassword = ref("");
 const errorMessage = ref("");
 const showPassword = ref(false);
-
 const togglePassword = () => {
   showPassword.value = !showPassword.value;
 };
@@ -49,7 +48,7 @@ const signupValidationSchema = Yup.object({
 
 const signup = async () => {
   loading.value = true;
-  errorMessage.value = ""; 
+  errorMessage.value = "";
 
   const payload = {
     firstname: firstname.value,
@@ -74,7 +73,7 @@ const signup = async () => {
       });
       setTimeout(() => {
         loading.value = false;
-        router.push("/login");
+        router.push("/auth/login");
       }, 2000);
     } else {
       errorMessage.value = mess;
@@ -102,15 +101,20 @@ input::placeholder {
 </style>
 
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-100 py-10">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-100 to-purple-100 py-10"
+  >
     <div class="bg-white shadow-xl rounded-lg p-8 max-w-lg w-full">
       <!-- Header Section -->
       <h2 class="text-4xl font-extrabold text-center mb-4 text-gray-800">
         Join Us Today!
       </h2>
       <p class="text-center text-lg text-gray-600 mb-8">
-        Unlock exclusive features and take your movie experience to the next level. <br />
-        <span class="font-semibold text-purple-600">It's free and takes less than a minute!</span>
+        Unlock exclusive features and take your movie experience to the next
+        level. <br />
+        <span class="font-semibold text-purple-600"
+          >It's free and takes less than a minute!</span
+        >
       </p>
 
       <!-- Form Section -->
@@ -130,7 +134,6 @@ input::placeholder {
           <Field
             name="firstname"
             type="text"
-            :rules="validateFirstname"
             v-model="firstname"
             placeholder="Enter your first name"
             class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
@@ -148,7 +151,6 @@ input::placeholder {
           <Field
             name="lastname"
             type="text"
-            :rules="validateLastname"
             v-model="lastname"
             placeholder="Enter your last name"
             class="mt-1 block w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
@@ -164,7 +166,6 @@ input::placeholder {
           <Field
             name="email"
             type="email"
-            :rules="validateEmail"
             v-model="email"
             placeholder="Enter your email"
             class="mt-1 block w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
@@ -185,7 +186,6 @@ input::placeholder {
             id="password"
             autocomplete="new-password"
             :type="showPassword ? 'text' : 'password'"
-            :rules="validatePassword"
             v-model="password"
             placeholder="Create a strong password"
             class="mt-1 block w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
@@ -211,7 +211,6 @@ input::placeholder {
             id="confirmPassword"
             name="confirmPassword"
             :type="'password'"
-            :rules="validateConfirmPassword"
             v-model="confirmPassword"
             placeholder="Confirm your password"
             class="mt-1 block w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
@@ -265,7 +264,7 @@ input::placeholder {
         <p class="text-sm text-gray-600">
           Already have an account?
           <NuxtLink
-            to="/login"
+            to="/auth/login"
             class="text-indigo-600 font-semibold hover:underline transition duration-150"
             >Login</NuxtLink
           >
@@ -274,4 +273,3 @@ input::placeholder {
     </div>
   </div>
 </template>
-

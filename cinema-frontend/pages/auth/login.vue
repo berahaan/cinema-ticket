@@ -5,5 +5,5 @@
 definePageMeta({
   layout: "homepage",
 });
-import login from "~/components/loginSigup/login.vue";
+import login from "~/components/auth/login.vue";
 </script>

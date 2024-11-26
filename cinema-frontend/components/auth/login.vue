@@ -188,7 +188,7 @@ const login = async () => {
           <p class="text-sm text-gray-500">
             Don't have an account?
             <nuxt-link
-              to="/signup"
+              to="/auth/signup"
               class="ml-1 text-sm font-bold text-teal-500 hover:text-teal-600 transition-colors duration-200"
             >
               Sign Up

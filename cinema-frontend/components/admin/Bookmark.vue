@@ -15,7 +15,7 @@ onMounted(async () => {
 </script>
 <template>
   <div class="container mx-auto p-6 rounded-lg shadow-lg">
-    <h2 class="text-3xl mb-6 text-center" :class="selectClass">
+    <h2 class="text-3xl mb-6 text-center text-teal-400">
       Your Bookmarked Movies
     </h2>
     <button
@@ -28,7 +28,7 @@ onMounted(async () => {
     <div v-if="loading" class="text-center">
       <Loading />
     </div>
-    <div v-if="isBookmarkExist" class="text-center" :class="selectClass">
+    <div v-if="isBookmarkExist" class="text-center">
       Unfortunately, no bookmarks found at the moment.
     </div>
 
@@ -120,7 +120,7 @@ onMounted(async () => {
           <!-- Remove Bookmark Button -->
           <button
             @click="removeBookmarks(bookmark.movie_id)"
-            class="mt-4 w-full bg-red-500 text-white px-4 py-2 rounded-full transition hover:bg-red-600 focus:outline-none"
+            class="px-4 py-2 bg-red-600 dark:bg-red-800 text-white rounded-lg mx-6"
           >
             Remove Movie
           </button>
