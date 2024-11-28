@@ -75,10 +75,7 @@ const saveProfile = async () => {
   } else {
     console.log("Email is unchanged.");
   }
-
   console.log("Proceeding to save profile...");
-  console.log("Profile saved:", formData.value);
-
   const { profileImage64 } = useProfileImageBase64Store();
   try {
     // Upload profile image if required

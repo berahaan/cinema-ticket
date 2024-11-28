@@ -1,64 +1,71 @@
 import { gql } from '@apollo/client/core';
 export const GET_MOVIES = gql`
   query GetMovies(
-  $limit: Int!
-  $offset: Int!
-  $title: String
+    $limit: Int!
+    $offset: Int!
  
-) {
-  movies(
-    order_by: { movie_id: desc }
-    limit: $limit
-    offset: $offset
-
   ) {
-    average_rating {
-      average_rating
+    movies(
+      order_by: { movie_id: desc }
+      limit: $limit
+      offset: $offset
+    
+    ) {
+      average_rating {
+        average_rating
+        movie_id
+      }
       movie_id
-    }
-    movie_id
-    title
-    description
-    duration
-    featured_images
-    movie_images {
-      other_images
-    }
-    movie_genres {
-      genre {
+      title
+      description
+      duration
+      featured_images
+      movie_images {
+        other_images
+      }
+      movie_genres {
+        genre {
+          name
+        }
+      }
+      movie_stars {
+        star {
+          name
+        }
+      }
+      director {
         name
       }
-    }
-    movie_stars {
-      star {
-        name
+      movie_schedules {
+        start_time
+        end_time
+        schedule_date
+        cinema_hall
+        ticket_price
+      }
+      rate_movies {
+        user_id
+        movie_id
+        rating
+      }
+      bookmarks {
+        movie_id
+        user_id
+        bookmark_id
+      }
+      tickets_aggregate {
+        aggregate {
+          sum {
+            ticket_quantity
+          }
+        }
       }
     }
-    director {
-      name
-    }
-    movie_schedules {
-      start_time
-      end_time
-      schedule_date
-      cinema_hall
-      ticket_price
-    }
-     rate_movies {
-      user_id
-      movie_id
-      rating
-    }
-     bookmarks {
-      movie_id
-      user_id
-      bookmark_id
+
+    movies_aggregate {
+      aggregate {
+        count
+      }
     }
   }
-  movies_aggregate {
-    aggregate {
-      count
-    }
-  }
-}
 `;

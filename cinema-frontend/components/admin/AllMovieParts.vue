@@ -1,11 +1,17 @@
 <script setup>
 import { onMounted } from "vue";
 import { jwtDecode } from "jwt-decode";
-import { StarIcon as StarSolid } from "@heroicons/vue/solid";
+import {
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  StarIcon as StarSolid,
+} from "@heroicons/vue/solid";
 import { StarIcon as StarOutline } from "@heroicons/vue/outline";
 import Loading from "./Loading.vue";
 let userId = null;
 const colorStore = useColorModeStore();
+const { formatScheduleDateTime, isScheduleExpired, isvalid } =
+  useFormatSchedule();
 const movie = useMoviesStore();
 const {
   fetchMovies,
@@ -27,7 +33,6 @@ const {
   UpdateMovie,
   scheduleOptions,
 } = useMovies();
-const { formatScheduleDateTime } = useFormatSchedule();
 const { fetchGenres, genres } = useFetchGenres();
 const { fetchDirectors, directors } = useFetchDirector();
 const { refreshPage } = useRefresh();
@@ -190,6 +195,7 @@ onMounted(async () => {
               <h3 class="text-4xl mb-4 font-bold" :class="selectClass">
                 {{ movie.title }}
               </h3>
+
               <div class="relative inline-flex items-center">
                 <div
                   class="relative inline-flex items-center"
@@ -259,6 +265,12 @@ onMounted(async () => {
               <p class="text-gray-600 mb-2" :class="selectClass">
                 🎬 Director:
                 <span class="font-medium">{{ movie.director.name }}</span>
+              </p>
+              <p class="font-medium">
+                Total Tickets Sold:
+                {{
+                  movie.tickets_aggregate?.aggregate?.sum?.ticket_quantity || 0
+                }}
               </p>
             </div>
 
@@ -411,7 +423,7 @@ onMounted(async () => {
                     <li
                       v-for="schedule in movie.movie_schedules"
                       :key="schedule.start_time"
-                      class="text-gray-700 rounded-lg p-3 shadow-md"
+                      class="text-gray-700 rounded-lg p-2 shadow-md"
                       :class="selectClass"
                     >
                       <p class="flex items-center">
@@ -433,12 +445,38 @@ onMounted(async () => {
                           >
                         </span>
                       </p>
+                      <span
+                        v-if="isScheduleExpired(schedule)"
+                        class="text-red-500 font-semibold mr-2"
+                        :class="selectClass"
+                      >
+                        (Expired)
+                      </span>
+
+                      <!-- Valid Schedule Label -->
+                      <span
+                        v-else
+                        class="text-green-500 font-semibold mr-2"
+                        :class="selectClass"
+                      >
+                        (Valid)
+                      </span>
                     </li>
                   </ul>
                   <div class="mt-4">
                     <button
+                      v-if="movie.movie_schedules?.length > 0 && isvalid"
                       @click="buyTicket(movie.movie_id)"
-                      class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
+                      class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6 mt-2"
+                    >
+                      Buy Ticket
+                    </button>
+
+                    <button
+                      v-else
+                      @click="buyTicket(movie.movie_id)"
+                      disabled
+                      class="px-4 py-2 bg-blue-600 disabled:bg-gray-400 dark:bg-gray-800 text-white rounded-lg mx-6 mt-2 disabled:cursor-not-allowed"
                     >
                       Buy Ticket
                     </button>
@@ -554,31 +592,29 @@ onMounted(async () => {
         </div>
 
         <div
-          class="pagination-controls bg-teal-600 py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
+          class="pagination-controls py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
           v-if="movie.totalPages"
         >
           <button
             @click="goToPreviousPage"
             :disabled="currentPage === 1"
             class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="selectClass"
           >
-            Previous
+            <ArrowLeftIcon class="w-8 h-8 flex" />
           </button>
           <span class="font-semibold">
             {{
               noMoviesFound
-                ? "Page 1 of total 1"
+                ? "Page 1 of  1"
                 : `page ${currentPage} of ${movie.totalPages}`
             }}
           </span>
           <button
             @click="goToNextPage"
             :disabled="currentPage === movie.totalPages || noMoviesFound"
-            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-            :class="selectClass"
+            class="text-teal-800 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
-            Next
+            <ArrowRightIcon class="w-8 h-8 flex" />
           </button>
         </div>
       </template>

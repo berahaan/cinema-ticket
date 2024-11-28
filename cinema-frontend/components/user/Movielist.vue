@@ -23,7 +23,7 @@ const {
   noMoviesFound,
 } = useFetchMovies();
 const { scheduleOptions } = useMovies();
-const { formatScheduleDateTime } = useFormatSchedule();
+const { formatScheduleDateTime,isScheduleExpired,isvalid} = useFormatSchedule();
 const { fetchGenres, genres } = useFetchGenres();
 const { fetchDirectors, directors } = useFetchDirector();
 const { refreshPage } = useRefresh();
@@ -64,7 +64,6 @@ const getCurrentUserRating = (movie) => {
   }
   return undefined; // If rate_movies is undefined or not an array, return undefined
 };
-
 onMounted(async () => {
   await fetchMovies();
   await fetchGenres();
@@ -168,6 +167,7 @@ onMounted(async () => {
           <p>Unfortunaely no movies is found with ur searches</p>
         </div>
         <div v-if="movie.movies.length > 0">
+          
           <div
             v-for="movie in movie.movies"
             :key="movie.movie_id"
@@ -249,6 +249,12 @@ onMounted(async () => {
               <p class="text-gray-600 mb-2" :class="selectClass">
                 🎬 Director:
                 <span class="font-medium">{{ movie.director.name }}</span>
+              </p>
+              <p class="font-medium">
+                Total Tickets Sold:
+                {{
+                  movie.tickets_aggregate?.aggregate?.sum?.ticket_quantity || 0
+                }}
               </p>
             </div>
 
@@ -390,31 +396,48 @@ onMounted(async () => {
                   </h4>
                   <ul class="space-y-2">
                     <li
-                      v-for="schedule in movie.movie_schedules"
-                      :key="schedule.start_time"
-                      class="text-gray-700 rounded-lg p-3 shadow-md"
-                      :class="selectClass"
-                    >
-                      <p class="flex items-center">
-                        <span class="font-semibold mr-2" :class="selectClass"
-                          >{{
-                            formatScheduleDateTime(
-                              schedule.schedule_date,
-                              schedule.start_time,
-                              schedule.end_time
-                            )
-                          }}
-                        </span>
-                        <span class="text-sm mr-2" :class="selectClass">
-                          | Price:
-                          <span
-                            class="font-semibold text-green-600 mr-2"
-                            :class="selectClass"
-                            >{{ schedule.ticket_price }} birr</span
-                          >
-                        </span>
-                      </p>
-                    </li>
+              v-for="schedule in movie.movie_schedules"
+               :key="schedule.start_time"
+               class="text-gray-700 rounded-lg p-3 shadow-md"
+              :class="selectClass"
+               >
+            <p class="flex items-center">
+             
+               <p :class="selectClass">
+                <span class="font-semibold mr-2" :class="selectClass">
+                {{
+                  formatScheduleDateTime(
+                    schedule.schedule_date,
+                    schedule.start_time,
+                    schedule.end_time
+                  )
+                }}
+              </span>
+              <span
+            v-if="isScheduleExpired(schedule)"
+             class="text-red-500 font-semibold mr-2"
+              :class="selectClass"
+                 >
+                (Expired)
+                     </span>
+
+      <!-- Valid Schedule Label -->
+                  <span
+                     v-else
+                     class="text-green-500 font-semibold mr-2"
+                     :class="selectClass"
+                   >
+                     (Valid)
+                   </span>
+                 <span class="text-sm mr-2" :class="selectClass">
+                   | Price:
+                   <span class="font-semibold text-green-600 mr-2" :class="selectClass">
+                     {{ schedule.ticket_price }} birr
+                   </span>
+                 </span>
+               </p>
+             </p>
+           </li>
                   </ul>
                   <button
                     @click="openRatingModal(movie.movie_id)"
@@ -422,12 +445,23 @@ onMounted(async () => {
                   >
                     Rate
                   </button>
-                  <button
-                    @click="buyTicket(movie.movie_id)"
-                    class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6 mt-2"
-                  >
-                    Buy Ticket
-                  </button>
+                  <!-- <div   v-for="schedule in movie.movie_schedules"
+                  :key="schedule.start_time">
+                </div> -->
+                 <button
+                  v-if="movie.movie_schedules?.length>0&& isvalid"
+                  @click="buyTicket(movie.movie_id)"
+                  
+                  class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6 mt-2"
+                >
+                  Buy Ticket
+                </button>
+
+                <button v-else  @click="buyTicket(movie.movie_id)"
+                  disabled
+                  class="px-4 py-2 bg-blue-600 disabled:bg-gray-400 dark:bg-gray-800 text-white rounded-lg mx-6 mt-2 disabled:cursor-not-allowed">
+                  Buy Ticket
+                </button>
                 </div>
               </div>
             </div>

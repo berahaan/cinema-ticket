@@ -154,7 +154,7 @@ export const useFetchMovies = () => {
         }
       } else {
         console.log("Fetching all movies");
-        query = GET_MOVIES; // Default query to fetch all movies
+        query = GET_MOVIES;
       }
 
       const { data } = await $apollo.query({

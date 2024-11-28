@@ -1,20 +1,17 @@
 import { ref } from "vue";
 import { useToast } from "vue-toastification";
 import { ADD_SCHEDULE } from "../components/graphql/mutations/ADD_SCHEDULE.graphql";
-import { GET_MOVIES } from "../components/graphql/queries/GET_MOVIES.graphql";
 import { useNuxtApp } from "#app";
-
+import { useRouter } from "vue-router";
 export const useAddSchedule = () => {
   const success = ref(false);
   const { $apollo } = useNuxtApp();
-
+  const router = useRouter();
   const { movies, fetchMovies } = useMoviesSchedule();
   const toast = useToast();
-  const { offset, limit, testAddmovies } = useMovies();
   const selectedMovieId = ref(null);
   const isScheduleModalOpen = ref(false);
   const isloading = ref(false);
-  const loading = ref(false);
   const test = ref(false);
   const schedule = ref({
     start_time: "",
@@ -23,10 +20,10 @@ export const useAddSchedule = () => {
     cinema_hall: "",
     ticket_price: null,
   });
-
   const openScheduleModal = (movie) => {
-    selectedMovieId.value = movie.movie_id; // S
-    isScheduleModalOpen.value = true;
+    selectedMovieId.value = movie.movie_id;
+    router.push(`/admin/Addsch/${movie.movie_id}`);
+    isScheduleModalOpen.value = false;
   };
 
   const closeScheduleModal = () => {

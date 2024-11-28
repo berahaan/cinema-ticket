@@ -4,6 +4,8 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/vue/solid";
 const { goBack } = useGobackArrow();
+const { formatScheduleDateTime, isScheduleExpired, isvalid } =
+  useFormatSchedule();
 const {
   movie,
   fetchInfo,
@@ -16,7 +18,6 @@ const {
   selectedSchedule,
   isloading,
 } = useTicket();
-const { formatScheduleDateTime } = useFormatSchedule();
 const { selectClass } = useThemeColor();
 const handleTicket = async (values) => {
   console.log("Form data information:", values);
@@ -27,6 +28,7 @@ const handleTicket = async (values) => {
   }
 };
 
+// Function to check if the schedule date/time has passed
 const validationSchema = yup.object({
   first_name: yup.string().required("First Name is required"),
   last_name: yup.string().required("Last Name is required"),
@@ -212,14 +214,30 @@ onMounted(async () => {
                 :value="schedule"
                 :class="selectClass"
               >
-                {{
-                  formatScheduleDateTime(
-                    schedule.schedule_date,
-                    schedule.start_time,
-                    schedule.end_time
-                  )
-                }}
-                (Hall: {{ schedule.cinema_hall }})
+                <span>
+                  {{
+                    formatScheduleDateTime(
+                      schedule.schedule_date,
+                      schedule.start_time,
+                      schedule.end_time
+                    )
+                  }}
+                  <span
+                    v-if="isScheduleExpired(schedule)"
+                    class="text-red-500 font-semibold mr-2"
+                    :class="selectClass"
+                  >
+                    (Expired)
+                  </span>
+                  <span
+                    v-else
+                    class="text-green-500 font-semibold mr-2"
+                    :class="selectClass"
+                  >
+                    (Valid)
+                  </span>
+                  (Hall: {{ schedule.cinema_hall }})
+                </span>
               </option>
             </Field>
             <ErrorMessage name="selectedSchedule" class="text-red-500" />
@@ -279,7 +297,7 @@ onMounted(async () => {
               </span>
               <span
                 v-else
-                class="flex items-center rounded-md shadow-md transition-all text-white font-medium hover:bg-teal-600"
+                class="flex items-center rounded-md shadow-md transition-all text-white font-medium"
                 >Pay <ArrowRightIcon class="h-5 w-5 ml-2"
               /></span>
             </button>

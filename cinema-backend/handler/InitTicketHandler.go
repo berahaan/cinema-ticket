@@ -18,14 +18,13 @@ func HandlePaymentInitiate(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid payload", http.StatusBadRequest)
 		return
 	}
-	// fmt.Println("RespBody::", string(reqBody))
+	// fmt.Println("ReqBody::", string(reqBody))
 	var actionPayload models.TicketInitializePayload
 	if err := json.Unmarshal(reqBody, &actionPayload); err != nil {
 		fmt.Println("Error during unmarshal:", err)
 		http.Error(w, "Invalid payload", http.StatusBadRequest)
 		return
 	}
-
 	// Generate tx_ref for transaction
 	txRef := services.GenerateTxRef()
 	actionPayload.Input.TextRef = txRef

@@ -19,7 +19,7 @@ const getUserName = async () => {
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) {
     console.error("No access token found.");
-    router.push("/login");
+    router.push("/auth/login");
     return;
   }
   const decodedToken = jwtDecode(accessToken);

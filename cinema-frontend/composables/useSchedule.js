@@ -8,7 +8,6 @@ export const useMoviesSchedule = () => {
   const router = useRouter();
   const searchQuery = ref("");
   const movies = ref([]);
-  const success = ref(false);
   const currentPage = ref(1);
   const limit = 4;
   const totalPages = ref(1);
@@ -64,7 +63,7 @@ export const useMoviesSchedule = () => {
   watch([searchQuery], fetchMovies, {
     immediate: true,
   });
-  const UpdateMovie = (movieId) => {
+  const UpdateSchedules = (movieId) => {
     router.push(`/admin/schedule/${movieId}`);
   };
   const goToNextPage = () => {
@@ -89,7 +88,7 @@ export const useMoviesSchedule = () => {
     searchQuery,
     fetchMovies,
     goToNextPage,
-    UpdateMovie,
+    UpdateSchedules,
     goToPreviousPage,
   };
 };

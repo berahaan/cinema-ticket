@@ -8,7 +8,6 @@ import { useRouter } from "vue-router";
 export function useMovies() {
   const toast = useToast();
   const movieToDelete = ref(null);
-  const imageStore = useImageStore();
   const isDeleteModalOpen = ref(false);
   const movie = useMoviesStore();
   const otherImages = ref([]);
@@ -16,7 +15,6 @@ export function useMovies() {
   const previewOtherImages = ref([]);
   const scheduleOptions = ref(["All", "Today", "This Week", "This Month"]);
   const currentOtherImage = ref([]);
-  const currentFeaturedImage = ref("");
   const successMessage = ref("");
   const currentImage = ref("");
   const isloading = ref(false);
@@ -47,45 +45,44 @@ export function useMovies() {
         query: GET_MOVIE_DETAILS,
         variables: { movie_id },
       });
-      const movie = response.data.movies[0];
+      // const movie = response.data.movies[0];
+      movie.setMovies(response.data.movies[0]);
       formData.value = {
-        title: movie.title,
-        description: movie.description,
-        duration: movie.duration,
-        genres: movie.movie_genres.map((g) => g.genre.genre_id),
-        stars: movie.movie_stars.map((s) => s.star.star_id),
-        director_id: movie.director_id,
+        title: movie.movies.title,
+        description: movie.movies.description,
+        duration: movie.movies.duration,
+        genres: movie.movies.movie_genres.map((g) => g.genre.genre_id),
+        stars: movie.movies.movie_stars.map((s) => s.star.star_id),
+        director_id: movie.movies.director_id,
       };
 
       availableGenres.value = response.data.genres;
       availableStars.value = response.data.stars;
       availableDirectors.value = response.data.directors;
-      currentImage.value = movie.featured_images;
-      otherImages.value = movie.movie_images.map((other) => other.other_images);
+      currentImage.value = movie.movies.featured_images;
+      otherImages.value = movie.movies.movie_images.map(
+        (other) => other.other_images
+      );
       loading.value = false;
-      currentOtherImage.value = movie.movie_images.map((other) =>
+      currentOtherImage.value = movie.movies.movie_images.map((other) =>
         other.other_images.trim()
       );
-
-      console.log("here is a other images ", currentOtherImage.value);
     } catch (error) {
       console.error("Error fetching movie details:", error);
     }
   };
 
   const UpdateMovie = (id) => {
-    console.log("Id for Update movies ", id);
     router.push(`/admin/movielist/${id}`);
   };
 
-  // Add or update a movie, then refetch the list here man of God ok !!
   const confirmDelete = (movieId) => {
-    movieToDelete.value = movieId; // Set the movie ID to delete
-    isDeleteModalOpen.value = true; // Open the modal
+    movieToDelete.value = movieId;
+    isDeleteModalOpen.value = true;
   };
   const cancelDelete = () => {
     movieToDelete.value = null;
-    isDeleteModalOpen.value = false; // Close the modal without deleting
+    isDeleteModalOpen.value = false;
   };
   const deleteMovie = async () => {
     try {
@@ -114,7 +111,7 @@ export function useMovies() {
     } catch (error) {
       console.error("Error deleting movie:", error);
     } finally {
-      cancelDelete(); // Close the modal after deletion
+      cancelDelete();
     }
   };
   return {

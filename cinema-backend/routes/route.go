@@ -9,7 +9,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// here we can handles routes logic here
 func SetupRoutes() *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/login", handler.LoginHandler).Methods("POST")

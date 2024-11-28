@@ -1,7 +1,7 @@
 package main
 
 import (
-	//"cinema-backend/services"
+	// "cinema-backend/services"
 	// models "cinema-backend/model"
 	"cinema-backend/auth"
 	"cinema-backend/routes"
@@ -32,6 +32,17 @@ func main() {
 	if err != nil {
 		fmt.Println("error", err)
 	}
+	// recipient := "berahaan@gmail.com"
+	// subject := "Your Movie Ticket"
+	// body := "Thank you for your purchase! Please find your ticket attached."
+	// attachmentPath := "./ticket/output_ticket.pdf"
+	// err = services.SendEmailWithAttachment(recipient, subject, body, attachmentPath)
+	// if err != nil {
+	// 	fmt.Println("Failed to send email:", err)
+	// } else {
+	// 	fmt.Println("Email sent successfully!")
+	// }
+
 	router := routes.SetupRoutes()
 	log.Println("Server running on port 4000")
 	err = http.ListenAndServe(":4000", auth.EnableCORS(router))

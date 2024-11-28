@@ -2,7 +2,7 @@
 // ssh -R 80:localhost:4000 serveo.net
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
-import { ArrowLeftIcon, ArrowDownIcon } from "@heroicons/vue/solid";
+import { ArrowLeftIcon, CheckCircleIcon } from "@heroicons/vue/solid";
 import { jwtDecode } from "jwt-decode";
 import { onMounted, ref } from "vue";
 import { useNuxtApp } from "#app";
@@ -29,7 +29,7 @@ const backhome = () => {
   if (defaultRole === "admin" || defaultRole == "managers") {
     router.push("/admin/Movielist");
   } else {
-    router.push("/user");
+    router.push("/user/Movielist");
   }
 };
 const fetchTicket = async () => {
@@ -94,7 +94,6 @@ const downloadTicket = async () => {
     console.error("Error downloading the ticket:", error);
   }
 };
-
 onMounted(fetchTicket);
 </script>
 <template>
@@ -135,18 +134,8 @@ onMounted(fetchTicket);
       <div v-if="ticketFound" :class="selectClass">
         <!-- Payment Status -->
         <div v-if="ticket.payment_status === 'paid'" class="mt-6">
+          <!-- Back Home Button -->
           <div class="flex justify-between">
-            <button
-              @click="downloadTicket"
-              :class="{
-                'flex items-end text-lg font-medium border-b pb-2 mb-4': true,
-                'text-teal-600': ticket.payment_status === 'paid',
-                'text-gray-500': ticket.payment_status !== 'paid',
-              }"
-            >
-              <ArrowDownIcon class="h-5 w-5 mr-2" />
-              Download Ticket
-            </button>
             <button
               @click="backhome"
               class="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium py-2 px-4 rounded-md transition duration-200 text-lg border-b pb-2 mb-4"
@@ -155,54 +144,35 @@ onMounted(fetchTicket);
               <span>Back Home</span>
             </button>
           </div>
+
+          <!-- Success Message -->
           <div class="text-center">
-            <p class="mt-2">
-              You have successfully ordered your ticket. Here are your payment
-              details:
+            <div class="flex items-center justify-center space-x-2 mt-4">
+              <CheckCircleIcon class="text-green-500 w-8 h-8" />
+              <p class="text-lg font-semibold text-gray-800">
+                Success! Your ticket has been successfully ordered. 🎉
+              </p>
+            </div>
+            <p class="mt-2 text-gray-600">
+              Please check your <strong>Email</strong> for payment details and
+              download your ticket attachment.
             </p>
-          </div>
-
-          <h2 class="text-lg font-medium border-b pb-2 mb-4">
-            🎫 Ticket Information
-          </h2>
-          <div class="space-y-3">
-            <!-- Ticket Details -->
-            <div class="flex justify-between">
-              <span class="font-medium">Your Name:</span>
-              <span>{{ ticket.firstname }} {{ ticket.lastname }}</span>
-            </div>
-
-            <div class="flex justify-between">
-              <span class="font-medium">Movie Title:</span>
-              <span>{{ ticket.movie.title }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Director:</span>
-              <span>{{ ticket.movie.director.name }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Ticket Quantity:</span>
-              <span>{{ ticket.ticket_quantity }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Amount:</span>
-              <span>{{ ticket.amount }}</span>
-            </div>
-            <div class="flex justify-between">
-              <span class="font-medium">Transaction Reference:</span>
-              <span>{{ ticket.tx_ref }}</span>
-            </div>
           </div>
 
           <!-- Schedule Information -->
           <div class="space-y-3">
             <ul class="space-y-2">
-              <h2 class="text-lg font-medium border-b pb-2 mb-4 mt-6">
-                🗓️ You bought Schedule for
+              <h2
+                class="text-lg font-medium border-b pb-2 mb-4 mt-6 text-gray-800"
+              >
+                🗓️ You have bought movies that Scheduled for :
               </h2>
-              <li v-if="ticket.movie_schedule" class="rounded-lg p-3 shadow-md">
+              <li
+                v-if="ticket.movie_schedule"
+                class="rounded-lg p-3 shadow-md bg-gray-50"
+              >
                 <p class="flex items-center">
-                  <span class="font-semibold mr-2">
+                  <span class="font-semibold text-gray-700">
                     {{
                       formatScheduleDateTime(
                         ticket.movie_schedule.schedule_date,
@@ -210,18 +180,23 @@ onMounted(fetchTicket);
                         ticket.movie_schedule.end_time
                       )
                     }}
-                    <span> at {{ ticket.movie_schedule.cinema_hall }}</span>
                   </span>
+                  <span class="ml-2 text-gray-600"
+                    >at {{ ticket.movie_schedule.cinema_hall }}</span
+                  >
                 </p>
               </li>
             </ul>
           </div>
-          <p>
-            Please make yourself available before deadlines and download This
-            ticket
+
+          <!-- Additional Instructions -->
+          <p class="mt-4 text-gray-700">
+            <strong>Reminder:</strong> Please arrive at the cinema on time and
+            bring your ticket attachment for smooth entry. We look forward to
+            seeing you!
           </p>
-          <p>and bring them with you</p>
         </div>
+
         <div v-else-if="ticket.payment_status === 'pending'" class="mt-6">
           <div class="text-center text-yellow-600">
             <p>

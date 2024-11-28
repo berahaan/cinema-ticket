@@ -25,7 +25,7 @@ export function useFile() {
       if (featuredImagesBase64) {
         toast.success("feature images successfully selected", {
           position: "top-center",
-          duration: 500,
+          timeout: 1000,
         });
       }
       profile.setProfileImageBase64(featuredImagesBase64.value);
@@ -58,7 +58,7 @@ export function useFile() {
     if (base64Images) {
       toast.success("other images successfully selected", {
         position: "top-center",
-        duration: 1000,
+        timeout: 1000,
       });
       imageStore.setImageBase64(imageStore.featuredImage64, base64Images);
       otherImagesBase64.value = base64Images;

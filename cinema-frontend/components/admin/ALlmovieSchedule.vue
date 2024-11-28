@@ -6,7 +6,6 @@ const movie = useMoviesStore();
 const {
   fetchMovies,
   searchQuery,
-
   goToNextPage,
   isloading,
   goToPreviousPage,
@@ -14,7 +13,7 @@ const {
 } = useFetchMovies();
 
 const { selectClass } = useThemeColor();
-const { UpdateMovie } = useMoviesSchedule();
+const { UpdateSchedules } = useMoviesSchedule();
 const { refreshPage } = useRefresh();
 const errorMessage = ref("");
 onMounted(async () => {
@@ -127,7 +126,7 @@ onMounted(async () => {
               </ul>
             </div>
             <button
-              @click="UpdateMovie(movie.movie_id)"
+              @click="UpdateSchedules(movie.movie_id)"
               class="px-4 mt-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
             >
               Update Schedule

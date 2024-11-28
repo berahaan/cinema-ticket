@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from "vue";
 import Loading from "../admin/Loading.vue";
-import { ArrowLeftIcon } from "@heroicons/vue/solid";
+import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/vue/solid";
 const { formatScheduleDateTime } = useFormatSchedule();
 const { selectClass } = useThemeColor();
 const { refreshPage } = useRefresh();
@@ -22,25 +22,8 @@ const {
   goToNextPage,
   goToPreviousPage,
   currentPage,
-  totalPages,
   noMoviesFound,
 } = useFetchMovies();
-
-const handleSchedule = async () => {
-  console.log("Now handle schedules is processing... ");
-  try {
-    await addSchedule(
-      selectedMovieId.value,
-      schedule.value.schedule_date,
-      schedule.value.start_time,
-      schedule.value.end_time,
-      schedule.value.cinema_hall,
-      schedule.value.ticket_price
-    );
-  } catch (error) {
-    console.log("Errors ", error);
-  }
-};
 
 watch(currentPage, async () => {
   console.log("current pages is changing ");
@@ -54,8 +37,7 @@ onMounted(async () => {
 
 <template>
   <div class="mt-16">
-    <h2 class="text-2xl font-bold mb-6 text-center">Movies List</h2>
-
+    <!-- <div class="mt-1"></div> -->
     <div
       v-if="isloading"
       class="flex justify-center items-center min-h-screen bg-white"
@@ -63,7 +45,7 @@ onMounted(async () => {
       <Loading />
     </div>
 
-    <div class="mb-10 flex justify-between items-center">
+    <div class="mb-10 flex justify-between items-center mt-32">
       <!-- Search Input (Center-aligned) -->
       <div class="flex-grow flex justify-center">
         <input
@@ -187,117 +169,21 @@ onMounted(async () => {
           >
             Add Schedule
           </button>
-          <div
-            v-if="isScheduleModalOpen && selectedMovieId === movie.movie_id"
-            class="absolute top-0 left-0 w-full h-auto bg-opacity-70 flex items-center justify-center z-50 transition-opacity"
-          >
-            <div
-              class="p-6 rounded-lg max-w-lg w-full shadow-lg"
-              :class="selectClass"
-            >
-              <h3 class="text-lg font-semibold mb-4">Schedule Movie</h3>
-              <div class="mb-4">
-                <label class="block font-semibold mb-2">Schedule Date</label>
-                <input
-                  type="date"
-                  v-model="schedule.schedule_date"
-                  :class="selectClass"
-                  class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-              </div>
-              <div class="mb-4">
-                <label class="block font-semibold mb-2">Start Time</label>
-                <input
-                  type="time"
-                  v-model="schedule.start_time"
-                  :class="selectClass"
-                  class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-              </div>
-              <div class="mb-4">
-                <label class="block font-semibold mb-2">End Time</label>
-                <input
-                  type="time"
-                  v-model="schedule.end_time"
-                  :class="selectClass"
-                  class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-              </div>
-              <div class="mb-4">
-                <label class="block font-semibold mb-2">Hall</label>
-                <input
-                  type="text"
-                  :class="selectClass"
-                  v-model="schedule.cinema_hall"
-                  class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-              </div>
-              <div class="mb-4">
-                <label class="block font-semibold mb-2">Price (Birr)</label>
-                <input
-                  type="number"
-                  :class="selectClass"
-                  v-model="schedule.ticket_price"
-                  class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                />
-              </div>
-
-              <div class="flex justify-between">
-                <button
-                  @click="closeScheduleModal"
-                  class="bg-red-500 text-white px-4 py-2 rounded transition-all duration-200 transform hover:scale-105 focus:outline-none"
-                >
-                  Close
-                </button>
-                <button
-                  @click="handleSchedule(movie.movie_id)"
-                  class="bg-blue-600 text-white px-4 py-2 rounded transition-all duration-200 transform hover:scale-105 focus:outline-none"
-                >
-                  <span v-if="isloading">
-                    <svg
-                      class="animate-spin h-5 w-5 mr-2 text-white inline-block"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <circle
-                        class="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        stroke-width="4"
-                      ></circle>
-                      <path
-                        class="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                      ></path>
-                    </svg>
-                    Scheduling...
-                  </span>
-                  <span v-else>Schedule</span>
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
   </div>
 
   <div
-    class="pagination-controls bg-teal-600 py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
+    class="pagination-controls py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
     v-if="movie.totalPages"
   >
     <button
       @click="goToPreviousPage"
       :disabled="currentPage === 1"
       class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-      :class="selectClass"
     >
-      Previous
+      <ArrowLeftIcon class="w-8 h-8 flex" />
     </button>
     <span class="font-semibold">
       {{
@@ -309,10 +195,9 @@ onMounted(async () => {
     <button
       @click="goToNextPage"
       :disabled="currentPage === movie.totalPages || noMoviesFound"
-      class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
-      :class="selectClass"
+      class="text-teal-800 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
     >
-      Next
+      <ArrowRightIcon class="w-8 h-8 flex" />
     </button>
   </div>
 </template>
