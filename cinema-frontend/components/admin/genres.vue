@@ -10,7 +10,6 @@ import { useToast } from "vue-toastification";
 import { useNuxtApp } from "#app";
 import Loading from "./Loading.vue";
 const { selectClass } = useThemeColor();
-const { refreshPage } = useRefresh();
 const isLoading = ref(false);
 const toast = useToast();
 const { $apollo } = useNuxtApp();
@@ -29,7 +28,7 @@ const fetchGenres = async () => {
     });
     genres.value = response.data.genres;
   } catch (error) {
-    console.error("Error fetching genres:", error);
+    
     showNotification("Failed to fetch genres.", "error");
   } finally {
     isLoading.value = false; // Stop loading after data is fetched
@@ -47,6 +46,7 @@ const onSubmit = async () => {
         refetchQueries: [{ query: GET_GENRES }],
       });
       if (responseUpdate && responseUpdate.data) {
+        await fetchGenres();
         toast.success("updated successfully ", {
           position: "top-right",
           timeout: 3000,
@@ -54,7 +54,6 @@ const onSubmit = async () => {
       }
     } else {
       if (formData.value.name) {
-        // check if it exist already in databse
         const { data } = await $apollo.query({ query: GET_GENRES });
         const nameExists = data.genres.some(
           (genre) =>
@@ -69,13 +68,14 @@ const onSubmit = async () => {
           });
           return;
         } else {
-          console.log("Addding to database .....");
+          
           const repsonseGenre = await $apollo.mutate({
             mutation: ADD_GENRE,
             variables: { name: formData.value.name },
             refetchQueries: [{ query: GET_GENRES }],
           });
           if (repsonseGenre && repsonseGenre.data) {
+            await fetchGenres();
             toast.success("Successfully added ", {
               position: "top-center",
               timeout: 3000,
@@ -85,7 +85,7 @@ const onSubmit = async () => {
       }
     }
   } catch (error) {
-    console.error("Error saving genre:", error);
+    
     showNotification("Failed to save genre.", "error");
   } finally {
     setTimeout(() => {
@@ -103,18 +103,15 @@ const editGenre = (genre) => {
 
 const deleteGenre = async (id) => {
   try {
-    console.log("To be deleted Id of genres ", id);
+   
     const { data } = await $apollo.query({
       query: GET_GENRE_ID,
       variables: { genre_id: id },
       fetchPolicy: "network-only",
     });
-    console.log(data);
+   
     if (data.genres.length > 0) {
-      console.log(
-        "Id to be deleted for this genres in data.stars.length > 0 ",
-        id
-      );
+      
       const response = await $apollo.mutate({
         mutation: DELETE_GENRE,
         variables: { genre_id: id },
@@ -126,6 +123,7 @@ const deleteGenre = async (id) => {
       });
 
       if (response && response.data) {
+        await fetchGenres();
         toast.success("Genres deleted successfully.", {
           position: "top-center",
           timeout: 3000,
@@ -138,7 +136,7 @@ const deleteGenre = async (id) => {
       });
     }
   } catch (error) {
-    console.error("Error deleting star:", error);
+    throw error
   }
 };
 // Show notification
@@ -171,19 +169,7 @@ onMounted(fetchGenres);
       <Loading />
     </div>
     <div class="flex justify-between mb-2">
-      <label for="name">Genre Name:</label>
-      <button @click="refreshPage(fetchGenres)" class="ml-4">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path
-            d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-          />
-        </svg>
-      </button>
+      <label for="name"> Add Genre type here below</label>
     </div>
     <Form @submit="onSubmit" class="space-y-4">
       <div class="flex flex-col">

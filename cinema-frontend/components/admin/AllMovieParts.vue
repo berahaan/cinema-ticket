@@ -6,7 +6,7 @@ import {
   ArrowRightIcon,
   StarIcon as StarSolid,
 } from "@heroicons/vue/solid";
-import { StarIcon as StarOutline } from "@heroicons/vue/outline";
+import { StarIcon as StarOutline, BookmarkIcon } from "@heroicons/vue/outline";
 import Loading from "./Loading.vue";
 let userId = null;
 const colorStore = useColorModeStore();
@@ -35,7 +35,6 @@ const {
 } = useMovies();
 const { fetchGenres, genres } = useFetchGenres();
 const { fetchDirectors, directors } = useFetchDirector();
-const { refreshPage } = useRefresh();
 const { buyTicket } = useTicket();
 const {
   nextImage,
@@ -55,14 +54,14 @@ const {
   submitRating,
 } = useRating();
 const { selectClass, optionClass, deleteOption } = useThemeColor();
-const { toggleBookmark } = useBookmarks();
+const { toggleBookmark, isBookmarked, isBookmarkedCheck, getBookmarks } =
+  useBookmarks();
 
 if (import.meta.client) {
   const token = localStorage.getItem("accessToken");
   if (token) {
     const decodedToken = jwtDecode(token);
     userId = decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-    console.log("User ID:", userId);
   }
 }
 // Function to get the current user's rating for a specific movie
@@ -78,6 +77,7 @@ const getCurrentUserRating = (movie) => {
 onMounted(async () => {
   await fetchMovies();
   await fetchGenres();
+  await getBookmarks();
   await fetchDirectors();
 });
 </script>
@@ -154,19 +154,6 @@ onMounted(async () => {
           {{ option }}
         </option>
       </select>
-
-      <button @click="refreshPage(fetchMovies)" class="ml-4 mb-8">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path
-            d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-          />
-        </svg>
-      </button>
     </div>
 
     <div class="w-full mx-auto mt-10 pt-40" :class="selectClass">
@@ -201,38 +188,45 @@ onMounted(async () => {
                   class="relative inline-flex items-center"
                   :class="selectClass"
                 >
-                  <svg
-                    v-if="movie.bookmarks?.length > 0"
+                  <button
+                    v-if="isBookmarkedCheck(movie.movie_id)"
                     @click="toggleBookmark(movie.movie_id)"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6 cursor-pointer"
+                    class="flex items-center space-x-2"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M3 3l1.664 1.664M21 21l-1.5-1.5m-5.485-1.242L12 17.25 4.5 21V8.742m.164-4.078a2.15 2.15 0 0 1 1.743-1.342 48.507 48.507 0 0 1 11.186 0c1.1.128 1.907 1.077 1.907 2.185V19.5M4.664 4.664L19.5 19.5"
-                    />
-                  </svg>
-                  <svg
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      class="w-6 h-6"
+                    >
+                      <path
+                        d="M17 3H7a2 2 0 0 0-2 2v16l7-4 7 4V5a2 2 0 0 0-2-2z"
+                      />
+                    </svg>
+                    saved
+                  </button>
+
+                  <button
                     v-else
                     @click="toggleBookmark(movie.movie_id)"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="w-6 h-6 cursor-pointer"
+                    class="flex items-center space-x-2"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
-                    />
-                  </svg>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="currentColor"
+                      class="w-6 h-6 cursor-pointer"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
+                      />
+                    </svg>
+                    save
+                  </button>
                 </div>
               </div>
             </div>
@@ -411,7 +405,7 @@ onMounted(async () => {
                 </div>
 
                 <div
-                  class="mt-4 p-4 bg-gray-100 rounded-lg shadow-sm"
+                  class="mt-4 p-2 bg-gray-100 rounded-lg shadow-sm"
                   :class="selectClass"
                 >
                   <h4
@@ -447,52 +441,63 @@ onMounted(async () => {
                       </p>
                       <span
                         v-if="isScheduleExpired(schedule)"
-                        class="text-red-500 font-semibold mr-2"
                         :class="selectClass"
+                        class="text-green-500 font-semibold"
                       >
-                        (Expired)
+                        Valid
                       </span>
 
                       <!-- Valid Schedule Label -->
                       <span
                         v-else
-                        class="text-green-500 font-semibold mr-2"
+                        class="text-red-500 font-semibold mr-2"
                         :class="selectClass"
                       >
-                        (Valid)
+                        Expired
                       </span>
+
+                      <div
+                        class="flex flex-col md:flex-row items-center gap-4 mt-2"
+                      >
+                        <button
+                          v-if="isScheduleExpired(schedule)"
+                          @click="buyTicket(movie.movie_id)"
+                          class="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded shadow-md w-full md:w-auto"
+                        >
+                          Buy Ticket
+                        </button>
+                        <!-- Buy Ticket Button -->
+                        <button
+                          v-else
+                          @click="buyTicket(movie.movie_id)"
+                          disabled
+                          class="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded shadow-md w-full md:w-auto"
+                        >
+                          Buy Ticket
+                        </button>
+
+                        <!-- Rate Button -->
+                        <button
+                          @click="openRatingModal(movie.movie_id)"
+                          class="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded shadow-md w-full md:w-auto"
+                        >
+                          Rate
+                        </button>
+                        <button
+                          @click="confirmDelete(movie.movie_id)"
+                          class="px-3 py-2 bg-red-600 dark:bg-red-800 text-white rounded mx-6 shadow-md w-full md:w-auto"
+                        >
+                          Delete Movie
+                        </button>
+                        <button
+                          @click="UpdateMovie(movie.movie_id)"
+                          class="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded shadow-md w-full md:w-auto"
+                        >
+                          Update Movie
+                        </button>
+                      </div>
                     </li>
                   </ul>
-                  <div class="mt-4">
-                    <button
-                      v-if="movie.movie_schedules?.length > 0 && isvalid"
-                      @click="buyTicket(movie.movie_id)"
-                      class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6 mt-2"
-                    >
-                      Buy Ticket
-                    </button>
-
-                    <button
-                      v-else
-                      @click="buyTicket(movie.movie_id)"
-                      disabled
-                      class="px-4 py-2 bg-blue-600 disabled:bg-gray-400 dark:bg-gray-800 text-white rounded-lg mx-6 mt-2 disabled:cursor-not-allowed"
-                    >
-                      Buy Ticket
-                    </button>
-                    <button
-                      @click="confirmDelete(movie.movie_id)"
-                      class="px-4 py-2 bg-red-600 dark:bg-red-800 text-white rounded-lg mx-6"
-                    >
-                      Delete Movie
-                    </button>
-                    <button
-                      @click="UpdateMovie(movie.movie_id)"
-                      class="px-4 py-2 bg-blue-600 dark:bg-teal-800 text-white rounded-lg mx-6"
-                    >
-                      Update Movie
-                    </button>
-                  </div>
                 </div>
               </div>
             </div>

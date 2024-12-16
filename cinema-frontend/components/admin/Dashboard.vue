@@ -18,14 +18,13 @@ const isloading = ref(true);
 const getUserName = async () => {
   const accessToken = localStorage.getItem("accessToken");
   if (!accessToken) {
-    console.error("No access token found.");
     router.push("/auth/login");
     return;
   }
   const decodedToken = jwtDecode(accessToken);
   const userid =
     decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-  console.log("Here is a user id in dashboard ", userid);
+
   try {
     const { data } = await $apollo.query({
       query: GET_USER,
@@ -35,10 +34,10 @@ const getUserName = async () => {
     if (data.users.length > 0) {
       firstName.value = data.users[0].firstname; // Access the first user's firstname
     } else {
-      console.error("No user found with the given userid.");
+      console.error("No user found.");
     }
   } catch (error) {
-    console.log("Error fetching user name:", error);
+    throw error;
   }
 };
 const fetchAdminStatus = async () => {
@@ -52,7 +51,7 @@ const fetchAdminStatus = async () => {
     totalUsers.value = data.total_users[0]?.total_count || 0;
     isloading.value = false;
   } catch (error) {
-    console.error("Error fetching admin stats:", error);
+    console.error("Error fetching", error);
   } finally {
     isloading.value = false;
   }

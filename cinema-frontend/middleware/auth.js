@@ -8,13 +8,13 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
     const token = localStorage.getItem("accessToken");
 
     if (!token) {
-      toast.warning("You need to login first to access site Thank you", {
+      toast.warning("You need to login first to accesss it Thank you", {
         position: "top-right",
         duration: 2000,
       });
       return navigateTo("/");
     }
-    console.log("Starting Authenthications...");
+
     try {
       const { data } = await $apollo.mutate({
         mutation: VALIDATE_TOKEN,

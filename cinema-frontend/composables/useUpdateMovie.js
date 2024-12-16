@@ -35,10 +35,7 @@ export const useUpdateMovie = () => {
             duration,
           },
         });
-        console.log(
-          "Here update movies is works and its repsonse is ",
-          response.data
-        );
+       
         if (response && response.data) {
           toast.success("Movies without Image change Updated successfully", {
             position: "top-center",
@@ -49,7 +46,7 @@ export const useUpdateMovie = () => {
         }
         return response.data;
       } catch (error) {
-        console.error("Error updating movie:", error);
+
         throw error;
       } finally {
         isUpdateloading.value = false;
@@ -70,10 +67,7 @@ export const useUpdateMovie = () => {
             duration,
           },
         });
-        console.log(
-          "Here update movies is works and its repsonse is ",
-          response.data
-        );
+       
         if (response && response.data) {
           toast.success(
             "Movies with only featuredImages is Update along with other Fields",
@@ -95,7 +89,7 @@ export const useUpdateMovie = () => {
       }
     } else if (featuredImageURL == null && otherImageURLs != null) {
       // alert("Now only other images is need to be updated ");
-      console.log("Movie images url to be sent here ", otherImageURLs);
+     
       const movieImagesData = otherImageURLs.map((imageUrl) => ({
         movie_id,
         other_images: imageUrl,
@@ -114,10 +108,7 @@ export const useUpdateMovie = () => {
             duration,
           },
         });
-        console.log(
-          "Here update movies after inserting other_images in database   ",
-          response.data
-        );
+       
         if (response && response.data) {
           toast.success(
             "Movies with otherImages changes is Update along with other fields successfully",
@@ -131,7 +122,7 @@ export const useUpdateMovie = () => {
         }
         return response.data;
       } catch (error) {
-        console.error("Error updating movie:", error);
+        
         throw error;
       } finally {
         isUpdateloading.value = false;
@@ -139,7 +130,7 @@ export const useUpdateMovie = () => {
       }
     } else {
       if (featuredImageURL && otherImageURLs) {
-        console.log("Both images is selected now ..");
+       
         const movieImagesData = otherImageURLs.map((imageUrl) => ({
           movie_id,
           other_images: imageUrl,
@@ -147,10 +138,7 @@ export const useUpdateMovie = () => {
         isUpdateloading.value = true;
         loading.value = true;
         try {
-          console.log(
-            "Other images to be inserted to databse here ",
-            movieImagesData
-          );
+         
 
           const response = await $apollo.mutate({
             mutation: UPDATE_MOVIE_NO_OTHER,
@@ -167,10 +155,7 @@ export const useUpdateMovie = () => {
             },
           });
 
-          console.log(
-            "Here update movies is works and its repsonse is ",
-            response.data
-          );
+         
           if (response && response.data) {
             toast.success("Movies Updated successfully ", {
               position: "top-center",
@@ -181,7 +166,7 @@ export const useUpdateMovie = () => {
           }
           return response.data;
         } catch (error) {
-          console.error("Error updating movie:", error);
+          
           throw error;
         } finally {
           isUpdateloading.value = false;

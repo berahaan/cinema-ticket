@@ -9,11 +9,11 @@ import {
 } from "@apollo/client/core";
 
 export default defineNuxtPlugin((nuxtApp) => {
-  const config = useRuntimeConfig(); 
+  const config = useRuntimeConfig();
   const toast = useToast();
 
   const httpLink = createHttpLink({
-    uri: config.public.graphqlEndpoint, 
+    uri: config.public.graphqlEndpoint,
   });
 
   const authLink = new ApolloLink((operation, forward) => {
@@ -35,29 +35,36 @@ export default defineNuxtPlugin((nuxtApp) => {
         if (err.extensions.code === "invalid-jwt") {
           localStorage.removeItem("accessToken");
           toast.warning(
-            "Your session has expired. Please log in again to access.",{
-              position:"top-right",
-              timeout:2000
+            "Your session has expired. Please log in again to access.",
+            {
+              position: "top-right",
+              timeout: 2000,
             }
           );
-          navigateTo("/login");
+          navigateTo("/auth/login");
         }
       }
     }
 
     if (networkError) {
-      toast.warning(
-        "Network error...",{
-          position:"top-right",
-          timeout:2000
-        }
-      );
+      toast.warning("Network error...", {
+        position: "top-right",
+        timeout: 2000,
+      });
     }
   });
 
   const apolloClient = new ApolloClient({
     link: ApolloLink.from([errorLink, authLink, httpLink]),
     cache: new InMemoryCache(),
+    defaultOptions: {
+      query: {
+        fetchPolicy: "network-only",
+      },
+      watchQuery: {
+        fetchPolicy: "network-only",
+      },
+    },
   });
   nuxtApp.provide("apollo", apolloClient);
 });

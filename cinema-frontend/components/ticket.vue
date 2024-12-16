@@ -4,7 +4,7 @@ import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/vue/solid";
 const { goBack } = useGobackArrow();
-const { formatScheduleDateTime, isScheduleExpired, isvalid } =
+const { formatScheduleDateTime, isScheduleExpired, isNeedTotalPrice } =
   useFormatSchedule();
 const {
   movie,
@@ -20,7 +20,6 @@ const {
 } = useTicket();
 const { selectClass } = useThemeColor();
 const handleTicket = async (values) => {
-  console.log("Form data information:", values);
   try {
     await purchaseTickets(form);
   } catch (error) {
@@ -50,7 +49,8 @@ const validationSchema = yup.object({
     .typeError("Ticket number is required ")
     .required("At least one ticket is required")
     .integer("Ticket quantity must be a whole number")
-    .min(1, "Ticket quantity must be at least 1"),
+    .min(1, "Ticket quantity must be at least 1")
+    .max(5, "you can purchase max of 5 quantity at time "),
 });
 
 onMounted(async () => {
@@ -80,18 +80,14 @@ onMounted(async () => {
         <!-- Movie Text Info -->
         <div class="w-full md:w-2/3 md:ml-6">
           <div class="flex justify-between">
-            <h1 class="text-4xl font-extrabold mb-4" :class="selectClass">
+            <h1
+              class="md:text-4xl text-xl font-extrabold mb-4"
+              :class="selectClass"
+            >
               {{ movie.title }}
             </h1>
-            <button
-              @click="goBack"
-              class="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium py-2 px-4 rounded-md transition duration-200"
-            >
-              <ArrowLeftIcon class="h-5 w-5" />
-              <span>Go Back</span>
-            </button>
           </div>
-          <p class="text-lg mb-2" :class="selectClass">
+          <p class="md:text-lg text-base mb-2" :class="selectClass">
             Description: {{ movie.description }}
           </p>
           <div class="genres flex flex-wrap">
@@ -115,7 +111,7 @@ onMounted(async () => {
           </div>
           <!-- Stars -->
           <div class="stars flex flex-wrap mb-2">
-            Available Star:
+            Star:
             <span
               v-for="star in movie.movie_stars"
               :key="star.star.name"
@@ -204,7 +200,7 @@ onMounted(async () => {
             <Field
               as="select"
               name="selectedSchedule"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none"
               :class="selectClass"
               v-model="selectedSchedule"
             >
@@ -213,8 +209,9 @@ onMounted(async () => {
                 :key="schedule.schedule_id"
                 :value="schedule"
                 :class="selectClass"
+                class="text-sm w-4 grid grid-cols-1"
               >
-                <span>
+                <span v-if="isScheduleExpired(schedule)">
                   {{
                     formatScheduleDateTime(
                       schedule.schedule_date,
@@ -222,22 +219,9 @@ onMounted(async () => {
                       schedule.end_time
                     )
                   }}
-                  <span
-                    v-if="isScheduleExpired(schedule)"
-                    class="text-red-500 font-semibold mr-2"
-                    :class="selectClass"
-                  >
-                    (Expired)
-                  </span>
-                  <span
-                    v-else
-                    class="text-green-500 font-semibold mr-2"
-                    :class="selectClass"
-                  >
-                    (Valid)
-                  </span>
                   (Hall: {{ schedule.cinema_hall }})
                 </span>
+                <span v-else> Expired </span>
               </option>
             </Field>
             <ErrorMessage name="selectedSchedule" class="text-red-500" />
@@ -257,23 +241,34 @@ onMounted(async () => {
               type="number"
               id="ticketQuantity"
               min="1"
+              max="4"
               class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               :class="selectClass"
             />
             <ErrorMessage name="ticketQuantity" class="text-red-500" />
           </div>
 
-          <div class="ticket-price text-lg font-semibold" :class="selectClass">
+          <div
+            class="ticket-price text-lg font-semibold"
+            :class="selectClass"
+            v-if="isNeedTotalPrice"
+          >
             Total Price: <span :class="selectClass">{{ totalPrice }}</span> birr
           </div>
-          <div v-if="islengthGreater">
+          <div v-else class="text-teal-600">
+            You cannot able to bought ticket now
+          </div>
+          <div
+            v-if="islengthGreater && isNeedTotalPrice"
+            class="grid grid-cols-1 md:grid-cols-2"
+          >
             <button
               type="submit"
-              class="flex items-center px-10 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              class="max-w-28 sm:mt-4 sm:w-24 mx-1 p-2 sm:mx-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 flex items-center justify-center"
             >
               <span v-if="isloading" class="flex items-center justify-center">
                 <svg
-                  class="animate-spin h-5 w-5 mr-2 text-white"
+                  class="animate-spin h-4 w-4 sm:h-5 sm:w-5 mr-2 text-white"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -297,9 +292,36 @@ onMounted(async () => {
               </span>
               <span
                 v-else
-                class="flex items-center rounded-md shadow-md transition-all text-white font-medium"
-                >Pay <ArrowRightIcon class="h-5 w-5 ml-2"
-              /></span>
+                class="flex items-center rounded-md transition-all text-sm sm:text-base font-medium"
+              >
+                Pay
+                <ArrowRightIcon class="h-4 w-4 sm:h-5 sm:w-5 ml-2" />
+              </span>
+            </button>
+
+            <button
+              @click="goBack"
+              class="mt-4 flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium py-2 px-4 rounded-md transition duration-200"
+            >
+              <ArrowLeftIcon class="md:h-5 md:w-5 w-5 h-5" />
+              <span>Go Back</span>
+            </button>
+          </div>
+          <div v-else class="flex justify-between">
+            <button
+              disabled
+              class="flex items-center rounded-md shadow-md text-teal-500 cursor-not-allowed px-4 py-2"
+              aria-disabled="true"
+              title="Payment is currently unavailable"
+            >
+              <span>Pay</span> <ArrowRightIcon class="h-5 w-5 ml-2" />
+            </button>
+            <button
+              @click="goBack"
+              class="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium py-2 px-4 rounded-md transition duration-200"
+            >
+              <ArrowLeftIcon class="md:h-5 md:w-5 w-5 h-5" />
+              <span>Go Back</span>
             </button>
           </div>
         </Form>

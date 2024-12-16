@@ -106,7 +106,9 @@ input::placeholder {
   >
     <div class="bg-white shadow-xl rounded-lg p-8 max-w-lg w-full">
       <!-- Header Section -->
-      <h2 class="text-4xl font-extrabold text-center mb-4 text-gray-800">
+      <h2
+        class="md:text-4xl text-xl font-extrabold text-center mb-4 text-gray-800"
+      >
         Join Us Today!
       </h2>
       <p class="text-center text-lg text-gray-600 mb-8">
@@ -187,14 +189,17 @@ input::placeholder {
             autocomplete="new-password"
             :type="showPassword ? 'text' : 'password'"
             v-model="password"
-            placeholder="Create a strong password"
+            placeholder="Create password"
             class="mt-1 block w-full p-3 pl-10 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-purple-500 focus:border-purple-500"
           />
           <span
             @click="togglePassword"
-            class="absolute right-3 top-10 cursor-pointer"
+            class="absolute right-3 top-12 cursor-pointer"
           >
-            <EyeIcon v-if="showPassword" class="w-5 h-5 text-gray-400" />
+            <EyeIcon
+              v-if="showPassword"
+              class="w-2 h-4 md:w-5 md:h-5 text-gray-400"
+            />
             <EyeOffIcon v-else class="w-5 h-5 text-gray-400" />
           </span>
           <ErrorMessage name="password" class="text-red-600 text-sm mt-1" />

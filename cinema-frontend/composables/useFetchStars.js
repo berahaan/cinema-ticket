@@ -7,7 +7,6 @@ export const useFetchStars = () => {
     try {
       const response = await $apollo.query({ query: GET_STARS });
       stars.value = response.data.stars;
-      console.log("Here is satrs in composables ", stars.value);
     } catch (error) {
       console.error("Error fetching stars:", error);
     }

@@ -68,7 +68,6 @@ export const useAddMovies = () => {
       }
     } catch (error) {
       toast.error("Error while adding movies ");
-      console.log("Errors while adding movies in composables:", error);
     } finally {
       loading.value = false;
       isSpinning.value = false;
@@ -82,13 +81,10 @@ export const useAddMovies = () => {
   };
   const addStarToArray = () => {
     const starId = selectedStar.value;
-    console.log("Selected stars id now ", starId);
+
     if (starId && !selectedStars.value.includes(starId)) {
       selectedStars.value.push(starId);
-      console.log(
-        "Selected stars in composables for debug ",
-        selectedStars.value
-      );
+
       formData.value.star_id = [...selectedStars.value];
     }
   };

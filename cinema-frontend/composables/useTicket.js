@@ -26,9 +26,7 @@ export const useTicket = () => {
     currency: "ETB",
   });
   const totalPrice = computed(() => {
-    console.log("Entire schdules here is ", selectedSchedule.value);
     scheduleId.value = selectedSchedule.value?.schedule_id;
-    console.log("Schedule ID:", scheduleId.value);
     return selectedSchedule.value
       ? selectedSchedule.value.ticket_price * ticketQuantity.value
       : 0;
@@ -57,7 +55,7 @@ export const useTicket = () => {
         query: GET_USER,
         variables: { userid: userId },
       });
-      console.log("Firstname ", data.users[0].firstname);
+
       form.value.first_name = data.users[0].firstname;
       form.value.last_name = data.users[0].lastname;
       form.value.email = token.email;
@@ -69,12 +67,10 @@ export const useTicket = () => {
     const token = jwtDecode(localStorage.getItem("accessToken"));
     const defaultRole =
       token["https://hasura.io/jwt/claims"]["x-hasura-default-role"];
-    console.log("ID for selected movies is in usemovies ", id);
+
     if (defaultRole === "admin") {
-      console.log("Routing to admin pages");
       router.push(`/admin/ticket/${id}`);
     } else {
-      console.log("Routing to user pages ....");
       router.push(`/user/ticket/${id}`);
     }
   };
@@ -92,7 +88,7 @@ export const useTicket = () => {
       email: form.value.email,
       currency: form.value.currency,
     };
-    console.log("Form to be sent ", Input);
+
     try {
       const { data } = await $apollo.mutate({
         mutation: SEND_TICKET,
@@ -101,14 +97,17 @@ export const useTicket = () => {
       const accessUrl = data.initiatePayment.access_url;
       window.location.href = accessUrl;
     } catch (error) {
-      console.error("Error initiating payment: ", error);
       if (!navigator.onLine) {
-        alert(
-          "It seems you're offline. Please check your internet connection and try again."
+        toast.warning(
+          "It seems you're offline. Please check your internet connection and try again.",
+          {
+            position: "top-right",
+            timeout: 1000,
+          }
         );
       } else {
         toast.warning(
-          "U look life offline please connect to internet and try again",
+          "look like offline please connect to internet and try again",
           {
             position: "top-right",
             duration: 2000,

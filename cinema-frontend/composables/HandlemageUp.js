@@ -9,9 +9,11 @@ export function HandleImageUpload() {
   const { $apollo } = useNuxtApp();
   const UploadImage = async (featuredImage, otherImages) => {
     if (featuredImage && otherImages) {
-      console.log("Both are selected ..");
       if (!Array.isArray(otherImages) || otherImages.length === 0) {
-        console.error("Invalid otherImages: must be a non-empty array");
+        toast.error("Invalid otherImages: must be a non-empty array", {
+          position: "top-right",
+          timeout: 1000,
+        });
         return;
       }
       try {
@@ -28,12 +30,7 @@ export function HandleImageUpload() {
             position: "top-center",
             duration: 2000,
           });
-          console.log(
-            "response.data.featuredurl:",
-            response.data.fileUpload.featuredurl,
-            "Other image urls is ",
-            response.data.fileUpload.otherurl
-          );
+
           imageStore.setImageURLs(
             response.data.fileUpload.featuredurl,
             response.data.fileUpload.otherurl
@@ -43,7 +40,6 @@ export function HandleImageUpload() {
         console.error("Error while uploading images:", error);
       }
     } else if (featuredImage != null && otherImages == null) {
-      console.log("Here featured Images only is uploaded now.....");
       const responseOther = await $apollo.mutate({
         mutation: INSERT_IMAGE,
         variables: {
@@ -51,10 +47,7 @@ export function HandleImageUpload() {
           otherImages: [],
         },
       });
-      console.log(
-        "Response after inserting featured Image from Golang backned ",
-        responseOther.data.fileUpload.featuredurl
-      );
+
       if (responseOther && responseOther.data) {
         toast.success("feature image successfully uploaded.", {
           position: "top-center",
@@ -73,10 +66,7 @@ export function HandleImageUpload() {
           otherImages,
         },
       });
-      console.log(
-        "Response after inserting otherImage in backned ",
-        responseOther.data.fileUpload.otherurl
-      );
+
       if (responseOther && responseOther.data) {
         toast.success("Other images uploaded successfully", {
           position: "top-center",
@@ -85,7 +75,6 @@ export function HandleImageUpload() {
         imageStore.setImageURLs(null, responseOther.data.fileUpload.otherurl);
       }
     } else if (otherImages == null && featuredImage) {
-      console.log("Here other images is selected now.....");
       const responseOther = await $apollo.mutate({
         mutation: INSERT_IMAGE,
         variables: {
@@ -93,21 +82,16 @@ export function HandleImageUpload() {
           otherImages,
         },
       });
-      console.log(
-        "Response after inserting otherImage in backned ",
-        responseOther.data
-      );
     } else {
       console.warn("No images provided for upload.");
     }
   };
   const uploadProfile = async (profilePhoto) => {
-    console.log(
-      "Only profile photo is being uploaded and featured Images to be sent here is:::",
-      profilePhoto
-    );
     if (!profilePhoto || profilePhoto.length === 0) {
-      console.error("Invalid featuredImage (Profile Photo):");
+      toast.error("Invalid featuredImage (Profile Photo)", {
+        position: "top-right",
+        timeout: 2000,
+      });
       return;
     }
     try {
@@ -115,11 +99,7 @@ export function HandleImageUpload() {
         mutation: SEND_PROFILE_PHOTO,
         variables: { profilePhoto },
       });
-      console.log("Profile Response:", profileResponse.data);
-      console.log(
-        "Profile Response:",
-        profileResponse.data.profileUpload.profileurl
-      );
+
       imageStore.setImageURLs(
         profileResponse.data.profileUpload.profileurl,
         null

@@ -6,14 +6,12 @@ import (
 	"log"
 	"os"
 )
-
 func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 	movieId := payload.Meta.MovieId
 	scheduleId := payload.Meta.ScheduleId
 	ticketQuantity := payload.Meta.TicketQuantity
 	switch payload.Status {
 	case "success":
-		// Verify payment with Chapa
 		verified, err := verifyChapaPayment(payload.TransactionID)
 		if err != nil {
 			return fmt.Errorf("error verifying payment: %w", err)
@@ -34,7 +32,7 @@ func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 			return fmt.Errorf("failed to insert ticket")
 		}
 		fmt.Println("Ticket is added successfully")
-		// first call the fetchPayment data to fetch a userdata here then pass that data to the generate functions her
+	
 		paymentData, err := FetchPaymentData(payload.TransactionID)
 		if err != nil {
 			fmt.Println("Error during the fetching data here in ProcessPayment data ")
@@ -110,7 +108,7 @@ func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 		if err != nil {
 			log.Fatalf("Failed to save PDF: %v", err)
 		}
-		fmt.Printf("PDF successfully saved to: %s\n", savePath)
+		// fmt.Printf("PDF successfully saved to: %s\n", savePath)
 		recepeint := payload.Email
 		subject := "Your Movie Ticket"
 		body := "Thank you for your purchase! Your order is being processsed we will notify you when pending is done thanks ."
@@ -132,7 +130,6 @@ func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 				fmt.Printf("Payment verification failed or timed out for transaction %s\n", transactionID)
 			}
 		}(payload.TransactionID)
-
 		return nil
 	case "failed":
 		fmt.Println("Payment failed. Updating the status...")
@@ -147,7 +144,7 @@ func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 		fmt.Println("Failed payment status saved successfully")
 		recepeint := payload.Email
 		subject := "Your Movie Ticket"
-		body := "Thank you for your purchase! But unfortuanltely your order is Failed please try again it later \nThanks "
+		body := "Thank you for your orders! But unfortunately your order is Failed please try again it later \nThanks "
 		err = SendEmailWithAttachment(recepeint, subject, body, "")
 		if err != nil {
 			fmt.Printf("Error while sending emails here ...")

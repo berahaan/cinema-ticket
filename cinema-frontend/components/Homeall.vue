@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, onMounted } from "vue";
 import { useNuxtApp } from "#app";
-import { jwtDecode } from "jwt-decode";
 import { GET_MOVIE_ALL } from "./graphql/queries/GET_MOVIE_ALL.graphql";
 import { useRouter } from "vue-router";
 const router = useRouter();
@@ -9,92 +8,73 @@ const { $apollo } = useNuxtApp();
 const movies = ref([]);
 const fetchMovies = async () => {
   try {
-    const { data } = await $apollo.query({ 
+    const { data } = await $apollo.query({
       query: GET_MOVIE_ALL,
-
     });
-    console.log("Data here ",data);
+
     movies.value = data.movies;
-   
   } catch (error) {
     console.error("Error fetching movies:", error);
   }
 };
+const recentMovies = computed(() => movies.value.slice(0, 3));
+const currentlyShowingMovies = computed(() => movies.value.slice(4, 6));
+const buyTicket = (movieId) => {
+  router.push(`/admin/ticket/${movieId}`);
+};
 onMounted(() => {
   fetchMovies();
 });
-const recentMovies = computed(() => movies.value.slice(0, 3));
-const currentlyShowingMovies = computed(() => movies.value.slice(3, 6));
-const buyTicket = (movieId) => {
-  console.log("Ticket is clicked now ");
-  router.push(`/admin/ticket/${movieId}`);
-};
-const moveToMovielist =()=>{
-  console.log("Clicked ..");
-      const accessToken=localStorage.getItem("accessToken");
-      if(accessToken){
-        const decodedToken = jwtDecode(accessToken);
-        const defaultRole =
-          decodedToken["https://hasura.io/jwt/claims"]["x-hasura-default-role"];
-        console.log("Default Role for this pages :", defaultRole);
-        if (defaultRole === "admin" || defaultRole === "managers") {
-          router.push("/admin/Movielist");
-        } else if (defaultRole === "regular") {
-          router.push("/user/Movielist");
-        } else {
-          router.push("/");
-        }
-      }
-      else{
-        router.push("/auth/login")
-      }
-  
-}
 </script>
 <template>
   <div>
-    <div class="container mx-auto py-12">
-      <!-- Welcome Section -->
+    <div class="min-h-screen mt-16">
       <section
-        class="text-center py-16 mb-12 bg-gradient-to-br from-purple-600 via-pink-500 to-red-500 text-white rounded-lg shadow-2xl mt-10 w-full"
+        class="text-center py-16 mb-12 text-black rounded-lg shadow-2xl mt-10 w-full"
       >
-        <h2 class="text-5xl font-extrabold mb-6 drop-shadow-lg">
-          🎬 Welcome to Ethio Cinema! 🌟
+        <h2 class="text-xl md:text-4xl font-extrabold mb-6 drop-shadow-lg">
+          <!-- 🎬 -->
+          Welcome to Ethio Cinema!
+          <!-- 🌟 -->
         </h2>
-        <p class="text-2xl font-light">
-          Immerse yourself in the ultimate cinematic experience, where every movie is a masterpiece!
+        <p class="text-xl md:text-xl font-light">
+          Immerse yourself in the ultimate cinematic experience, where every
+          movie is a masterpiece!
         </p>
-        <button
-        @click="moveToMovielist"
-          class="mt-8 bg-yellow-400 text-gray-800 px-8 py-4 font-bold text-lg rounded-full transition-transform transform hover:scale-110 hover:bg-yellow-500 shadow-md focus:outline-none"
-        >
-          🎥 Explore Our Outstanding Movies
-        </button>
+        <div>
+          <p class="text-teal-600">
+            Explore Our Movies and Enjoy your Experience Here
+          </p>
+        </div>
       </section>
 
       <!-- Cinema Vision Statement -->
       <p
-        class="text-xl py-6 text-center bg-gradient-to-br from-blue-500 via-teal-400 to-green-400 text-white rounded-lg shadow-lg font-semibold"
+        class="text-base md:text-xl py-2 md:py-6 text-center font-semibold bg-teal-300"
       >
-        At Ethio Cinema, we’re redefining entertainment. From blockbuster hits to indie gems, every seat feels like the best in the house!
+        At Ethio Cinema, we’re redefining entertainment. From blockbuster hits
+        to indie gems, every seat feels like the best in the house!
       </p>
 
       <!-- Top 3 Recent Movies Section -->
       <section class="my-12">
-        <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+        <h2
+          class="md:text-4xl text-xl font-bold mb-8 text-center text-gray-800"
+        >
           🔥 Top 3 Recent Releases
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div
             v-for="movie in recentMovies"
             :key="movie.movie_id"
-            class="rounded-lg shadow-xl p-6 bg-gradient-to-r from-gray-100 to-gray-200 transition-transform transform hover:scale-105"
+            class="rounded-lg p-6 bg-gradient-to-r from-gray-100 to-gray-200 transition-transform transform hover:scale-105"
           >
-            <h3 class="text-2xl font-bold text-gray-800 mb-3">
+            <h3 class="md:text-2xl text-xl font-bold text-gray-800 mb-3">
               {{ movie.title }}
             </h3>
             <p class="text-gray-600 text-sm">
-              🎥 Duration: <span class="font-medium">{{ movie.duration }} minutes</span>
+              🎥 Duration:
+              <span class="font-medium">{{ movie.duration }} minutes</span>
             </p>
             <img
               v-if="movie.featured_images"
@@ -104,9 +84,9 @@ const moveToMovielist =()=>{
             />
             <button
               @click="buyTicket(movie.movie_id)"
-              class="mt-6 bg-teal-500 text-white px-6 py-3 rounded-full text-lg font-medium transition-transform transform hover:scale-110  focus:outline-none mx-12"
+              class="px-4 mt-6 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-10"
             >
-              🎟️ Buy Ticket
+              🎟️Buy Ticket
             </button>
           </div>
         </div>
@@ -114,20 +94,23 @@ const moveToMovielist =()=>{
 
       <!-- Currently Showing Section -->
       <section class="my-16">
-        <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">
+        <h2
+          class="md:text-4xl text-xl font-bold mb-8 text-center text-gray-800"
+        >
           🎥 Currently Showing
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           <div
             v-for="movie in currentlyShowingMovies"
             :key="movie.movie_id"
-            class="rounded-lg shadow-xl p-6 bg-gradient-to-r from-gray-100 to-gray-200 transition-transform transform hover:scale-105"
+            class="rounded-lg p-6 border border-t-4"
           >
             <h3 class="text-2xl font-bold text-gray-800 mb-3">
               {{ movie.title }}
             </h3>
             <p class="text-gray-600 text-sm">
-              ⏳ Duration: <span class="font-medium">{{ movie.duration }} minutes</span>
+              ⏳ Duration:
+              <span class="font-medium">{{ movie.duration }} minutes</span>
             </p>
             <div class="flex flex-col md:flex-row mt-4">
               <img
@@ -155,9 +138,9 @@ const moveToMovielist =()=>{
                 <h4 class="font-semibold text-gray-800 mt-4">📅 Showtimes:</h4>
                 <button
                   @click="buyTicket(movie.movie_id)"
-                  class="mt-6 bg-teal-500 text-white px-4 py-3 rounded-full text-lg font-medium transition-transform transform hover:scale-110  focus:outline-none" 
+                  class="px-4 py-2 mt-6 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-4"
                 >
-                  🎟️ Buy Ticket
+                  🎟️Buy Ticket
                 </button>
               </div>
             </div>
@@ -167,15 +150,23 @@ const moveToMovielist =()=>{
     </div>
 
     <!-- Footer Section -->
-    <footer class="text-white py-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 shadow-lg">
+    <footer
+      class="text-white py-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 shadow-lg"
+    >
       <div class="container mx-auto text-center">
         <p class="text-sm">
           &copy; 2024 Ethio Cinema. Your Gateway to the Best Movies.
         </p>
         <div class="flex justify-center space-x-4 mt-2">
-          <a href="#" class="text-gray-400 hover:text-white text-sm">Privacy Policy</a>
-          <a href="#" class="text-gray-400 hover:text-white text-sm">Terms of Use</a>
-          <a href="#" class="text-gray-400 hover:text-white text-sm">Contact Us</a>
+          <a href="#" class="text-gray-400 hover:text-white text-sm"
+            >Privacy Policy</a
+          >
+          <a href="#" class="text-gray-400 hover:text-white text-sm"
+            >Terms of Use</a
+          >
+          <a href="#" class="text-gray-400 hover:text-white text-sm"
+            >Contact Us</a
+          >
         </div>
       </div>
     </footer>

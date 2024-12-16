@@ -31,6 +31,5 @@ func SaveBase64Image(data, filePath string) error {
 	if err != nil {
 		return fmt.Errorf("failed to save image: %v", err)
 	}
-
 	return nil
 }

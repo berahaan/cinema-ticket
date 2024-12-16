@@ -5,16 +5,12 @@ const route = useRoute();
 const movieId = parseInt(route.params.id);
 const selectedMovieId = ref(null);
 const { schedule, addSchedule, isloading } = useAddSchedule();
-console.log("Movie Id here ", movieId);
 const { selectClass } = useThemeColor();
 const { goBack } = useGobackArrow();
 const handleSchedule = async () => {
-  console.log(
-    "Here a movie Id is in Add Schedules components its ",
-    selectedMovieId.value
-  );
+  
   selectedMovieId.value = movieId;
-  console.log("Now handle schedules is processing... ");
+  
   try {
     await addSchedule(
       selectedMovieId.value,
@@ -25,7 +21,7 @@ const handleSchedule = async () => {
       schedule.value.ticket_price
     );
   } catch (error) {
-    console.log("Errors ", error);
+   throw error
   }
 };
 </script>

@@ -36,18 +36,16 @@ const checkUserchanges = () => {
   isNotSelected.value = !isNotSelected.value;
 };
 const CheckEmailExist = async (email) => {
-  console.log("Checking if email already exists...");
+  
   try {
     const { data } = await $apollo.query({
       query: GET_EMAIL,
       variables: { email }, // Pass the email as a variable
       fetchPolicy: "network-only", // Ensure the query fetches fresh data
     });
-
-    console.log("Response for CheckEmails:", data);
     return data.users.length > 0; // Return true if email exists, false otherwise
   } catch (error) {
-    console.error("Error checking email existence:", error);
+    console.error("Error checking email existence", error);
     return false;
   }
 };
@@ -59,12 +57,12 @@ const saveProfile = async () => {
 
   // If email has changed, validate it
   if (formData.value.email && formData.value.email !== currentEmail.value) {
-    console.log("Email has changed, checking availability...");
+  
 
     const emailExists = await CheckEmailExist(formData.value.email);
 
     if (emailExists) {
-      console.warn("Email already exists. Keeping the current email.");
+     
       toast.error("The email is already in use. Please choose another.", {
         position: "top-center",
         duration: 2000,
@@ -75,7 +73,7 @@ const saveProfile = async () => {
   } else {
     console.log("Email is unchanged.");
   }
-  console.log("Proceeding to save profile...");
+ 
   const { profileImage64 } = useProfileImageBase64Store();
   try {
     // Upload profile image if required
@@ -92,8 +90,6 @@ const saveProfile = async () => {
       },
       refetchQueries: [{ query: GET_USERINFO }],
     });
-
-    console.log("Profile updated successfully:", UpdateResponse.data);
     toast.success("Profile updated successfully!", {
       position: "top-center",
       duration: 2000,
@@ -106,7 +102,7 @@ const saveProfile = async () => {
       profilePicture: "",
     };
   } catch (error) {
-    console.error("Error updating profile:", error);
+    
     toast.error("Failed to update profile. Please try again.", {
       position: "top-center",
       duration: 2000,
@@ -118,7 +114,7 @@ const fetchUserInfo = async () => {
   const decodedToken = jwtDecode(localStorage.getItem("accessToken"));
   const userId =
     decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-  console.log("Here is a userId in profiles now to test ", userId);
+ 
   try {
     const response = await $apollo.query({
       query: GET_USERINFO,

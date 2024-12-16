@@ -20,18 +20,18 @@ export const useFetchMovies = () => {
   const genreQuery = ref("");
   const scheduleQuery = ref("");
   const currentPage = ref(1);
-  const limit = 4;
+  const limit = 5;
   const totalPages = ref(1);
   const offset = computed(() => (currentPage.value - 1) * limit);
   const goToNextPage = () => {
-    console.log("Here go nextpage is clicked now ");
+    
     if (currentPage.value < totalPages.value) {
       currentPage.value += 1;
       fetchMovies();
     }
   };
   const goToPreviousPage = () => {
-    console.log("Here go previous is clicked now ");
+    
     if (currentPage.value > 1) {
       currentPage.value -= 1;
       fetchMovies();
@@ -52,7 +52,7 @@ export const useFetchMovies = () => {
         offset: offset.value,
       };
       if (scheduleQuery.value && scheduleQuery.value !== "All") {
-        console.log("Schedule is selected:", scheduleQuery.value);
+       
         if (scheduleQuery.value === "Today") {
           scheduleStart = scheduleEnd = today.toISOString().split("T")[0];
         } else if (scheduleQuery.value === "This Week") {
@@ -95,9 +95,7 @@ export const useFetchMovies = () => {
         scheduleEnd
       ) {
         // Schedule filter condition to match dates between scheduleStart and scheduleEnd
-        conditions.push(
-          `scheduleDate_gte: "${scheduleStart}", scheduleDate_lte: "${scheduleEnd}"`
-        );
+       
         variables.scheduleStart = scheduleStart;
         variables.scheduleEnd = scheduleEnd;
       }
@@ -109,24 +107,20 @@ export const useFetchMovies = () => {
         directorQuery.value &&
         scheduleQuery.value
       ) {
-        console.log(
-          "Fetching movies with title, genre, director, and schedule"
-        );
+      
         query = GET_MOVIE_TGDS;
       }
       // Check for different combinations of filters
       if (conditions.length == 4 && scheduleStart) {
-        console.log("Fetching movies with title, genre, and schedule");
         query = GET_MOVIE_TGDS;
       }
       if (conditions.length === 3 && scheduleStart) {
-        console.log("Fetching movies with title, genre, and schedule");
+      
         query = GET_ALLMOVIEPARTS;
       } else if (conditions.length === 3) {
-        console.log("Fetching movies with title, genre, and director");
         query = GET_MOV_TIT_DIR_GEN;
       } else if (conditions.length === 2) {
-        console.log("Fetching movies with two active filters:", conditions);
+        
         if (variables.title && variables.genres) {
           query = GET_MOVIE_TITLE_GENRE;
         } else if (variables.title && variables.director) {
@@ -135,7 +129,7 @@ export const useFetchMovies = () => {
           query = GET_MOVIE_DIR_GENRE;
         }
       } else if (conditions.length === 1) {
-        console.log("Fetching movies with one active filter:", conditions);
+       
         if (variables.title) {
           query = GET_TITLE;
         } else if (variables.genres) {
@@ -143,17 +137,11 @@ export const useFetchMovies = () => {
         } else if (variables.director) {
           query = GET_MOVIE_BYDIRECTOR;
         } else if (variables.scheduleStart && variables.scheduleEnd) {
-          console.log("Fetching movies with selected schedule only");
-          console.log(
-            "here is shcedule ",
-            variables.scheduleStart,
-            "End in ",
-            variables.scheduleEnd
-          );
+          
           query = GET_MOVIEBY_SCHEDULE; // Adjust query for schedule only
         }
       } else {
-        console.log("Fetching all movies");
+      
         query = GET_MOVIES;
       }
 
@@ -163,17 +151,11 @@ export const useFetchMovies = () => {
         fetchPolicy: "network-only",
       });
       movies.value = data.movies;
-      console.log("Fetched movies:", movies.value);
       const totalMoviesCount = data.movies_aggregate.aggregate.count;
       totalPages.value = Math.ceil(totalMoviesCount / limit);
       if (movies.value.length === 0) {
         noMoviesFound.value = true;
-        console.log(
-          "Current pages",
-          currentPage.value,
-          "total Pages ",
-          totalPages.value
-        );
+        
         movieStore.setMovies([]);
       } else {
         movieStore.setMovies(data.movies);

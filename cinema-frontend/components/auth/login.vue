@@ -30,10 +30,6 @@ const validatePassword = (value) => {
 
 const login = async () => {
   loading.value = true;
-  if (!email.value || !password.value) {
-    errorMessage.value = "All fields are required";
-    return;
-  }
 
   try {
     const response = await $apollo.mutate({
@@ -42,16 +38,14 @@ const login = async () => {
     });
 
     const { accessToken } = response.data.login;
-    console.log("Login Response:", response.data.login);
-    console.log("Token ::", accessToken);
+
     if (accessToken) {
       localStorage.setItem("accessToken", accessToken);
       const decodedToken = jwtDecode(accessToken);
-      console.log("Decoded Token:", decodedToken);
       const defaultRole =
         decodedToken["https://hasura.io/jwt/claims"]["x-hasura-default-role"];
       // Navigate based on the default role
-      console.log("Default Role for this pages :", defaultRole); // this exactly works here
+
       if (defaultRole === "admin" || defaultRole === "managers") {
         router.push("/admin");
       } else if (defaultRole === "regular") {
@@ -60,10 +54,10 @@ const login = async () => {
         router.push("/");
       }
     } else {
+      router.push("/");
       errorMessage.value = "Login failed: No tokens received";
     }
   } catch (error) {
-    console.log("Errors ", error);
     if (error.graphQLErrors && error.graphQLErrors[0]) {
       errorMessage.value = error.graphQLErrors[0].message;
       toast.warning(errorMessage.value, {
@@ -85,7 +79,9 @@ const login = async () => {
 };
 </script>
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gradient-to-r from-gray-100 via-gray-200 to-gray-300"
+  >
     <div class="bg-white shadow-2xl rounded-lg p-8 max-w-md w-full">
       <!-- Heading -->
       <h1 class="text-3xl font-extrabold text-center mb-4 text-gray-700">
@@ -115,10 +111,7 @@ const login = async () => {
               :rules="validateEmail"
             />
           </div>
-          <ErrorMessage
-            name="email"
-            class="text-sm text-red-600 mt-1"
-          />
+          <ErrorMessage name="email" class="text-sm text-red-600 mt-1" />
         </div>
 
         <!-- Password Input -->
@@ -144,10 +137,7 @@ const login = async () => {
               <EyeIcon v-if="!showPassword" class="w-5 h-5 text-gray-400" />
               <EyeOffIcon v-else class="w-5 h-5 text-gray-400" />
             </button>
-            <ErrorMessage
-              name="password"
-              class="text-sm text-red-600 mt-1"
-            />
+            <ErrorMessage name="password" class="text-sm text-red-600 mt-1" />
           </div>
         </div>
 
@@ -178,7 +168,7 @@ const login = async () => {
                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
               ></path>
             </svg>
-            processing...
+            please wait...
           </span>
           <span v-else>Login</span>
         </button>

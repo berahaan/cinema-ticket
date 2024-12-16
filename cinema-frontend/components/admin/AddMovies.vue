@@ -56,7 +56,7 @@ const handleAddMovies = async () => {
     );
     await fetchMovies();
     if (response) {
-      console.log("Added successfully to daatabase now ");
+      console.log("Success ");
     }
   } catch (error) {
     console.error("Errors while adding movies:", error);
@@ -71,7 +71,7 @@ onMounted(async () => {
 
 watch(stars, (newStars) => {
   if (newStars.length > 0) {
-    console.log("Stars have been updated:", newStars);
+    console.log("updated:");
   }
 });
 </script>

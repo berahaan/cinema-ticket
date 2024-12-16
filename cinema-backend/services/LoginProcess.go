@@ -24,7 +24,6 @@ func Login(args models.LoginArgs) (response models.LoginOutput, err error) {
 	}
 
 	userId := user.ID
-	fmt.Println("User id here ", userId)
 	accessToken, err := utils.GenerateJWT(userId, *args.Email, string(user.Role))
 	if err != nil {
 		return models.LoginOutput{}, fmt.Errorf("failed to generate access token: %w", err)

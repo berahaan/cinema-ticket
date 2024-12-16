@@ -8,9 +8,7 @@ import { UPDATE_STAR } from "../components/graphql/mutations/UPDATE_STAR.graphql
 import { DELETE_STAR } from "../components/graphql/mutations/DELETE_STAR.graphql";
 import { useToast } from "vue-toastification";
 import { Form, Field, ErrorMessage } from "vee-validate";
-import * as yup from "yup";
 import Loading from "./Loading.vue";
-const { validationSchema } = useValidate();
 const { refreshPage } = useRefresh();
 const { selectClass } = useThemeColor();
 const { $apollo } = useNuxtApp();
@@ -33,7 +31,6 @@ const fetchStars = async () => {
       query: GET_STARS,
       fetchPolicy: "network-only",
     });
-    // await new Promise((resolve) => setTimeout(resolve, 4000));
     stars.value = response.data.stars;
   } catch (error) {
     console.error("Error fetching stars:", error);
@@ -41,7 +38,16 @@ const fetchStars = async () => {
     loading.value = false;
   }
 };
+const validateName = (event) => {
+  if (!event) {
+    return "Please Fix stars";
+  } else if (event?.length < 3) {
+    return "start name should be at least 3 char";
+  }
+  return true;
+};
 const onSubmit = async () => {
+  console.log("Clicked now ....");
   success.value = true;
   loading.value = true;
   try {
@@ -52,8 +58,8 @@ const onSubmit = async () => {
           id: formData.value.star_id,
           name: formData.value.name,
         },
-        refetchQueries: [{ query: GET_STARS }],
       });
+      await fetchStars();
       toast.success("updated successfully ", {
         position: "top-right",
         timeout: 3000,
@@ -85,9 +91,13 @@ const onSubmit = async () => {
             const response = await $apollo.mutate({
               mutation: ADD_STAR,
               variables: { name: formData.value.name },
-              refetchQueries: [{ query: GET_STARS }],
             });
             if (response && response.data) {
+              await fetchStars();
+              console.log(
+                "Stars after added and fetch added now  ",
+                stars.value
+              );
               toast.success("Star added successfully.", {
                 position: "top-right",
                 timeout: 3000,
@@ -138,6 +148,9 @@ const deleteStar = async (id) => {
       });
 
       if (response && response.data) {
+        console.log("Star Id ", id);
+        stars.value = stars.value.filter((star) => star.star_id !== id);
+        console.log("STarts Length ", stars.length);
         toast.success("Star deleted successfully.", {
           position: "top-center",
           timeout: 3000,
@@ -157,10 +170,6 @@ const deleteStar = async (id) => {
     });
   }
 };
-// const validationSchema = yup.object({
-//     name: yup.string().required("name is required from yup"),
-
-//   });
 onMounted(fetchStars);
 </script>
 
@@ -174,25 +183,9 @@ onMounted(fetchStars);
       <Loading />
     </div>
     <div class="flex justify-between mb-2">
-      <label for="name"> Star Name: </label>
-      <button @click="refreshPage(fetchStars)" class="ml-4">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path
-            d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-          />
-        </svg>
-      </button>
+      <label for="name">Add Stars Here</label>
     </div>
-    <Form
-      @submit="onSubmit"
-      :validation-schema="validationSchema"
-      class="space-y-4 px-2"
-    >
+    <Form @submit="onSubmit" class="space-y-4 px-2">
       <div class="flex flex-col">
         <Field
           v-model="formData.name"
@@ -201,6 +194,7 @@ onMounted(fetchStars);
           placeholder="Enter star's name"
           class="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           :class="selectClass"
+          :rules="validateName"
         />
         <ErrorMessage name="name" class="text-red-600" />
       </div>

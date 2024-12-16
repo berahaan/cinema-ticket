@@ -1,14 +1,12 @@
 import { jwtDecode } from "jwt-decode";
 import { useNuxtApp } from "#app";
 import { useToast } from "vue-toastification";
-import { useRouter } from "vue-router";
-import { GET_BOOKMARK_U_INFO } from "../components/graphql/queries/GET_BOOKMARK_U_INFO.graphql";
 import { DELETE_BOOKMARKS } from "../components/graphql/mutations/DELETE_BOOKMARKS.graphql";
 import { ADD_BOOKMARKS } from "../components/graphql/mutations/ADD_BOOKMARKS.graphql";
 import { GET_BOOKMARKS } from "../components/graphql/queries/GET_BOOKMARKS.graphql";
 export const useBookmarks = () => {
   const { $apollo } = useNuxtApp();
-  const router = useRouter();
+  const bookmarkedMovies = ref([]);
   const bookmark = useBookmarkStore();
   const toast = useToast();
   const isBookmarked = ref(false);
@@ -19,8 +17,6 @@ export const useBookmarks = () => {
     const decodedToken = jwtDecode(localStorage.getItem("accessToken"));
     const userId =
       decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-    console.log("user id now for regular users ", userId);
-
     try {
       const response = await $apollo.query({
         query: GET_BOOKMARKS,
@@ -29,8 +25,11 @@ export const useBookmarks = () => {
       });
       bookmarks.value = response.data.bookmarks;
       bookmark.setBookmarks(response.data.bookmarks);
-
+      bookmarkedMovies.value = response.data.bookmarks.map(
+        (bookmark) => bookmark.movie_id
+      );
       isBookmarkExist.value = bookmarks.value.length === 0;
+      isBookmarked.value = bookmarks.value.length === 0;
     } catch (error) {
       console.error("Error fetching bookmarks:", error);
     } finally {
@@ -43,25 +42,40 @@ export const useBookmarks = () => {
     const decodedToken = jwtDecode(token);
     const userId =
       decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-    console.log("user id here", userId);
     try {
       const response = await $apollo.mutate({
         mutation: DELETE_BOOKMARKS,
         variables: { userId: userId, movieId: movieId },
         refetchQueries: [
           {
-            query: GET_BOOKMARK_U_INFO,
-            variables: { UserId: userId, movieId: movieId },
+            query: GET_BOOKMARKS,
+            variables: { userId: userId },
           },
         ],
       });
 
       if (response.data.delete_bookmarks.affected_rows > 0) {
-        isBookmarked.value = false;
-        console.log("Bookmark successfully removed from list.");
-        toast.success("Bookmarks removed successfully ", {
-          position: "top-right",
-          duration: 4000,
+        isBookmarked.value = true;
+        isBookmarkExist.value = false;
+        bookmarks.value = bookmarks.value.filter(
+          (movie) => movie.movie_id !== movieId
+        );
+        bookmark.setBookmarks(
+          bookmark.bookmarks.filter((bookmark) => bookmark.movie_id !== movieId)
+        );
+        toast.success("Bookmarks removed successfully", {
+          position: window.innerWidth < 768 ? "top-center" : "top-right",
+          timeout: 1000,
+          className: `
+            bg-green-500 dark:bg-green-700 text-white 
+            font-medium 
+            ${
+              window.innerWidth < 768
+                ? "text-[10px] p-1 max-w-[150px]"
+                : "text-sm p-3 max-w-[300px]"
+            } 
+            rounded-md shadow-md
+          `,
         });
       } else {
         console.log("No bookmark found to delete.");
@@ -70,73 +84,54 @@ export const useBookmarks = () => {
       console.error("Errors while deleting Bookmarks:", error);
     }
   };
-
-  const getBookmarkDetail = () => {
-    console.log("Clicked here ");
-    const accessToken = localStorage.getItem("accessToken");
-    const decodedToken = jwtDecode(accessToken);
-    const defaultRole =
-      decodedToken["https://hasura.io/jwt/claims"]["x-hasura-default-role"];
-    if (defaultRole === "admin") {
-      console.log("Role for profiles is admin here ");
-      router.push("/admin/Bookmark");
-    } else {
-      console.log("Role for Profiles is regular here");
-      router.push("/user/Bookmark");
-    }
+  const isBookmarkedCheck = (movieId) => {
+    return bookmarkedMovies.value.includes(movieId);
   };
-
   const toggleBookmark = async (movieId) => {
-    console.log("Selected Movie ID for Bookmarking:", movieId);
-    const decodedToken = jwtDecode(localStorage.getItem("accessToken"));
+    const accessToken = localStorage.getItem("accessToken");
+    if (!accessToken) {
+      return toast.error("You must be logged in to toggle bookmarks.", {
+        position: "top-center",
+      });
+    }
+
+    const decodedToken = jwtDecode(accessToken);
     const userId =
       decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
 
     try {
-      // Check if the bookmark already exists
-      const queryResponse = await $apollo.query({
-        query: GET_BOOKMARK_U_INFO,
-        variables: { userId, movieId },
-        fetchPolicy: "network-only",
-      });
-
-      const existingBookmark = queryResponse.data.bookmarks;
-      if (existingBookmark && existingBookmark.length > 0) {
-        console.log("Bookmark exist and try to remove it now ");
+      if (isBookmarkedCheck(movieId)) {
         await removeBookmarks(movieId);
+        bookmarkedMovies.value = bookmarkedMovies.value.filter(
+          (id) => id !== movieId
+        );
       } else {
-        const mutationResponse = await $apollo.mutate({
+        await $apollo.mutate({
           mutation: ADD_BOOKMARKS,
-          variables: { UserId: userId, movieId: movieId },
-          refetchQueries: [
-            {
-              query: GET_BOOKMARK_U_INFO,
-              variables: { UserId: userId, movieId: movieId },
-            },
-          ],
+          variables: {
+            UserId: userId,
+            movieId: movieId,
+          },
         });
-
-        if (mutationResponse && mutationResponse.data) {
-          isBookmarked.value = true;
-          toast.success("Bookmark added successfully!", {
-            position: "top-center",
-            timeout: 5000,
-          });
-        }
+        bookmarkedMovies.value.push(movieId);
+        toast.success("Bookmark added successfully!", {
+          position: "top-center",
+        });
       }
     } catch (error) {
-      console.error("Error handling bookmark:", error);
+      toast.error("An error occurred while processing your request.", {
+        position: "top-center",
+      });
     }
   };
-
   return {
     toggleBookmark,
     isBookmarked,
     removeBookmarks,
     getBookmarks,
     bookmarks,
-    getBookmarkDetail,
     loading,
+    isBookmarkedCheck,
     isBookmarkExist,
   };
 };

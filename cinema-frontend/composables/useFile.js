@@ -40,7 +40,6 @@ export function useFile() {
     // this function purpose is to make ready the images to be sent to a hasura for other process
     const files = event.target.files;
     const selectedFiles = [...files];
-    console.log("Length of selectfiles in composables ", selectedFiles.length);
     if (selectedFiles.length > 5) {
       toast.warning("You can upload a maximum of 5 images ", {
         position: "top-right",
@@ -62,7 +61,6 @@ export function useFile() {
       });
       imageStore.setImageBase64(imageStore.featuredImage64, base64Images);
       otherImagesBase64.value = base64Images;
-      console.log("Here otherImages ", otherImagesBase64.value);
     }
   };
 

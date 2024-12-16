@@ -8,14 +8,14 @@ export function useRating() {
   const toast = useToast();
   const userRatings = ref([]);
   const isModal = ref(false);
+  const israte = ref(false);
   const selectedRating = ref(0);
   const currentMovieId = ref(null);
   const { $apollo } = useNuxtApp();
   const openRatingModal = (movieId) => {
-    console.log("movieId in modals", movieId);
     const rate = userRatings.value[movieId];
     currentMovieId.value = movieId;
-    isModal.value = true;
+    israte.value = !israte.value;
     selectedRating.value = rate || 0;
   };
 
@@ -30,18 +30,9 @@ export function useRating() {
       const decodedToken = jwtDecode(accessToken);
       const userId =
         decodedToken["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-
-      console.log(
-        "movieId here ",
-        movieId,
-        "And star values",
-        selectedRating.value,
-        "User id here is ",
-        userId
-      );
-      isModal.value = false;
+      // isModal.value = false;
+      israte.value = false;
       currentMovieId.value = null;
-
       try {
         const checkRate = await $apollo.query({
           query: GET_RATE_INFO,
@@ -50,22 +41,15 @@ export function useRating() {
         });
         const existingRate = checkRate.data.rate_movie;
         if (existingRate && existingRate.length > 0) {
-          console.log("existingrate ", existingRate);
           const rateId = existingRate[0].rating_id;
           const rate = selectedRating.value;
-          console.log(
-            "rate info to be updated here ",
-            "rating id ",
-            existingRate[0].rating_id,
-            "rate value now ",
-            rate
-          );
-
           const updateResponse = await $apollo.mutate({
             mutation: UPDATE_RATES,
             variables: { ratingId: rateId, rate: rate },
           });
           if (updateResponse && updateResponse.data) {
+            israte.value = false;
+
             toast.success("Updated successfully", {
               position: "top-center",
               duration: 2000,
@@ -87,11 +71,9 @@ export function useRating() {
               },
             ],
           });
-          console.log(
-            "Here is response for rating information",
-            responseRate.data
-          );
+
           if (responseRate && responseRate.data) {
+            israte.value = false;
             toast.success("Rated successfully", {
               position: "top-center",
               duration: 4000,
@@ -112,6 +94,7 @@ export function useRating() {
     userRatings,
     selectedRating,
     submitRating,
+    israte,
     currentMovieId,
   };
 }

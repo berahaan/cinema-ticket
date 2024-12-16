@@ -7,15 +7,7 @@ const { selectClass } = useThemeColor();
 const { refreshPage } = useRefresh();
 const { goBack } = useGobackArrow();
 const movie = useMoviesStore();
-const {
-  addSchedule,
-  schedule,
-  openScheduleModal,
-  closeScheduleModal,
-  isScheduleModalOpen,
-  isloading,
-  selectedMovieId,
-} = useAddSchedule();
+const { openScheduleModal, isloading } = useAddSchedule();
 const {
   fetchMovies,
   searchQuery,
@@ -60,18 +52,6 @@ onMounted(async () => {
       <!-- Container for Refresh and Go Back buttons (Right-aligned) -->
       <div class="flex items-center space-x-4 ml-4">
         <!-- Refresh Button (Right-aligned) -->
-        <button @click="refreshPage(fetchMovies)" class="mb-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-          >
-            <path
-              d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-            />
-          </svg>
-        </button>
 
         <!-- Go Back Button (Right-aligned) -->
         <button
@@ -181,9 +161,10 @@ onMounted(async () => {
     <button
       @click="goToPreviousPage"
       :disabled="currentPage === 1"
-      class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+      class="text-teal-600 flex px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
     >
-      <ArrowLeftIcon class="w-8 h-8 flex" />
+      <ArrowLeftIcon class="w-6 h-6 mx-2" />
+      previous
     </button>
     <span class="font-semibold">
       {{
@@ -194,10 +175,11 @@ onMounted(async () => {
     </span>
     <button
       @click="goToNextPage"
-      :disabled="currentPage === movie.totalPages || noMoviesFound"
-      class="text-teal-800 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+      :disabled="currentPage === movie.totalPages"
+      class="text-teal-600 flex px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
     >
-      <ArrowRightIcon class="w-8 h-8 flex" />
+      Next
+      <ArrowRightIcon class="w-6 h-6 mx-2" />
     </button>
   </div>
 </template>

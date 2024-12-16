@@ -14,7 +14,6 @@ const {
 
 const { selectClass } = useThemeColor();
 const { UpdateSchedules } = useMoviesSchedule();
-const { refreshPage } = useRefresh();
 const errorMessage = ref("");
 onMounted(async () => {
   await fetchMovies();
@@ -31,19 +30,6 @@ onMounted(async () => {
         class="border p-2 rounded w-full md:w-1/3 text-gray-600 outline-none focus:ring-2 focus:ring-blue-500 transition mb-4 mt-20"
         :class="selectClass"
       />
-
-      <button @click="refreshPage(fetchMovies)" class="ml-4 mb-8 mt-20">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-          viewBox="0 0 24 24"
-          fill="currentColor"
-        >
-          <path
-            d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-          />
-        </svg>
-      </button>
     </div>
     <div
       v-if="isloading"
@@ -137,7 +123,7 @@ onMounted(async () => {
 
       <div
         v-else
-        class="flex items-center justify-center p-6 bg-gray-100 border border-gray-300 rounded-md shadow-md md:mx-20"
+        class="flex items-center justify-center p-6 bg-gray-100 border border-gray-300 rounded-md shadow-md md:mx-20 mb-40"
       >
         <p class="font-semibold text-gray-600 text-center">
           Unfortunately, we didn't find any movies matching your search.
@@ -157,16 +143,10 @@ onMounted(async () => {
       >
         Previous
       </button>
-      <span class="font-semibold">
-        {{
-          noMoviesFound
-            ? "Page 1 of total 1"
-            : `page ${currentPage} of ${movie.totalPages}`
-        }}
-      </span>
+      <span>page {{ currentPage }} of {{ movie.totalPages }}</span>
       <button
         @click="goToNextPage"
-        :disabled="currentPage === movie.totalPages || noMoviesFound"
+        :disabled="currentPage === movie.totalPages"
         class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
         :class="selectClass"
       >

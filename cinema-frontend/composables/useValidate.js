@@ -33,7 +33,6 @@ export const useValidate = () => {
     return true; // Validation passed
   };
   const validateStar = (value) => {
-    console.log("Validating star:", value); // Debugging log
     if (!value || value === "") {
       return "Please choose a star";
     }
@@ -82,7 +81,10 @@ export const useValidate = () => {
     return true;
   };
   const validationSchema = yup.object({
-    name: yup.string().required("name is required").min(3,"Star name should be atleaset 3 characters"),
+    name: yup
+      .string()
+      .required("name is required")
+      .min(3, "Star name should be atleaset 3 characters"),
     first_name: yup.string().required("First Name is required"),
     last_name: yup.string().required("Last Name is required"),
     phone_number: yup

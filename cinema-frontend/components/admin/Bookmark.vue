@@ -6,8 +6,7 @@ const { formatScheduleDateTime } = useFormatSchedule();
 const { selectClass } = useThemeColor();
 const { goBack } = useGobackArrow();
 const bookmark = useBookmarkStore();
-const { removeBookmarks, getBookmarks, isBookmarkExist, loading } =
-  useBookmarks();
+const { removeBookmarks, getBookmarks, loading } = useBookmarks();
 
 onMounted(async () => {
   await getBookmarks();
@@ -28,11 +27,8 @@ onMounted(async () => {
     <div v-if="loading" class="text-center">
       <Loading />
     </div>
-    <div v-if="isBookmarkExist" class="text-center">
-      Unfortunately, no bookmarks found at the moment.
-    </div>
 
-    <div v-else>
+    <div v-if="bookmark.bookmarks?.length > 0">
       <ul class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <li
           v-for="bookmark in bookmark.bookmarks"
@@ -50,8 +46,6 @@ onMounted(async () => {
                 class="w-full h-48 object-cover rounded-lg shadow-md cursor-pointer"
               />
             </div>
-
-            <!-- Schedule List and Movie Details -->
             <div class="flex-1 flex flex-col space-y-3">
               <div>
                 <h3 class="text-lg" :class="selectClass">
@@ -117,7 +111,6 @@ onMounted(async () => {
               </li>
             </ul>
           </div>
-          <!-- Remove Bookmark Button -->
           <button
             @click="removeBookmarks(bookmark.movie_id)"
             class="px-4 py-2 bg-red-600 dark:bg-red-800 text-white rounded-lg mx-6"
@@ -126,6 +119,10 @@ onMounted(async () => {
           </button>
         </li>
       </ul>
+    </div>
+    <div v-else class="mx-10 mb-96">
+      Unfortunately, no bookmarks found at the moment Please try to add Movies
+      here...
     </div>
   </div>
 </template>

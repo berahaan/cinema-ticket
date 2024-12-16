@@ -1,5 +1,4 @@
 <script setup>
-// ssh -R 80:localhost:4000 serveo.net
 import { useRoute } from "vue-router";
 import { useRouter } from "vue-router";
 import { ArrowLeftIcon, CheckCircleIcon } from "@heroicons/vue/solid";
@@ -7,7 +6,7 @@ import { jwtDecode } from "jwt-decode";
 import { onMounted, ref } from "vue";
 import { useNuxtApp } from "#app";
 import { GET_TICKET_INFO } from "./graphql/queries/GET_TICKET_INFO.graphql";
-import { DOWNLOAD_TICKET } from "./graphql/mutations/DOWNLOAD_TICKET.graphql";
+
 import Loading from "./admin/Loading.vue";
 const route = useRoute();
 const { $apollo } = useNuxtApp();
@@ -21,7 +20,6 @@ const ticket = ref(null);
 const statusClass = ref("");
 const loading = ref(false);
 const backhome = () => {
-  console.log("Clicked now ");
   const accessToken = localStorage.getItem("accessToken");
   const decodedToken = jwtDecode(accessToken);
   const defaultRole =
@@ -41,10 +39,10 @@ const fetchTicket = async () => {
       variables: { tx_ref },
     });
     if (response.data.ticket.length > 0) {
-      console.log("response ", response.data);
+     
       ticketFound.value = true;
       ticket.value = response.data.ticket[0];
-      console.log("ticket.value", ticket.value);
+      
       statusClass.value =
         ticket.value.payment_status === "paid"
           ? "text-green-500"
@@ -54,46 +52,13 @@ const fetchTicket = async () => {
       ticketFound.value = false;
     }
   } catch (error) {
-    console.error("Error fetching ticket details:", error);
+   
+    throw error
   } finally {
     loading.value = false;
   }
 };
-const downloadTicket = async () => {
-  console.log("Tx_ref ", tx_ref);
-  try {
-    const { data } = await $apollo.mutate({
-      mutation: DOWNLOAD_TICKET,
-      variables: { tx_ref },
-    });
 
-    if (data && data.downloadTicket.pdf_base64) {
-      console.log("PDF data received:", data.pdf_base64);
-      // Decode the Base64 string to binary data
-      const binaryData = atob(data.downloadTicket.pdf_base64);
-      // Convert binary data to an array of bytes
-      const byteArray = new Uint8Array(binaryData.length);
-      for (let i = 0; i < binaryData.length; i++) {
-        byteArray[i] = binaryData.charCodeAt(i);
-      }
-      // Create a Blob from the byteArray
-      const blob = new Blob([byteArray], { type: "application/pdf" });
-
-      // Create a download link and trigger the download
-      const downloadUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      link.download = "ticket.pdf";
-      link.click();
-      // Clean up
-      URL.revokeObjectURL(downloadUrl);
-    } else {
-      console.log("Else part is executed ");
-    }
-  } catch (error) {
-    console.error("Error downloading the ticket:", error);
-  }
-};
 onMounted(fetchTicket);
 </script>
 <template>

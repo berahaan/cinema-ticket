@@ -23,7 +23,7 @@ const fetchMovieSchedules = async () => {
   const { data } = await $apollo.query({
     query: FETCH_SCHEDULES,
     variables: { movie_id },
-    fetchPolicy: "network",
+    fetchPolicy: "network-only",
   });
   console.log("Fetched schedules now ", data.movie_schedules);
   schedules.value = data.movie_schedules.map((schedule) => ({
@@ -59,6 +59,7 @@ const removeSchedule = async (id) => {
         ],
       });
       if (deleteSchedules && deleteSchedules.data) {
+        await fetchMovieSchedules();
         toast.success("Schedules deleted successfully ", {
           position: "top-right",
           timeout: 2000,
@@ -94,7 +95,7 @@ const updateSchedule = async (schedule, index) => {
   loadingStates.value[index] = true; // Track loading state for this specific schedule
 
   try {
-    await $apollo.mutate({
+    const response = await $apollo.mutate({
       mutation: UPDATE_SCHEDULE,
       variables: {
         schedule_id: schedule_id, // Use unique ID to update only this schedule
@@ -111,11 +112,13 @@ const updateSchedule = async (schedule, index) => {
         },
       ],
     });
-
-    toast.success(`Schedule ${index + 1} updated successfully!`, {
-      position: "top-center",
-      timeout: 4000,
-    });
+    if (response && response.data) {
+      await fetchMovieSchedules();
+      toast.success(`Schedule ${index + 1} updated successfully!`, {
+        position: "top-center",
+        timeout: 4000,
+      });
+    }
   } catch (error) {
     console.error("Error updating schedule:", error);
     alert("An error occurred while updating the schedule.");

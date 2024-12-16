@@ -45,7 +45,7 @@ export function useMovies() {
         query: GET_MOVIE_DETAILS,
         variables: { movie_id },
       });
-      // const movie = response.data.movies[0];
+
       movie.setMovies(response.data.movies[0]);
       formData.value = {
         title: movie.movies.title,
@@ -99,11 +99,9 @@ export function useMovies() {
       movies.value = movies.value.filter(
         (movie) => movie.movie_id !== movieToDelete.value
       );
-      console.log("NOw here is movies before deleted now ", movie.movies);
       movie.setMovies(
         movie.movies.filter((movie) => movie.movie_id !== movieToDelete.value)
       );
-      console.log("NOw here is movies after deleted now ", movie.movies);
       toast.success("Movie deleted successfully ", {
         position: "top-center",
         timeout: 5000,

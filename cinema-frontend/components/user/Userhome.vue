@@ -122,13 +122,16 @@ watch(
         <XIcon v-else class="w-6 h-6" />
       </button>
 
-      <transition name="fade">
+      <transition name="fade" class="items-end">
         <div
           v-if="isMobileMenuOpen"
           :class="colorModeClasses"
-          class="absolute top-16 left-0 w-full md:hidden z-30 shadow-lg"
+          class="sm:hidden fixed top-16 right-4 shadow-lg rounded-md w-48"
         >
-          <ul class="flex flex-col items-center space-y-6 py-6">
+          <ul class="flex flex-col space-y-2 p-4 text-lg font-medium">
+            <li>
+              <nuxt-link to="/user" class="hover:underline">Home</nuxt-link>
+            </li>
             <li>
               <nuxt-link to="/user/Movielist" class="hover:text-blue-400"
                 >Movielist</nuxt-link

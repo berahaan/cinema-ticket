@@ -4,8 +4,9 @@ import {
   MenuIcon,
   SunIcon,
   MoonIcon,
-  PencilIcon,
-  ChevronDownIcon,
+  XIcon,
+  ChevronDoubleRightIcon,
+  ChevronRightIcon,
 } from "@heroicons/vue/solid";
 import { computed, onMounted, watch } from "vue";
 // PencilSquareIcon
@@ -96,7 +97,9 @@ body.text-black {
     :class="colorModeClasses"
   >
     <button @click="toggleMobileMenu" class="md:hidden mr-2">
-      <MenuIcon class="w-6 h-6" />
+      <!-- <MenuIcon class="w-6 h-6" /> -->
+      <MenuIcon v-if="!isMobileMenuOpen" class="w-6 h-6" />
+      <XIcon v-else class="w-6 h-6" />
     </button>
 
     <div class="flex items-center">
@@ -232,22 +235,22 @@ body.text-black {
     <div
       v-if="isMobileMenuOpen"
       :class="selectClass"
-      class="absolute top-16 left-0 w-full text-white p-4 md:hidden rounded-lg shadow-lg"
+      class="sm:hidden fixed top-16 left-0 shadow-lg rounded-md w-60"
     >
-      <nav class="flex flex-col space-y-4">
+      <nav class="flex flex-col items-start space-y-2 p-4 text-lg font-medium">
         <div class="relative">
           <button
             @click="toggleMenu('movies')"
             :class="selectClass"
             class="flex items-center justify-between w-full px-4 py-2 text-lg font-semibold rounded-md transition-colors hover:text-teal-600"
           >
-            <span>🎬 Movie Management</span>
+            <span>Movie </span>
             <span
               :class="`transform ${
                 activeMenu === 'movies' ? 'rotate-90' : 'rotate-0'
               } transition-transform ${selectClass}`"
             >
-              ➤
+              <ChevronRightIcon class="w-6 h-6" />
             </span>
           </button>
           <div v-if="activeMenu === 'movies'" class="ml-6 mt-2 space-y-1">
@@ -273,13 +276,13 @@ body.text-black {
             class="flex items-center justify-between w-full px-4 py-2 text-lg font-semibold rounded-md transition-colors hover:text-teal-600"
             :class="selectClass"
           >
-            <span>📅 Schedule Management</span>
+            <span> Schedule</span>
             <span
               :class="`transform ${
                 activeMenu === 'schedule' ? 'rotate-90' : 'rotate-0'
               } transition-transform  ${selectClass}`"
             >
-              ➤
+              <ChevronRightIcon class="w-6 h-6" />
             </span>
           </button>
           <div
@@ -299,8 +302,6 @@ body.text-black {
             >
           </div>
         </div>
-
-        <!-- Star Management -->
         <nuxt-link
           to="/admin/Star"
           class="flex items-center px-4 py-2 text-lg font-semibold rounded-md transition-colors hover:text-teal-600"
@@ -324,7 +325,7 @@ body.text-black {
           class="flex items-center px-4 py-2 text-lg font-semibold rounded-md transition-colors hover:text-teal-600"
           :class="selectClass"
         >
-          Director Management
+          Director
         </nuxt-link>
       </nav>
     </div>
