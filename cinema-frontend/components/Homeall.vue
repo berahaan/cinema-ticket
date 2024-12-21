@@ -50,44 +50,53 @@ onMounted(() => {
 
       <!-- Cinema Vision Statement -->
       <p
-        class="text-base md:text-xl py-2 md:py-6 text-center font-semibold bg-teal-300"
+        class="text-lg md:text-2xl py-4 md:py-6 text-center font-bold bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg rounded-md"
       >
-        At Ethio Cinema, we’re redefining entertainment. From blockbuster hits
-        to indie gems, every seat feels like the best in the house!
+        Experience the magic of movies, from thrilling blockbusters to
+        captivating indie tales — where every seat feels like the best in the
+        house!
       </p>
 
       <!-- Top 3 Recent Movies Section -->
-      <section class="my-12">
+      <section class="my-16 bg-gradient-to-b from-black to-gray-900 py-12">
         <h2
-          class="md:text-4xl text-xl font-bold mb-8 text-center text-gray-800"
+          class="text-3xl md:text-5xl font-extrabold mb-12 text-center text-yellow-400"
         >
-          🔥 Top 3 Recent Releases
+          🎬 Top 3 Recent Releases
         </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 px-6 md:px-12"
+        >
           <div
             v-for="movie in recentMovies"
             :key="movie.movie_id"
-            class="rounded-lg p-6 bg-gradient-to-r from-gray-100 to-gray-200 transition-transform transform hover:scale-105"
+            class="rounded-lg overflow-hidden bg-gray-800 shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
           >
-            <h3 class="md:text-2xl text-xl font-bold text-gray-800 mb-3">
-              {{ movie.title }}
-            </h3>
-            <p class="text-gray-600 text-sm">
-              🎥 Duration:
-              <span class="font-medium">{{ movie.duration }} minutes</span>
-            </p>
             <img
               v-if="movie.featured_images"
               :src="movie.featured_images"
               alt="Featured Image"
-              class="w-full h-48 object-cover mt-4 rounded-lg shadow-md"
+              class="w-full h-64 object-cover"
             />
-            <button
-              @click="buyTicket(movie.movie_id)"
-              class="px-4 mt-6 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-10"
-            >
-              🎟️Buy Ticket
-            </button>
+            <div class="p-6">
+              <h3 class="text-2xl font-bold text-white mb-4">
+                {{ movie.title }}
+              </h3>
+              <p class="text-gray-400 text-sm">
+                🎥 Duration:
+                <span class="text-yellow-400 font-medium"
+                  >{{ movie.duration }} minutes</span
+                >
+              </p>
+              <div class="text-center mt-6">
+                <button
+                  @click="buyTicket(movie.movie_id)"
+                  class="px-4 py-3 bg-yellow-500 hover:bg-yellow-600 text-black font-bold rounded-lg mr-10"
+                >
+                  Buy Ticket
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

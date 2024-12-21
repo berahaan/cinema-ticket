@@ -6,7 +6,6 @@ import { jwtDecode } from "jwt-decode";
 import { onMounted, ref } from "vue";
 import { useNuxtApp } from "#app";
 import { GET_TICKET_INFO } from "./graphql/queries/GET_TICKET_INFO.graphql";
-
 import Loading from "./admin/Loading.vue";
 const route = useRoute();
 const { $apollo } = useNuxtApp();
@@ -39,10 +38,9 @@ const fetchTicket = async () => {
       variables: { tx_ref },
     });
     if (response.data.ticket.length > 0) {
-     
       ticketFound.value = true;
       ticket.value = response.data.ticket[0];
-      
+
       statusClass.value =
         ticket.value.payment_status === "paid"
           ? "text-green-500"
@@ -52,8 +50,7 @@ const fetchTicket = async () => {
       ticketFound.value = false;
     }
   } catch (error) {
-   
-    throw error
+    throw error;
   } finally {
     loading.value = false;
   }

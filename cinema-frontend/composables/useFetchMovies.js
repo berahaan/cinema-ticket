@@ -24,14 +24,12 @@ export const useFetchMovies = () => {
   const totalPages = ref(1);
   const offset = computed(() => (currentPage.value - 1) * limit);
   const goToNextPage = () => {
-    
     if (currentPage.value < totalPages.value) {
       currentPage.value += 1;
       fetchMovies();
     }
   };
   const goToPreviousPage = () => {
-    
     if (currentPage.value > 1) {
       currentPage.value -= 1;
       fetchMovies();
@@ -41,7 +39,7 @@ export const useFetchMovies = () => {
   const fetchMovies = async () => {
     const { $apollo } = useNuxtApp();
     isloading.value = true;
-
+    console.log("Schedules query ", scheduleQuery.value);
     try {
       const today = new Date();
       let scheduleStart = null;
@@ -52,9 +50,12 @@ export const useFetchMovies = () => {
         offset: offset.value,
       };
       if (scheduleQuery.value && scheduleQuery.value !== "All") {
-       
+        console.log("Here is schedules is clicked now .....");
         if (scheduleQuery.value === "Today") {
+          console.log("Todays days ", today.toISOString());
+          console.log("Here in Today consoles for schedules ..");
           scheduleStart = scheduleEnd = today.toISOString().split("T")[0];
+          console.log("Here is To", scheduleEnd);
         } else if (scheduleQuery.value === "This Week") {
           const startOfWeek = new Date(today);
           startOfWeek.setDate(today.getDate() - today.getDay());
@@ -88,14 +89,7 @@ export const useFetchMovies = () => {
         conditions.push(`director: "${directorQuery.value}"`);
         variables.director = directorQuery.value;
       }
-      if (
-        scheduleQuery.value &&
-        scheduleQuery.value !== "All" &&
-        scheduleStart &&
-        scheduleEnd
-      ) {
-        // Schedule filter condition to match dates between scheduleStart and scheduleEnd
-       
+      if (scheduleQuery.value && scheduleQuery.value !== "All") {
         variables.scheduleStart = scheduleStart;
         variables.scheduleEnd = scheduleEnd;
       }
@@ -107,20 +101,26 @@ export const useFetchMovies = () => {
         directorQuery.value &&
         scheduleQuery.value
       ) {
-      
         query = GET_MOVIE_TGDS;
       }
+      console.log("Query selection conditions: ", {
+        scheduleStart,
+        scheduleEnd,
+        conditions,
+      });
       // Check for different combinations of filters
-      if (conditions.length == 4 && scheduleStart) {
+      if (variables.scheduleStart && variables.scheduleEnd) {
+        console.log("Here both are presents...");
+        query = GET_MOVIEBY_SCHEDULE;
+      } else if (conditions.length === 4) {
         query = GET_MOVIE_TGDS;
-      }
-      if (conditions.length === 3 && scheduleStart) {
-      
-        query = GET_ALLMOVIEPARTS;
       } else if (conditions.length === 3) {
-        query = GET_MOV_TIT_DIR_GEN;
+        if (scheduleStart) {
+          query = GET_ALLMOVIEPARTS;
+        } else {
+          query = GET_MOV_TIT_DIR_GEN;
+        }
       } else if (conditions.length === 2) {
-        
         if (variables.title && variables.genres) {
           query = GET_MOVIE_TITLE_GENRE;
         } else if (variables.title && variables.director) {
@@ -129,21 +129,19 @@ export const useFetchMovies = () => {
           query = GET_MOVIE_DIR_GENRE;
         }
       } else if (conditions.length === 1) {
-       
         if (variables.title) {
           query = GET_TITLE;
         } else if (variables.genres) {
           query = GET_MOVIE_GENRES;
         } else if (variables.director) {
           query = GET_MOVIE_BYDIRECTOR;
-        } else if (variables.scheduleStart && variables.scheduleEnd) {
-          
-          query = GET_MOVIEBY_SCHEDULE; // Adjust query for schedule only
         }
       } else {
-      
-        query = GET_MOVIES;
+        query = GET_MOVIES; // Default query
       }
+
+      console.log("GraphQL variables: ", variables);
+      console.log("GraphQL query: ", query);
 
       const { data } = await $apollo.query({
         query,
@@ -151,11 +149,11 @@ export const useFetchMovies = () => {
         fetchPolicy: "network-only",
       });
       movies.value = data.movies;
+      console.log("Movies data ", data.movies);
       const totalMoviesCount = data.movies_aggregate.aggregate.count;
       totalPages.value = Math.ceil(totalMoviesCount / limit);
       if (movies.value.length === 0) {
         noMoviesFound.value = true;
-        
         movieStore.setMovies([]);
       } else {
         movieStore.setMovies(data.movies);

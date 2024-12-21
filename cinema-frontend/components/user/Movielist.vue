@@ -45,6 +45,7 @@ const {
   selectedRating,
   submitRating,
   israte,
+  userRatings,
 } = useRating();
 const { selectClass, optionClass } = useThemeColor();
 const { toggleBookmark, isBookmarkedCheck, getBookmarks } = useBookmarks();
@@ -411,18 +412,24 @@ onMounted(async () => {
                   </div>
 
                   <div>
-                    <ul v-if="getCurrentUserRating(movie)">
+                    <ul
+                      v-if="
+                        userRatings[movie.movie_id] ||
+                        getCurrentUserRating(movie)
+                      "
+                    >
                       <li
-                        :key="getCurrentUserRating(movie).rating"
+                        :key="userRatings[movie.movie_id]"
                         class="rounded-lg p-3 shadow-md"
-                        :class="selectClass"
                       >
                         ⭐ You have Rated:
-                        {{ getCurrentUserRating(movie).rating }}
+                        {{
+                          userRatings[movie.movie_id] ||
+                          getCurrentUserRating(movie).rating
+                        }}
                         stars
                       </li>
                     </ul>
-                    <!-- If the current user hasn't rated the movie -->
                     <p v-else class="text-gray-500 italic">
                       ⭐ Rate: Not rated
                     </p>
@@ -451,51 +458,6 @@ onMounted(async () => {
                     </span>
                   </div>
                 </div>
-                <!-- 
-                <div
-                  v-if="isModal && currentMovieId === movie.movie_id"
-                  class="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
-                >
-                  <div
-                    class="p-6 rounded-lg shadow-lg space-y-4"
-                    :class="selectClass"
-                  >
-                    <p class="text-lg font-semibold">Rate this movie:</p>
-
-                    <div class="flex justify-center space-x-2">
-                      <div
-                        v-for="star in 5"
-                        :key="star"
-                        @click="selectedRating = star"
-                        class="cursor-pointer"
-                        :class="selectClass"
-                      >
-                        <component
-                          :is="star <= selectedRating ? StarSolid : StarOutline"
-                          class="w-8 h-8 text-yellow-500"
-                          :class="selectClass"
-                        />
-                      </div>
-                    </div>
-                    <div class="flex justify-end space-x-2">
-                      <button
-                        @click="submitRating(currentMovieId)"
-                        class="px-4 py-2 bg-green-600 dark:bg-green-800 text-white rounded-lg"
-                      >
-                        Submit
-                      </button>
-                      <button
-                        @click="
-                          isModal = false;
-                          currentMovieId = null;
-                        "
-                        class="px-4 py-2 bg-red-600 dark:bg-red-800 text-white rounded-lg"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
-                </div> -->
 
                 <div
                   class="mt-4 bg-gray-100 rounded-lg shadow-md"
@@ -511,14 +473,14 @@ onMounted(async () => {
                     <li
                       v-for="schedule in movie.movie_schedules"
                       :key="schedule.start_time"
-                      class="text-gray-700 rounded-lg p-3 shadow-md"
+                      class="rounded-lg p-3 shadow-md"
                       :class="selectClass"
                     >
                       <div
                         class="flex flex-col md:flex-row items-start md:items-center gap-2 text-sm md:text-base p-2 rounded-md shadow-sm"
                       >
                         <!-- Date and Time -->
-                        <p class="font-semibold text-gray-700">
+                        <p class="font-semibold">
                           {{
                             formatScheduleDateTime(
                               schedule.schedule_date,
@@ -527,8 +489,6 @@ onMounted(async () => {
                             )
                           }}
                         </p>
-
-                        <!-- Status: Valid/Expired -->
                         <span
                           v-if="isScheduleExpired(schedule)"
                           class="text-green-600 dark:text-green-400 font-semibold"

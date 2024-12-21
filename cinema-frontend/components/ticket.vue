@@ -26,8 +26,6 @@ const handleTicket = async (values) => {
     console.log("Error", error);
   }
 };
-
-// Function to check if the schedule date/time has passed
 const validationSchema = yup.object({
   first_name: yup.string().required("First Name is required"),
   last_name: yup.string().required("Last Name is required"),
@@ -264,7 +262,7 @@ onMounted(async () => {
           >
             <button
               type="submit"
-              class="max-w-28 sm:mt-4 sm:w-24 mx-1 p-2 sm:mx-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 flex items-center justify-center"
+              class="max-w-60 sm:mt-4 sm:w-24 mx-1 p-2 sm:mx-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all duration-300 flex items-center justify-center"
             >
               <span v-if="isloading" class="flex items-center justify-center">
                 <svg
@@ -288,7 +286,7 @@ onMounted(async () => {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                   ></path>
                 </svg>
-                please wait...
+                loading...
               </span>
               <span
                 v-else

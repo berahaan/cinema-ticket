@@ -52,6 +52,7 @@ const {
   currentMovieId,
   selectedRating,
   submitRating,
+  userRatings,
 } = useRating();
 const { selectClass, optionClass, deleteOption } = useThemeColor();
 const { toggleBookmark, isBookmarked, isBookmarkedCheck, getBookmarks } =
@@ -315,14 +316,22 @@ onMounted(async () => {
                   </ul>
                   <div class="mt-3">
                     <!-- Only show the current user's rating -->
-                    <ul v-if="getCurrentUserRating(movie)">
+                    <ul
+                      v-if="
+                        userRatings[movie.movie_id] ||
+                        getCurrentUserRating(movie)
+                      "
+                    >
                       <li
-                        :key="getCurrentUserRating(movie).rating"
+                        :key="userRatings[movie.movie_id]"
                         class="rounded-lg p-3 shadow-md"
-                        :class="selectClass"
                       >
                         ⭐ You have Rated:
-                        {{ getCurrentUserRating(movie).rating }} stars
+                        {{
+                          userRatings[movie.movie_id] ||
+                          getCurrentUserRating(movie).rating
+                        }}
+                        stars
                       </li>
                     </ul>
 
