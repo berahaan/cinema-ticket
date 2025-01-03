@@ -132,6 +132,7 @@ http://localhost:8080
 docker-compose down
 ```
 📄 Key Endpoints
+
 Payment Webhook: Confirm payments and generate tickets.
 Image Uploads: Manage movie and profile images.
 
