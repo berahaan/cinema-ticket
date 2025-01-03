@@ -70,7 +70,11 @@ npm install
 npm run dev
 ```
 4.Set up environment variables
- create .env if not exists already and add GRAPHQL_ENDPOINT ="Your_Graphql_Endpoint"
+ create .env if not exists already and add
+```bash
+ GRAPHQL_ENDPOINT ="Your_Graphql_Endpoint"
+```
+---
 5.Access the project
 Open http://localhost:3000 in your browser
 
@@ -85,8 +89,7 @@ go mod tidy
 ```
 so that install dependency
 2.Set up environment variables
-for Frontend create .env if not exists already and add GRAPHQL_ENDPOINT ="Your_Graphql_Endpoint"
-for backend create .env and add this 
+Then create .env and add this 
 ```bash
 JWT_SECRET=""
 JWT_REFRESH_SECRET=""
