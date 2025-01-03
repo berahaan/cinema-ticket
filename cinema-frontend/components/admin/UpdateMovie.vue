@@ -8,8 +8,6 @@ const { goBack } = useGobackArrow();
 const {
   fetchMovieDetails,
   formData,
-  previewOtherImages,
-  otherImages,
   currentImage,
   currentOtherImage,
   availableDirectors,
@@ -26,7 +24,6 @@ const { updateMovies, isUpdated, isUpdateloading, loading } = useUpdateMovie();
 const { autoResize } = useAddMovies();
 const { UploadImage } = HandleImageUpload();
 const { selectClass, labelClass } = useThemeColor();
-const { refreshPage } = useRefresh();
 const { fetchMovies } = useFetchMovies();
 watch(
   () => currentOtherImage.value,
@@ -38,9 +35,6 @@ watch(
 const handleUpdateMovie = async () => {
   const { featuredImage64, otherImage64 } = useImageBase64Store();
   if (!featuredImage64 && otherImage64.length == 0) {
-    console.log("Both images is not selected ...");
-    console.log("featuredImages is now ", currentImage.value);
-    console.log("otherImages is now ", otherImages.value);
     await updateMovies(
       movie_id,
       formData.value.title,
@@ -53,9 +47,6 @@ const handleUpdateMovie = async () => {
       formData.value.duration
     );
   } else if (featuredImage64 != "" && otherImage64.length == 0) {
-    alert(
-      "Only featured images is being saved now and other images is remain same "
-    );
     await UploadImage(featuredImage64, null);
     const { featuredImageURL } = useImageStore();
     await updateMovies(
@@ -70,9 +61,6 @@ const handleUpdateMovie = async () => {
       formData.value.duration
     );
   } else if (featuredImage64 == "" && otherImage64.length != 0) {
-    alert(
-      "Only other images is being saved now and other images is remain same "
-    );
     await UploadImage(null, otherImage64);
     const { otherImageURLs } = useImageStore();
     await updateMovies(
@@ -124,18 +112,6 @@ onMounted(() => {
           Edit Movie Details
         </h1>
         <div class="flex">
-          <button @click="refreshPage(fetchMovies)" class="ml-4 mb-8 mx-10">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-6 h-6 text-blue-500 hover:text-blue-700 transition-colors"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path
-                d="M17.65 6.35A7.95 7.95 0 0012 4V1L8 5l4 4V6c1.78 0 3.4.68 4.65 1.8a6 6 0 011.29 6.12l1.45 1.45c1.19-2.32 1.11-5.25-.6-7.57zm-11.3 11.3A7.95 7.95 0 0012 20v3l4-4-4-4v3c-1.78 0-3.4-.68-4.65-1.8a6 6 0 01-1.29-6.12l-1.45-1.45c-1.19 2.32-1.11 5.25.6 7.57z"
-              />
-            </svg>
-          </button>
           <button
             @click="goBack"
             class="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium py-2 px-4 rounded-md transition duration-200 mb-10"

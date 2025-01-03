@@ -63,11 +63,21 @@ export const useAddMovies = () => {
       if (response && response.data) {
         toast.success("Movie added successfully!", {
           position: "top-center",
-          timeout: 5000, // Toast stays visible for 5 seconds
+          timeout: 5000,
         });
+        formData.value = {
+          title: "",
+          description: "",
+          duration: 0,
+          director_id: null,
+          star_id: null,
+          selected_genre: null,
+          featured_image: null,
+          other_images: [],
+        };
       }
     } catch (error) {
-      toast.error("Error while adding movies ");
+      console.log("Error while adding movies ", error);
     } finally {
       loading.value = false;
       isSpinning.value = false;

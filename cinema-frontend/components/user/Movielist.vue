@@ -609,11 +609,13 @@ onMounted(async () => {
             <div v-if="isNotherImagesExist" class="text-center text-gray-500">
               <p>No other images available for this Movies. Thank you!</p>
             </div>
+
             <div v-else class="relative">
               <img
                 :src="currentOtherImages[currentImageIndex]"
                 alt="Other Image"
-                class="w-full h-auto max-h-96 rounded-lg shadow-md transition-transform duration-300 transform hover:scale-105"
+                class="w-full h-auto max-h-96 rounded-lg shadow-md transition-transform duration-300 transform hover:scale-105 cursor-pointer"
+                @click="openModal"
               />
               <button
                 v-if="currentOtherImages.length > 1"
@@ -631,13 +633,46 @@ onMounted(async () => {
               </button>
             </div>
 
-            <p
+            <!-- Fullscreen Modal -->
+            <div
+              v-if="isModalOpen"
+              class="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center"
+            >
+              <div class="relative">
+                <img
+                  :src="currentOtherImages[currentImageIndex]"
+                  alt="Fullscreen Image"
+                  class="max-w-full max-h-screen rounded-lg shadow-lg"
+                />
+                <button
+                  @click="closeModal"
+                  class="absolute top-4 right-4 bg-gray-900 text-white px-4 py-2 rounded-full transition-transform hover:scale-110 focus:outline-none"
+                >
+                  ✕
+                </button>
+                <button
+                  v-if="currentOtherImages.length > 1"
+                  @click="prevImage"
+                  class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full transition-transform hover:scale-110 focus:outline-none"
+                >
+                  &lt;
+                </button>
+                <button
+                  v-if="currentOtherImages.length > 1"
+                  @click="nextImage"
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full transition-transform hover:scale-110 focus:outline-none"
+                >
+                  &gt;
+                </button>
+              </div>
+            </div>
+            <!-- <p
               v-if="!isNotherImagesExist"
               class="mt-2 text-center text-gray-600"
             >
               Image {{ currentImageIndex + 1 }} of
               {{ currentOtherImages.length }}
-            </p>
+            </p> -->
             <button
               @click="closeModal"
               class="absolute top-2 right-2 bg-teal-500 text-white px-2 py-1 rounded-full transition-all duration-200 transform hover:bg-red-600 focus:outline-none shadow-lg mb-4"

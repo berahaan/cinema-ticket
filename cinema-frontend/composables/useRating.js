@@ -15,6 +15,7 @@ export function useRating() {
   const { $apollo } = useNuxtApp();
 
   const openRatingModal = (movieId) => {
+    console.log("Current movies id ", movieId);
     const rate = userRatings.value[movieId];
     currentMovieId.value = movieId;
     israte.value = !israte.value;

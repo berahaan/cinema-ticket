@@ -4,7 +4,6 @@ import Loading from "../admin/Loading.vue";
 import { ArrowLeftIcon, ArrowRightIcon } from "@heroicons/vue/solid";
 const { formatScheduleDateTime } = useFormatSchedule();
 const { selectClass } = useThemeColor();
-const { refreshPage } = useRefresh();
 const { goBack } = useGobackArrow();
 const movie = useMoviesStore();
 const { openScheduleModal, isloading } = useAddSchedule();
@@ -51,9 +50,6 @@ onMounted(async () => {
 
       <!-- Container for Refresh and Go Back buttons (Right-aligned) -->
       <div class="flex items-center space-x-4 ml-4">
-        <!-- Refresh Button (Right-aligned) -->
-
-        <!-- Go Back Button (Right-aligned) -->
         <button
           @click="goBack"
           class="flex items-center space-x-2 text-blue-600 hover:text-blue-700 font-medium py-2 px-4 rounded-md transition duration-200 mb-4"

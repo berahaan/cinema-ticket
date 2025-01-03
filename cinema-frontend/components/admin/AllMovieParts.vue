@@ -49,6 +49,7 @@ const {
 const {
   openRatingModal,
   isModal,
+  israte,
   currentMovieId,
   selectedRating,
   submitRating,
@@ -315,7 +316,6 @@ onMounted(async () => {
                     </li>
                   </ul>
                   <div class="mt-3">
-                    <!-- Only show the current user's rating -->
                     <ul
                       v-if="
                         userRatings[movie.movie_id] ||
@@ -331,11 +331,10 @@ onMounted(async () => {
                           userRatings[movie.movie_id] ||
                           getCurrentUserRating(movie).rating
                         }}
+
                         stars
                       </li>
                     </ul>
-
-                    <!-- If the current user hasn't rated the movie -->
                     <p v-else class="text-gray-500 italic">
                       ⭐ Rate: Not rated
                     </p>
@@ -359,58 +358,6 @@ onMounted(async () => {
                       {{ star.star.name }}
                     </li>
                   </ul>
-                </div>
-                <button
-                  @click="openRatingModal(movie.movie_id)"
-                  class="px-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
-                >
-                  Rate
-                </button>
-
-                <div
-                  v-if="isModal && currentMovieId === movie.movie_id"
-                  class="fixed inset-0 bg-opacity-50 flex items-center justify-center z-50"
-                >
-                  <div
-                    class="p-6 rounded-lg shadow-lg space-y-4"
-                    :class="selectClass"
-                  >
-                    <p class="text-lg font-semibold">Rate this movie:</p>
-
-                    <div class="flex justify-center space-x-2">
-                      <div
-                        v-for="star in 5"
-                        :key="star"
-                        @click="selectedRating = star"
-                        class="cursor-pointer"
-                        :class="selectClass"
-                      >
-                        <component
-                          :is="star <= selectedRating ? StarSolid : StarOutline"
-                          class="w-8 h-8 text-yellow-500"
-                          :class="selectClass"
-                        />
-                      </div>
-                    </div>
-
-                    <div class="flex justify-end space-x-2">
-                      <button
-                        @click="submitRating(currentMovieId)"
-                        class="px-4 py-2 bg-green-600 dark:bg-green-800 text-white rounded-lg"
-                      >
-                        Submit
-                      </button>
-                      <button
-                        @click="
-                          isModal = false;
-                          currentMovieId = null;
-                        "
-                        class="px-4 py-2 bg-red-600 dark:bg-red-800 text-white rounded-lg"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </div>
                 </div>
 
                 <div
@@ -469,41 +416,65 @@ onMounted(async () => {
                         class="flex flex-col md:flex-row items-center gap-4 mt-2"
                       >
                         <button
-                          v-if="isScheduleExpired(schedule)"
-                          @click="buyTicket(movie.movie_id)"
-                          class="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded shadow-md w-full md:w-auto"
-                        >
-                          Buy Ticket
-                        </button>
-                        <!-- Buy Ticket Button -->
-                        <button
-                          v-else
-                          @click="buyTicket(movie.movie_id)"
-                          disabled
-                          class="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded shadow-md w-full md:w-auto"
-                        >
-                          Buy Ticket
-                        </button>
-
-                        <!-- Rate Button -->
-                        <button
                           @click="openRatingModal(movie.movie_id)"
-                          class="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded shadow-md w-full md:w-auto"
+                          class="text-sm px-3 py-2 bg-teal-600 text-white rounded shadow-md w-full md:w-auto"
                         >
-                          Rate
+                          <span v-if="!israte">Rate</span>
+                          <span v-else>x</span>
                         </button>
-                        <button
-                          @click="confirmDelete(movie.movie_id)"
-                          class="px-3 py-2 bg-red-600 dark:bg-red-800 text-white rounded mx-6 shadow-md w-full md:w-auto"
-                        >
-                          Delete Movie
-                        </button>
-                        <button
-                          @click="UpdateMovie(movie.movie_id)"
-                          class="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded shadow-md w-full md:w-auto"
-                        >
-                          Update Movie
-                        </button>
+                        <div v-if="!israte">
+                          <button
+                            @click="confirmDelete(movie.movie_id)"
+                            class="px-3 py-2 bg-red-600 dark:bg-red-800 text-white rounded mx-6 shadow-md w-full md:w-auto"
+                          >
+                            Delete Movie
+                          </button>
+                          <button
+                            @click="UpdateMovie(movie.movie_id)"
+                            class="text-sm px-3 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-900 text-white rounded shadow-md w-full md:w-auto"
+                          >
+                            Update Movie
+                          </button>
+                        </div>
+
+                        <div v-if="israte && currentMovieId === movie.movie_id">
+                          <div class="flex justify-center space-x-2">
+                            <div
+                              v-for="star in 5"
+                              :key="star"
+                              @click="selectedRating = star"
+                              class="cursor-pointer"
+                              :class="selectClass"
+                            >
+                              <component
+                                :is="
+                                  star <= selectedRating
+                                    ? StarSolid
+                                    : StarOutline
+                                "
+                                class="w-8 h-8 text-yellow-500"
+                                :class="selectClass"
+                              />
+                            </div>
+                            <div class="flex justify-end space-x-2">
+                              <button
+                                @click="submitRating(currentMovieId)"
+                                class="px-2 py-1 bg-green-600 dark:bg-green-800 text-white rounded-lg"
+                              >
+                                Submit
+                              </button>
+                              <button
+                                @click="
+                                  israte = false;
+                                  currentMovieId = null;
+                                "
+                                class="px-2 py-1 bg-red-600 dark:bg-red-800 text-white rounded-lg"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </li>
                   </ul>
@@ -551,8 +522,6 @@ onMounted(async () => {
             </div>
           </div>
         </div>
-
-        <!-- Modal for Image Slideshow -->
         <div
           v-if="isModalOpen"
           class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 transition-opacity duration-300 ease-in-out"
@@ -566,11 +535,13 @@ onMounted(async () => {
             <div v-if="isNotherImagesExist" class="text-center text-gray-500">
               <p>No other images available for this Movies. Thank you!</p>
             </div>
+
             <div v-else class="relative">
               <img
                 :src="currentOtherImages[currentImageIndex]"
                 alt="Other Image"
-                class="w-full h-auto max-h-96 rounded-lg shadow-md transition-transform duration-300 transform hover:scale-105"
+                class="w-full h-auto max-h-96 rounded-lg shadow-md transition-transform duration-300 transform hover:scale-105 cursor-pointer"
+                @click="openModal"
               />
               <button
                 v-if="currentOtherImages.length > 1"
@@ -588,14 +559,47 @@ onMounted(async () => {
               </button>
             </div>
 
-            <p
+            <!-- Fullscreen Modal -->
+            <div
+              v-if="isModalOpen"
+              class="fixed inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center"
+            >
+              <div class="relative">
+                <img
+                  :src="currentOtherImages[currentImageIndex]"
+                  alt="Fullscreen Image"
+                  class="max-w-full max-h-screen rounded-lg shadow-lg"
+                />
+
+                <button
+                  @click="closeModal"
+                  class="absolute top-4 right-4 bg-gray-900 text-white px-4 py-2 rounded-full transition-transform hover:scale-110 focus:outline-none"
+                >
+                  ✕
+                </button>
+                <button
+                  v-if="currentOtherImages.length > 1"
+                  @click="prevImage"
+                  class="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full transition-transform hover:scale-110 focus:outline-none"
+                >
+                  &lt;
+                </button>
+                <button
+                  v-if="currentOtherImages.length > 1"
+                  @click="nextImage"
+                  class="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 text-white px-4 py-2 rounded-full transition-transform hover:scale-110 focus:outline-none"
+                >
+                  &gt;
+                </button>
+              </div>
+            </div>
+            <!-- <p
               v-if="!isNotherImagesExist"
               class="mt-2 text-center text-gray-600"
             >
               Image {{ currentImageIndex + 1 }} of
               {{ currentOtherImages.length }}
-            </p>
-
+            </p> -->
             <button
               @click="closeModal"
               class="absolute top-2 right-2 bg-teal-500 text-white px-2 py-1 rounded-full transition-all duration-200 transform hover:bg-red-600 focus:outline-none shadow-lg mb-4"
@@ -604,7 +608,6 @@ onMounted(async () => {
             </button>
           </div>
         </div>
-
         <div
           class="pagination-controls py-4 flex justify-center items-center space-x-4 rounded-lg mt-8"
           v-if="movie.totalPages"
@@ -612,23 +615,25 @@ onMounted(async () => {
           <button
             @click="goToPreviousPage"
             :disabled="currentPage === 1"
-            class="text-teal-600 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            class="flex items-center px-4 py-2 rounded-md shadow-md transition-all bg-teal-500 text-white font-medium hover:bg-teal-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
-            <ArrowLeftIcon class="w-8 h-8 flex" />
+            <ArrowLeftIcon class="h-5 w-5 mr-2" />
+            Previous
           </button>
-          <span class="font-semibold">
+          <span class="font-semibold" :class="selectClass">
             {{
               noMoviesFound
-                ? "Page 1 of  1"
-                : `page ${currentPage} of ${movie.totalPages}`
+                ? "Page 1 of total 1"
+                : `Page ${currentPage} of ${movie.totalPages}`
             }}
           </span>
           <button
             @click="goToNextPage"
             :disabled="currentPage === movie.totalPages || noMoviesFound"
-            class="text-teal-800 px-4 py-2 rounded-md shadow-md disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            class="flex items-center px-4 py-2 rounded-md shadow-md transition-all bg-teal-500 text-white font-medium hover:bg-teal-600 disabled:bg-gray-300 disabled:text-gray-500 disabled:cursor-not-allowed"
           >
-            <ArrowRightIcon class="w-8 h-8 flex" />
+            <ArrowRightIcon class="h-5 w-5 ml-2" />
+            Next
           </button>
         </div>
       </template>

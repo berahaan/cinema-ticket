@@ -40,22 +40,27 @@ export function useMovies() {
   });
 
   const fetchMovieDetails = async (movie_id) => {
+    console.log("Here its called ....");
     try {
       const response = await $apollo.query({
         query: GET_MOVIE_DETAILS,
         variables: { movie_id },
       });
-
       movie.setMovies(response.data.movies[0]);
+      console.log("current movies ", response.data.movies[0]);
+      console.log(
+        "Here is formdar.director.name.id",
+        movie.movies.director.director_id
+      );
       formData.value = {
         title: movie.movies.title,
         description: movie.movies.description,
         duration: movie.movies.duration,
         genres: movie.movies.movie_genres.map((g) => g.genre.genre_id),
         stars: movie.movies.movie_stars.map((s) => s.star.star_id),
-        director_id: movie.movies.director_id,
+        director_id: movie.movies.director.director_id,
       };
-
+      console.log("Formdata.director_id", formData.director_id);
       availableGenres.value = response.data.genres;
       availableStars.value = response.data.stars;
       availableDirectors.value = response.data.directors;
@@ -63,6 +68,7 @@ export function useMovies() {
       otherImages.value = movie.movies.movie_images.map(
         (other) => other.other_images
       );
+
       loading.value = false;
       currentOtherImage.value = movie.movies.movie_images.map((other) =>
         other.other_images.trim()

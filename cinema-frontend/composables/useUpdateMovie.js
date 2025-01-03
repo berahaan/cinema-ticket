@@ -9,7 +9,6 @@ export const useUpdateMovie = () => {
   const isUpdateloading = ref(false);
   const loading = ref(false);
   const { $apollo } = useNuxtApp();
-
   const updateMovies = async (
     movie_id,
     title,
@@ -35,7 +34,7 @@ export const useUpdateMovie = () => {
             duration,
           },
         });
-       
+
         if (response && response.data) {
           toast.success("Movies without Image change Updated successfully", {
             position: "top-center",
@@ -46,7 +45,6 @@ export const useUpdateMovie = () => {
         }
         return response.data;
       } catch (error) {
-
         throw error;
       } finally {
         isUpdateloading.value = false;
@@ -67,7 +65,7 @@ export const useUpdateMovie = () => {
             duration,
           },
         });
-       
+
         if (response && response.data) {
           toast.success(
             "Movies with only featuredImages is Update along with other Fields",
@@ -89,7 +87,7 @@ export const useUpdateMovie = () => {
       }
     } else if (featuredImageURL == null && otherImageURLs != null) {
       // alert("Now only other images is need to be updated ");
-     
+
       const movieImagesData = otherImageURLs.map((imageUrl) => ({
         movie_id,
         other_images: imageUrl,
@@ -108,7 +106,7 @@ export const useUpdateMovie = () => {
             duration,
           },
         });
-       
+
         if (response && response.data) {
           toast.success(
             "Movies with otherImages changes is Update along with other fields successfully",
@@ -118,11 +116,10 @@ export const useUpdateMovie = () => {
             }
           );
         } else {
-          isUpdated.value = "Error while updating man !!";
+          isUpdated.value = "Error while updating movies  !!";
         }
         return response.data;
       } catch (error) {
-        
         throw error;
       } finally {
         isUpdateloading.value = false;
@@ -130,7 +127,6 @@ export const useUpdateMovie = () => {
       }
     } else {
       if (featuredImageURL && otherImageURLs) {
-       
         const movieImagesData = otherImageURLs.map((imageUrl) => ({
           movie_id,
           other_images: imageUrl,
@@ -138,8 +134,6 @@ export const useUpdateMovie = () => {
         isUpdateloading.value = true;
         loading.value = true;
         try {
-         
-
           const response = await $apollo.mutate({
             mutation: UPDATE_MOVIE_NO_OTHER,
             variables: {
@@ -155,7 +149,6 @@ export const useUpdateMovie = () => {
             },
           });
 
-         
           if (response && response.data) {
             toast.success("Movies Updated successfully ", {
               position: "top-center",
@@ -166,7 +159,6 @@ export const useUpdateMovie = () => {
           }
           return response.data;
         } catch (error) {
-          
           throw error;
         } finally {
           isUpdateloading.value = false;

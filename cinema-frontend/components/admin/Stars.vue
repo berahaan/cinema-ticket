@@ -9,9 +9,9 @@ import { DELETE_STAR } from "../components/graphql/mutations/DELETE_STAR.graphql
 import { useToast } from "vue-toastification";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import Loading from "./Loading.vue";
-const { refreshPage } = useRefresh();
 const { selectClass } = useThemeColor();
 const { $apollo } = useNuxtApp();
+const { fetchStars } = useFetchStars();
 const stars = ref([]);
 const formData = ref({ name: "", star_id: null });
 const loading = ref(false);
@@ -24,30 +24,24 @@ const selectClassn = computed(() =>
     ? "bg-gray-800 text-white border-gray-100"
     : "bg-gray-50 text-gray-900 border-gray-200"
 );
-const fetchStars = async () => {
-  loading.value = true;
-  try {
-    const response = await $apollo.query({
-      query: GET_STARS,
-      fetchPolicy: "network-only",
-    });
-    stars.value = response.data.stars;
-  } catch (error) {
-    console.error("Error fetching stars:", error);
-  } finally {
-    loading.value = false;
-  }
+const handleClick = (star) => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+
+  editStar(star);
 };
+
 const validateName = (event) => {
   if (!event) {
-    return "Please Fix stars";
+    return "Please add name of star";
   } else if (event?.length < 3) {
     return "start name should be at least 3 char";
   }
   return true;
 };
 const onSubmit = async () => {
-  console.log("Clicked now ....");
   success.value = true;
   loading.value = true;
   try {
@@ -85,24 +79,18 @@ const onSubmit = async () => {
             return;
           } else {
             success.value = true;
-            console.log(
-              "Star does not exist in the database. Proceeding to add."
-            );
+
             const response = await $apollo.mutate({
               mutation: ADD_STAR,
               variables: { name: formData.value.name },
             });
             if (response && response.data) {
               await fetchStars();
-              console.log(
-                "Stars after added and fetch added now  ",
-                stars.value
-              );
+
               toast.success("Star added successfully.", {
                 position: "top-right",
                 timeout: 3000,
               });
-              formData.value.name = "";
             }
           }
         } catch (error) {
@@ -148,9 +136,7 @@ const deleteStar = async (id) => {
       });
 
       if (response && response.data) {
-        console.log("Star Id ", id);
         stars.value = stars.value.filter((star) => star.star_id !== id);
-        console.log("STarts Length ", stars.length);
         toast.success("Star deleted successfully.", {
           position: "top-center",
           timeout: 3000,
@@ -242,7 +228,7 @@ onMounted(fetchStars);
           <td class="px-4 py-2">{{ star.name }}</td>
           <td class="px-4 py-2 text-right">
             <button
-              @click="editStar(star)"
+              @click="handleClick(star)"
               class="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition duration-200 ease-in-out mr-2"
               :class="selectClass"
             >

@@ -8,6 +8,7 @@ export const GET_MOVIE_DETAILS = gql`
       duration
       featured_images
       director{
+        director_id
         name
       }
       movie_genres {

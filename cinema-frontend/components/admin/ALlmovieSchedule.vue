@@ -44,7 +44,7 @@ onMounted(async () => {
       </div>
       <div
         v-if="movie.movies.length > 0"
-        class="grid grid-cols-1 md:grid-cols-2 gap-8"
+        class="grid grid-cols-1 md:grid-cols-2 gap-4"
       >
         <!-- Movie Card -->
         <div
@@ -62,12 +62,12 @@ onMounted(async () => {
                 v-if="movie.featured_images"
                 :src="movie.featured_images"
                 alt="Featured Image"
-                class="w-full object-cover mb-4 max-h-72 rounded-lg shadow-md cursor-pointer"
+                class="w-full object-cover max-h-72 rounded-lg shadow-md cursor-pointer"
               />
             </div>
 
             <div
-              class="mt-4 p-4 bg-gray-100 rounded-lg shadow-sm"
+              class="p-2 bg-gray-100 rounded-lg shadow-sm"
               :class="selectClass"
             >
               <h4
@@ -113,7 +113,7 @@ onMounted(async () => {
             </div>
             <button
               @click="UpdateSchedules(movie.movie_id)"
-              class="px-4 mt-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg mx-6"
+              class="px-4 mt-4 py-2 bg-blue-600 dark:bg-blue-800 text-white rounded-lg flex items-center justify-center"
             >
               Update Schedule
             </button>

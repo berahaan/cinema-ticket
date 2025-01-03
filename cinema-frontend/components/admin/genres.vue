@@ -13,28 +13,22 @@ const { selectClass } = useThemeColor();
 const isLoading = ref(false);
 const toast = useToast();
 const { $apollo } = useNuxtApp();
-const genres = ref([]);
 const formData = ref({ name: "", genre_id: null });
 const loading = ref(false);
 const isEditing = ref(false);
 const notification = ref({ message: "", type: "" });
+const { fetchGenres, genres } = useFetchGenres();
+const handleClick = (genre) => {
+  // Scroll to the top of the page
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
 
-const fetchGenres = async () => {
-  isLoading.value = true;
-  try {
-    const response = await $apollo.query({
-      query: GET_GENRES,
-      fetchPolicy: "network-only",
-    });
-    genres.value = response.data.genres;
-  } catch (error) {
-    
-    showNotification("Failed to fetch genres.", "error");
-  } finally {
-    isLoading.value = false; // Stop loading after data is fetched
-  }
+  // Call the editGenre function
+  // Replace 'genre' with the actual data you want to edit
+  editGenre(genre);
 };
-
 const onSubmit = async () => {
   loading.value = true;
   isLoading.value = true;
@@ -68,7 +62,6 @@ const onSubmit = async () => {
           });
           return;
         } else {
-          
           const repsonseGenre = await $apollo.mutate({
             mutation: ADD_GENRE,
             variables: { name: formData.value.name },
@@ -85,7 +78,6 @@ const onSubmit = async () => {
       }
     }
   } catch (error) {
-    
     showNotification("Failed to save genre.", "error");
   } finally {
     setTimeout(() => {
@@ -103,15 +95,13 @@ const editGenre = (genre) => {
 
 const deleteGenre = async (id) => {
   try {
-   
     const { data } = await $apollo.query({
       query: GET_GENRE_ID,
       variables: { genre_id: id },
       fetchPolicy: "network-only",
     });
-   
+
     if (data.genres.length > 0) {
-      
       const response = await $apollo.mutate({
         mutation: DELETE_GENRE,
         variables: { genre_id: id },
@@ -136,7 +126,7 @@ const deleteGenre = async (id) => {
       });
     }
   } catch (error) {
-    throw error
+    throw error;
   }
 };
 // Show notification
@@ -234,7 +224,7 @@ onMounted(fetchGenres);
           <td class="px-4 py-2 text-right">
             <!-- Align cell content to the right -->
             <button
-              @click="editGenre(genre)"
+              @click="handleClick(genre)"
               class="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition duration-200 ease-in-out mr-2"
             >
               ✏️ Edit

@@ -14,8 +14,8 @@ const toggleMobileMenu = () => {
       <!-- Logo or Title -->
       <h1 class="text-4xl font-bold text-yellow-400 flex items-center">
         🎥
-        <span class="text-xl md:text-3xl ml-2 tracking-widest"
-          >Ethio Cinema</span
+        <span class="text-xl md:text-3xl ml-2 tracking-widest">
+          <nuxt-link to="/">Ethio Cinema</nuxt-link></span
         >
       </h1>
       <nav>

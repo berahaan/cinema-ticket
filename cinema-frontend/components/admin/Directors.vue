@@ -10,22 +10,22 @@ import { useNuxtApp } from "#app";
 import { Form, Field, ErrorMessage } from "vee-validate";
 const toast = useToast();
 const { selectClass } = useThemeColor();
+const {fetchDirectors,directors} =useFetchDirector()
 const { $apollo } = useNuxtApp();
-const directors = ref([]);
 const formData = ref({ name: "", director_id: null });
 const loading = ref(false);
 const isEditing = ref(false);
 const errors = ref({});
-const fetchDirectors = async () => {
-  try {
-    const response = await $apollo.query({
-      query: GET_DIRECTORS,
-      fetchPolicy: "network-only",
-    });
-    directors.value = response.data.directors;
-  } catch (error) {
-    console.error("Error fetching directors:", error);
-  }
+const handleClick = (director) => {
+  // Scroll to the top of the page
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+
+  // Call the editGenre function
+  // Replace 'genre' with the actual data you want to edit
+  editDirector(director);
 };
 
 const validateName = (value) => {
@@ -229,7 +229,7 @@ onMounted(fetchDirectors);
           <td class="px-4 py-2 text-right">
             <!-- Align cell content to the right -->
             <button
-              @click="editDirector(director)"
+              @click="handleClick(director)"
               class="bg-yellow-500 text-white px-3 py-1 rounded-md hover:bg-yellow-600 transition duration-200 ease-in-out mr-2"
             >
               ✏️ Edit
