@@ -2,8 +2,8 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_USER: postgresuser
-      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_USER: ${POSTGRES_USER}  
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  
       POSTGRES_DB: cinema
       # thisis a hasura db that u want to connect with
     volumes:
@@ -15,11 +15,11 @@ services:
     depends_on:
       - postgres
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgresuser:postgrespassword@postgres:5432/cinema
-      HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-      HASURA_GRAPHQL_JWT_SECRET: '{"type": "HS256", "key": "this_is_a_super_secret_key_1234567890"}'
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
-      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous # this is used to allow a user not to be asked a JWT when a user is tried to sign up ok am of God .......
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/cinema  
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_ADMIN_SECRET}  
+      HASURA_GRAPHQL_JWT_SECRET: ${HASURA_JWT_SECRET}  
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"  
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous  
     volumes:
       - hasura_metadata:/hasura-metadata
 

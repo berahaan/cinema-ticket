@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 )
+
 func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 	movieId := payload.Meta.MovieId
 	scheduleId := payload.Meta.ScheduleId
@@ -32,7 +33,7 @@ func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 			return fmt.Errorf("failed to insert ticket")
 		}
 		fmt.Println("Ticket is added successfully")
-	
+
 		paymentData, err := FetchPaymentData(payload.TransactionID)
 		if err != nil {
 			fmt.Println("Error during the fetching data here in ProcessPayment data ")
@@ -61,12 +62,46 @@ func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 		// recipient, subject, body, attachmentPath
 		recepeint := payload.Email
 		subject := "Your Movie Ticket"
-		body := "Thank you for your purchase! Please find your ticket attached."
-		err = SendEmailWithAttachment(recepeint, subject, body, savePath)
+
+		// Plain-text version for email clients that don't support HTML
+		plainTextBody := "Thank you for your purchase! Please find your ticket attached."
+
+		// HTML version with better formatting
+		htmlBody := `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #4CAF50; color: white; padding: 10px; text-align: center; }
+        .content { margin: 20px 0; }
+        .footer { font-size: 12px; color: gray; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Your Movie Ticket</h1>
+        </div>
+        <div class="content">
+            <p>Thank you for your purchase!</p>
+            <p>Please find your ticket attached. We hope you enjoy your movie!</p>
+        </div>
+        <div class="footer">
+            <p>If you have any questions, contact us at support@yourdomain.com</p>
+        </div>
+    </div>
+</body>
+</html>
+`
+		// Call the function to send the email
+		err = SendEmailWithAttachment(recepeint, subject, plainTextBody, htmlBody, savePath)
 		if err != nil {
 			fmt.Printf("Error while sending emails here ...")
-			return fmt.Errorf("error while sendig emails%s", err)
+			return fmt.Errorf("error while sending emails: %s", err)
 		}
+
 		return nil
 
 	case "pending":
@@ -110,16 +145,51 @@ func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 		}
 		// fmt.Printf("PDF successfully saved to: %s\n", savePath)
 		recepeint := payload.Email
-		subject := "Your Movie Ticket"
-		body := "Thank you for your purchase! Your order is being processsed we will notify you when pending is done thanks ."
-		err = SendEmailWithAttachment(recepeint, subject, body, "")
+		subject := "Your Movie Ticket - Order Pending"
+
+		// Plain-text version
+		plainTextBody := "Thank you for your purchase! Your order is being processed. We will notify you once it's complete. Thank you for your patience."
+
+		// HTML version
+		htmlBody := `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #f39c12; color: white; padding: 10px; text-align: center; }
+        .content { margin: 20px 0; }
+        .footer { font-size: 12px; color: gray; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Your Movie Ticket - Order Pending</h1>
+        </div>
+        <div class="content">
+            <p>Thank you for your purchase!</p>
+            <p>Your order is being processed. We will notify you as soon as the pending process is complete.</p>
+            <p>Thank you for your patience!</p>
+        </div>
+        <div class="footer">
+            <p>If you have any questions, contact us at support@yourdomain.com</p>
+        </div>
+    </div>
+</body>
+</html>
+`
+		// Call the function to send the email
+		err = SendEmailWithAttachment(recepeint, subject, plainTextBody, htmlBody, "")
 		if err != nil {
 			fmt.Printf("Error while sending emails here ...")
-			return fmt.Errorf("error while sendig emails%s", err)
+			return fmt.Errorf("error while sending emails: %s", err)
 		}
+
 		// Start polling in a goroutine
 		go func(transactionID string) {
-			verified, err := PollPaymentVerifications(transactionID, payload.Email,savePath)
+			verified, err := PollPaymentVerifications(transactionID, payload.Email, savePath)
 			if err != nil {
 				fmt.Printf("Error during polling for transaction %s: %v\n", transactionID, err)
 				return
@@ -143,13 +213,48 @@ func ProcessPaymentStatus(payload models.ChapaWebhookPayload) error {
 		}
 		fmt.Println("Failed payment status saved successfully")
 		recepeint := payload.Email
-		subject := "Your Movie Ticket"
-		body := "Thank you for your orders! But unfortunately your order is Failed please try again it later \nThanks "
-		err = SendEmailWithAttachment(recepeint, subject, body, "")
+		subject := "Your Movie Ticket - Order Failed"
+		// Plain-text version
+		plainTextBody := "Thank you for your order! Unfortunately, your order has failed. Please try again later. Thank you for your understanding."
+
+		// HTML version
+		htmlBody := `
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; }
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+        .header { background-color: #e74c3c; color: white; padding: 10px; text-align: center; }
+        .content { margin: 20px 0; }
+        .footer { font-size: 12px; color: gray; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Order Failed</h1>
+        </div>
+        <div class="content">
+            <p>Thank you for your order!</p>
+            <p>Unfortunately, your order has failed. Please try again later.</p>
+            <p>We apologize for the inconvenience and appreciate your understanding.</p>
+        </div>
+        <div class="footer">
+            <p>If you have any questions, contact us at support@yourdomain.com</p>
+        </div>
+    </div>
+</body>
+</html>
+`
+
+		// Call the function to send the email
+		err = SendEmailWithAttachment(recepeint, subject, plainTextBody, htmlBody, "")
 		if err != nil {
 			fmt.Printf("Error while sending emails here ...")
-			return fmt.Errorf("error while sendig emails%s", err)
+			return fmt.Errorf("error while sending emails: %s", err)
 		}
+
 		return nil
 
 	default:
