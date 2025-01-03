@@ -110,7 +110,8 @@ PROFILE_FILE_PATH=""
 EMAIL =""
 GOOGLE_PASSWORD="your App Passwords "
 ```
-for google_passwords you can generate it for your Emails under your google Accounts then search for App passwords then Generate it by adding Gmail as you app then copy paste it 
+for google_passwords you can generate it for your Emails under your google Accounts then search for App passwords then Generate it by adding Gmail as you app then copy paste it
+---
 3.Running the containers 
 ```bash
 docker-compose up -d
