@@ -134,5 +134,6 @@ docker-compose down
 📄 Key Endpoints
 Payment Webhook: Confirm payments and generate tickets.
 Image Uploads: Manage movie and profile images.
+
 📬 Contact
 For questions or feedback, feel free to reach out at my telegram  https://t.me/bekind2yourself
