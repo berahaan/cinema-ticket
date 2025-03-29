@@ -88,6 +88,7 @@ cd cinema-backend
 go mod tidy 
 ```
 so that install dependency
+
 2.Set up environment variables
 Then create .env and add this 
 ```bash
@@ -110,7 +111,8 @@ PROFILE_FILE_PATH=""
 EMAIL =""
 GOOGLE_PASSWORD="your App Passwords "
 ```
-for google_passwords you can generate it for your Emails under your google Accounts then search for App passwords then Generate it by adding Gmail as you app then copy paste it 
+for google_passwords you can generate it for your Emails under your google Accounts then search for App passwords then Generate it by adding Gmail as you app then copy paste it
+
 3.Running the containers 
 ```bash
 docker-compose up -d
@@ -130,7 +132,9 @@ http://localhost:8080
 docker-compose down
 ```
 📄 Key Endpoints
+
 Payment Webhook: Confirm payments and generate tickets.
 Image Uploads: Manage movie and profile images.
+
 📬 Contact
 For questions or feedback, feel free to reach out at my telegram  https://t.me/bekind2yourself
