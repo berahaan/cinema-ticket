@@ -1,4 +1,3 @@
-// stores/colorMode.js
 import { defineStore } from "pinia";
 
 export const useColorModeStore = defineStore("colorMode", {
@@ -7,10 +6,8 @@ export const useColorModeStore = defineStore("colorMode", {
   }),
   actions: {
     toggleColorMode() {
-      console.log("toggle color mode is called now");
       this.colorMode = this.colorMode === "light" ? "dark" : "light";
       if (import.meta.client) {
-        console.log("here color is setted now ");
         localStorage.setItem("colorMode", this.colorMode);
       }
     },

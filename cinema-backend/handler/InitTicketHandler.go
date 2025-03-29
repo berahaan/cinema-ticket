@@ -5,30 +5,29 @@ import (
 	"cinema-backend/services"
 	"encoding/json"
 	"fmt"
-	"io"
+	// "io"
 	"net/http"
 )
 
 func HandlePaymentInitiate(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hasura called this inititae functions now ")
 	w.Header().Set("Content-Type", "application/json")
-	reqBody, err := io.ReadAll(r.Body)
-	if err != nil {
-		fmt.Println("error here during reading input ", err)
-		http.Error(w, "Invalid payload", http.StatusBadRequest)
-		return
-	}
-	// fmt.Println("ReqBody::", string(reqBody))
+	/*
+		reqBody, err := io.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println("error here during reading input ", err)
+			http.Error(w, "Invalid payload", http.StatusBadRequest)
+			return
+		}
+		fmt.Println("ReqBody::", string(reqBody))
+	*/
 	var actionPayload models.TicketInitializePayload
-	if err := json.Unmarshal(reqBody, &actionPayload); err != nil {
-		fmt.Println("Error during unmarshal:", err)
+	if err := json.NewDecoder(r.Body).Decode(&actionPayload); err != nil {
 		http.Error(w, "Invalid payload", http.StatusBadRequest)
 		return
 	}
 	// Generate tx_ref for transaction
 	txRef := services.GenerateTxRef()
 	actionPayload.Input.TextRef = txRef
-
 	result, err := services.InitiatePayment(actionPayload.Input, txRef)
 	if err != nil {
 		fmt.Println("Error during initiate ", err)

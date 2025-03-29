@@ -5,11 +5,9 @@ import {
   SunIcon,
   MoonIcon,
   XIcon,
-  ChevronDoubleRightIcon,
   ChevronRightIcon,
 } from "@heroicons/vue/solid";
 import { computed, onMounted, watch } from "vue";
-// PencilSquareIcon
 import cinemaImage from "../image/cinema.jpg";
 const colorStore = useColorModeStore();
 const { selectClass } = useThemeColor();
@@ -48,10 +46,8 @@ const toggleMenu = (menuName) => {
 
 const toggleColor = () => {
   colorStore.toggleColorMode();
-  // colorStore.colorMode = colorStore.colorMode === "dark" ? "light" : "dark";
 };
 
-// Load initial color mode only on client side
 onMounted(() => {
   colorStore.loadColorMode();
   applyBodyClass(colorStore.colorMode);
@@ -114,7 +110,7 @@ body.text-black {
       </nuxt-link>
     </div>
 
-    <nav class="hidden md:flex items-center relative font-medium space-x-2">
+    <nav class="hidden md:flex items-center relative font-medium space-x-3">
       <div class="group relative cursor-pointer py-2">
         <div class="flex items-center justify-between">
           <a

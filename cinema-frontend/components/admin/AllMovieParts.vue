@@ -593,13 +593,7 @@ onMounted(async () => {
                 </button>
               </div>
             </div>
-            <!-- <p
-              v-if="!isNotherImagesExist"
-              class="mt-2 text-center text-gray-600"
-            >
-              Image {{ currentImageIndex + 1 }} of
-              {{ currentOtherImages.length }}
-            </p> -->
+
             <button
               @click="closeModal"
               class="absolute top-2 right-2 bg-teal-500 text-white px-2 py-1 rounded-full transition-all duration-200 transform hover:bg-red-600 focus:outline-none shadow-lg mb-4"
